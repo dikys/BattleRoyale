@@ -1,0 +1,89 @@
+{
+  "Description": "Command button \"Spell_arrows_volley\"",
+  "Items": [
+    {
+      "Uid": "Spell_arrows_volley_regular",
+      "Description": "Command button \"Spell_arrows_volley\", state:Regular",
+      "Location": {
+        "X": 0,
+        "Y": 0
+      },
+      "FrameSize": {
+        "Width": 69,
+        "Height": 35
+      },
+      "FramesCount": 1,
+      "MaskColors": null,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": null
+      }
+    },
+    {
+      "Uid": "Spell_arrows_volley_focused",
+      "Description": "Command button \"Spell_arrows_volley\", state:Focused",
+      "Location": {
+        "X": 0,
+        "Y": 35
+      },
+      "FrameSize": {
+        "Width": 69,
+        "Height": 35
+      },
+      "FramesCount": 1,
+      "MaskColors": null,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": null
+      }
+    },
+    {
+      "Uid": "Spell_arrows_volley_pressed",
+      "Description": "Command button \"Spell_arrows_volley\", state:Pressed",
+      "Location": {
+        "X": 0,
+        "Y": 70
+      },
+      "FrameSize": {
+        "Width": 69,
+        "Height": 35
+      },
+      "FramesCount": 1,
+      "MaskColors": null,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": null
+      }
+    },
+    {
+      "Uid": "Spell_arrows_volley_disabled",
+      "Description": "Command button \"Spell_arrows_volley\", state:Disabled",
+      "Location": {
+        "X": 0,
+        "Y": 105
+      },
+      "FrameSize": {
+        "Width": 69,
+        "Height": 35
+      },
+      "FramesCount": 1,
+      "MaskColors": null,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": null
+      }
+    }
+  ]
+}

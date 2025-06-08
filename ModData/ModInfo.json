@@ -1,0 +1,9 @@
+{
+  "Uid": "#ContentPack_BattleRoyale",
+  "DisplayName": "Battle royale",
+  "Description": "Мод для игры в королевскую битву!",
+  "Authors": "Dikysa",
+  "BuiltIn": false,
+  "StandAlone": false,
+  "Params": null
+}

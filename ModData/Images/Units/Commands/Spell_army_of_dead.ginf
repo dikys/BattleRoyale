@@ -1,0 +1,89 @@
+{
+  "Description": "Command button \"Spell_army_of_dead\"",
+  "Items": [
+    {
+      "Uid": "Spell_army_of_dead_regular",
+      "Description": "Command button \"Spell_army_of_dead\", state:Regular",
+      "Location": {
+        "X": 0,
+        "Y": 0
+      },
+      "FrameSize": {
+        "Width": 69,
+        "Height": 35
+      },
+      "FramesCount": 1,
+      "MaskColors": null,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": null
+      }
+    },
+    {
+      "Uid": "Spell_army_of_dead_focused",
+      "Description": "Command button \"Spell_army_of_dead\", state:Focused",
+      "Location": {
+        "X": 0,
+        "Y": 35
+      },
+      "FrameSize": {
+        "Width": 69,
+        "Height": 35
+      },
+      "FramesCount": 1,
+      "MaskColors": null,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": null
+      }
+    },
+    {
+      "Uid": "Spell_army_of_dead_pressed",
+      "Description": "Command button \"Spell_army_of_dead\", state:Pressed",
+      "Location": {
+        "X": 0,
+        "Y": 70
+      },
+      "FrameSize": {
+        "Width": 69,
+        "Height": 35
+      },
+      "FramesCount": 1,
+      "MaskColors": null,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": null
+      }
+    },
+    {
+      "Uid": "Spell_army_of_dead_disabled",
+      "Description": "Command button \"Spell_army_of_dead\", state:Disabled",
+      "Location": {
+        "X": 0,
+        "Y": 105
+      },
+      "FrameSize": {
+        "Width": 69,
+        "Height": 35
+      },
+      "FramesCount": 1,
+      "MaskColors": null,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": null
+      }
+    }
+  ]
+}

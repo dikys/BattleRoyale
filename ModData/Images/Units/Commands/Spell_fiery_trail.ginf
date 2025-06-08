@@ -1,0 +1,89 @@
+{
+  "Description": "Command button \"Spell_fiery_trail\"",
+  "Items": [
+    {
+      "Uid": "Spell_fiery_trail_regular",
+      "Description": "Command button \"Spell_fiery_trail\", state:Regular",
+      "Location": {
+        "X": 0,
+        "Y": 0
+      },
+      "FrameSize": {
+        "Width": 69,
+        "Height": 35
+      },
+      "FramesCount": 1,
+      "MaskColors": null,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": null
+      }
+    },
+    {
+      "Uid": "Spell_fiery_trail_focused",
+      "Description": "Command button \"Spell_fiery_trail\", state:Focused",
+      "Location": {
+        "X": 0,
+        "Y": 35
+      },
+      "FrameSize": {
+        "Width": 69,
+        "Height": 35
+      },
+      "FramesCount": 1,
+      "MaskColors": null,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": null
+      }
+    },
+    {
+      "Uid": "Spell_fiery_trail_pressed",
+      "Description": "Command button \"Spell_fiery_trail\", state:Pressed",
+      "Location": {
+        "X": 0,
+        "Y": 70
+      },
+      "FrameSize": {
+        "Width": 69,
+        "Height": 35
+      },
+      "FramesCount": 1,
+      "MaskColors": null,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": null
+      }
+    },
+    {
+      "Uid": "Spell_fiery_trail_disabled",
+      "Description": "Command button \"Spell_fiery_trail\", state:Disabled",
+      "Location": {
+        "X": 0,
+        "Y": 105
+      },
+      "FrameSize": {
+        "Width": 69,
+        "Height": 35
+      },
+      "FramesCount": 1,
+      "MaskColors": null,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": null
+      }
+    }
+  ]
+}

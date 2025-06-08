@@ -1,0 +1,131 @@
+{
+  "FormatVersion": "v0.67dev",
+  "Items": [
+    {
+      "$type": "HordeClassLibrary::ButtonAnimationsCatalog",
+      "Uid": "#AnimCatalog_Command_arrows_volley",
+      "Description": "Command button \"Spell_arrows_volley\"",
+      "InternalEditorPath": "Units\\Commands\\Capture\\Spell_arrows_volley",
+      "RootSection": {
+        "States": {
+          "Focused": "Spell_arrows_volley_focused",
+          "Pressed": "Spell_arrows_volley_pressed",
+          "Regular": "Spell_arrows_volley_regular",
+          "Disabled": "Spell_arrows_volley_disabled"
+        }
+      }
+    },
+    {
+      "$type": "HordeClassLibrary::ButtonAnimationsCatalog",
+      "Uid": "#AnimCatalog_Command_fireball",
+      "Description": "Command button \"Spell_fireball\"",
+      "InternalEditorPath": "Units\\Commands\\Capture\\Spell_fireball",
+      "RootSection": {
+        "States": {
+          "Focused": "Spell_fireball_focused",
+          "Pressed": "Spell_fireball_pressed",
+          "Regular": "Spell_fireball_regular",
+          "Disabled": "Spell_fireball_disabled"
+        }
+      }
+    },
+    {
+      "$type": "HordeClassLibrary::ButtonAnimationsCatalog",
+      "Uid": "#AnimCatalog_Command_golden_barracks_summon",
+      "Description": "Command button \"Spell_golden_barracks_summon\"",
+      "InternalEditorPath": "Units\\Commands\\Capture\\Spell_golden_barracks_summon",
+      "RootSection": {
+        "States": {
+          "Focused": "Spell_golden_barracks_summon_focused",
+          "Pressed": "Spell_golden_barracks_summon_pressed",
+          "Regular": "Spell_golden_barracks_summon_regular",
+          "Disabled": "Spell_golden_barracks_summon_disabled"
+        }
+      }
+    },
+    {
+      "$type": "HordeClassLibrary::ButtonAnimationsCatalog",
+      "Uid": "#AnimCatalog_Command_healing_aura",
+      "Description": "Command button \"Spell_healing_aura\"",
+      "InternalEditorPath": "Units\\Commands\\Capture\\Spell_healing_aura",
+      "RootSection": {
+        "States": {
+          "Focused": "Spell_healing_aura_focused",
+          "Pressed": "Spell_healing_aura_pressed",
+          "Regular": "Spell_healing_aura_regular",
+          "Disabled": "Spell_healing_aura_disabled"
+        }
+      }
+    },
+    {
+      "$type": "HordeClassLibrary::ButtonAnimationsCatalog",
+      "Uid": "#AnimCatalog_Command_teleportation_mark",
+      "Description": "Command button \"Spell_teleportation_mark\"",
+      "InternalEditorPath": "Units\\Commands\\Capture\\Spell_teleportation_mark",
+      "RootSection": {
+        "States": {
+          "Focused": "Spell_teleportation_mark_focused",
+          "Pressed": "Spell_teleportation_mark_pressed",
+          "Regular": "Spell_teleportation_mark_regular",
+          "Disabled": "Spell_teleportation_mark_disabled"
+        }
+      }
+    },
+    {
+      "$type": "HordeClassLibrary::ButtonAnimationsCatalog",
+      "Uid": "#AnimCatalog_Command_teleportation",
+      "Description": "Command button \"Spell_teleportation\"",
+      "InternalEditorPath": "Units\\Commands\\Capture\\Spell_teleportation",
+      "RootSection": {
+        "States": {
+          "Focused": "Spell_teleportation_focused",
+          "Pressed": "Spell_teleportation_pressed",
+          "Regular": "Spell_teleportation_regular",
+          "Disabled": "Spell_teleportation_disabled"
+        }
+      }
+    },
+    {
+      "$type": "HordeClassLibrary::ButtonAnimationsCatalog",
+      "Uid": "#AnimCatalog_Command_call_of_nature",
+      "Description": "Command button \"Spell_call_of_nature\"",
+      "InternalEditorPath": "Units\\Commands\\Capture\\Spell_call_of_nature",
+      "RootSection": {
+        "States": {
+          "Focused": "Spell_call_of_nature_focused",
+          "Pressed": "Spell_call_of_nature_pressed",
+          "Regular": "Spell_call_of_nature_regular",
+          "Disabled": "Spell_call_of_nature_disabled"
+        }
+      }
+    },
+    {
+      "$type": "HordeClassLibrary::ButtonAnimationsCatalog",
+      "Uid": "#AnimCatalog_Command_fiery_trail",
+      "Description": "Command button \"Spell_fiery_trail\"",
+      "InternalEditorPath": "Units\\Commands\\Capture\\Spell_fiery_trail",
+      "RootSection": {
+        "States": {
+          "Focused": "Spell_fiery_trail_focused",
+          "Pressed": "Spell_fiery_trail_pressed",
+          "Regular": "Spell_fiery_trail_regular",
+          "Disabled": "Spell_fiery_trail_disabled"
+        }
+      }
+    },
+    {
+      "$type": "HordeClassLibrary::ButtonAnimationsCatalog",
+      "Uid": "#AnimCatalog_Command_army_of_dead",
+      "Description": "Command button \"Spell_army_of_dead\"",
+      "InternalEditorPath": "Units\\Commands\\Capture\\Spell_army_of_dead",
+      "RootSection": {
+        "States": {
+          "Focused": "Spell_army_of_dead_focused",
+          "Pressed": "Spell_army_of_dead_pressed",
+          "Regular": "Spell_army_of_dead_regular",
+          "Disabled": "Spell_army_of_dead_disabled"
+        }
+      }
+    }
+  ]
+}

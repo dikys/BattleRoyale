@@ -1,4 +1,5 @@
 import { ISpell } from "../Spells/ISpell";
+import { Spell_FireArrowsRain } from "../Spells/Spell_FireArrowsRain";
 import { Spell_Fireball } from "../Spells/Spell_Fireball";
 import { Spell_teleportation_mark } from "../Spells/Spell_teleportation_mark";
 import { IHero } from "./IHero";
@@ -6,7 +7,7 @@ import { IHero } from "./IHero";
 export class Hero_FireArcher extends IHero {
     protected static CfgUid      : string = this.CfgPrefix + "FireArcher";
     protected static BaseCfgUid  : string = "#UnitConfig_Slavyane_Archer_2";
-    protected static _Spells : Array<typeof ISpell> = [Spell_Fireball, Spell_teleportation_mark];
+    protected static _Spells : Array<typeof ISpell> = [Spell_Fireball, Spell_FireArrowsRain];
 
     constructor(hordeUnit: HordeClassLibrary.World.Objects.Units.Unit) {
         super(hordeUnit);

@@ -1,6 +1,6 @@
 import { createPoint } from "library/common/primitives";
 import { enumerate, eNext } from "library/dotnet/dotnet-utils";
-import { TileType, UnitCommand, UnitConfig, UnitFlags, UnitSpecification } from "library/game-logic/horde-types";
+import { BulletConfig, TileType, UnitCommand, UnitConfig, UnitFlags, UnitSpecification } from "library/game-logic/horde-types";
 import { getUnitProfessionParams, UnitProducerProfessionParams, UnitProfession } from "library/game-logic/unit-professions";
 
 export function CreateHordeUnitConfig(BaseCfgUid: string, newCfgUid: string) : UnitConfig {
@@ -15,6 +15,14 @@ export function CreateHordeUnitConfig(BaseCfgUid: string, newCfgUid: string) : U
     //}
 
     return hordeConfig;
+}
+
+export function CreateHordeBulletConfig(baseConfigUid: string, newConfigUid: string) : BulletConfig {
+    if (HordeContentApi.HasBulletConfig(newConfigUid)) {
+        return HordeContentApi.GetBulletConfig(newConfigUid);
+    } else {
+        return HordeContentApi.CloneConfig(HordeContentApi.GetBulletConfig(baseConfigUid), newConfigUid) as BulletConfig;
+    }
 }
 
 /** добавить профессию найма юнитов, если была добавлена, то установит точки выхода и очистит список построек */

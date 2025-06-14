@@ -1,0 +1,56 @@
+{
+  "FormatVersion": "v0.34pre",
+  "Items": [
+    {
+      "Uid": "#VisualEffectConfig_LittleRedDust",
+      "Description": "Пыль разрушения зданий (малый радиус)",
+      "IsExposuresByWind": false,
+      "GravityMode": "None",
+      "SpecialParams": {
+        "$type": "HordeClassLibrary::SingleAnimEffectSpecialParams",
+        "AnimationsCatalog": "#AnimCatalog_Effects_LittleRedDust"
+      },
+      "InitialZ": 0.0,
+      "InitialZSpeed": 0.0,
+      "InitialDrawLayer": "Smoke",
+      "FramesSwitchDirection": "Forward",
+      "LoopAnimation": false,
+      "StartFrameNumber": null,
+      "InstanceFactory": "SingleAnimEffectFactory"
+    },
+    {
+      "Uid": "#VisualEffectConfig_MagicCircle",
+      "Description": "Пыль разрушения зданий (малый радиус)",
+      "IsExposuresByWind": false,
+      "GravityMode": "None",
+      "SpecialParams": {
+        "$type": "HordeClassLibrary::SingleAnimEffectSpecialParams",
+        "AnimationsCatalog": "d8ca2086c4e5409d9411006751e3f4a0"
+      },
+      "InitialZ": 0.0,
+      "InitialZSpeed": 0.0,
+      "InitialDrawLayer": "Smoke",
+      "FramesSwitchDirection": "Forward",
+      "LoopAnimation": false,
+      "StartFrameNumber": null,
+      "InstanceFactory": "SingleAnimEffectFactory"
+    },
+    {
+      "Uid": "#VisualEffectConfig_BloodGreenPool",
+      "Description": "Лужа крови после смерти юнита",
+      "IsExposuresByWind": false,
+      "GravityMode": "None",
+      "SpecialParams": {
+        "$type": "HordeClassLibrary::SingleAnimEffectSpecialParams",
+        "AnimationsCatalog": "#AnimCatalog_Effects_BloodGreenPool"
+      },
+      "InitialZ": 0.0,
+      "InitialZSpeed": 0.0,
+      "InitialDrawLayer": "FloorCovering",
+      "FramesSwitchDirection": "Forward",
+      "LoopAnimation": false,
+      "StartFrameNumber": null,
+      "InstanceFactory": "SingleAnimEffectFactory"
+    },
+  ]
+}

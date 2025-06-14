@@ -49,6 +49,9 @@ export class Cell {
     ToHordePoint() : Point2D {
         return createPoint(this.X, this.Y);
     }
+    Hash() : number {
+        return 10000*this.X + this.Y;
+    }
     static IsEquals(a: Cell, b: Cell): boolean {
         return Math.abs(a.X - b.X) < 1e-6 && Math.abs(a.Y - b.Y) < 1e-6;
     }

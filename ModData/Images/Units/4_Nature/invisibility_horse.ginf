@@ -1,0 +1,494 @@
+{
+  "FormatVersion": "3",
+  "Description": "horse",
+  "Items": [
+    {
+      "InfoFormatVersion": "3",
+      "Uid": "b2673e2dfc404c79b446830c2e2a2879",
+      "Description": "horse, state: Stand, dir8: Up",
+      "Location": {
+        "X": 0,
+        "Y": 0
+      },
+      "FrameSize": {
+        "Width": 62,
+        "Height": 62
+      },
+      "FramesCount": 1,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": null
+      },
+      "MaskColors": [{"A": 255, "R": 255, "G": 46, "B": 31}, {"A": 255, "R": 241, "G": 43, "B": 29}, {"A": 255, "R": 227, "G": 40, "B": 27}, {"A": 255, "R": 213, "G": 37, "B": 25}, {"A": 255, "R": 198, "G": 34, "B": 23}, {"A": 255, "R": 184, "G": 31, "B": 21}, {"A": 255, "R": 170, "G": 28, "B": 19}, {"A": 255, "R": 156, "G": 25, "B": 17}, {"A": 255, "R": 142, "G": 21, "B": 14}, {"A": 255, "R": 128, "G": 18, "B": 12}, {"A": 255, "R": 114, "G": 15, "B": 10}, {"A": 255, "R": 99, "G": 12, "B": 8}, {"A": 255, "R": 85, "G": 9, "B": 6}, {"A": 255, "R": 71, "G": 6, "B": 4}, {"A": 255, "R": 57, "G": 3, "B": 2}, {"A": 255, "R": 254, "G": 253, "B": 253}]
+    },
+    {
+      "InfoFormatVersion": "3",
+      "Uid": "d2bad4aec89e49b798430ddf25d26e29",
+      "Description": "horse, state: Move, dir8: Up",
+      "Location": {
+        "X": 62,
+        "Y": 0
+      },
+      "FrameSize": {
+        "Width": 62,
+        "Height": 62
+      },
+      "FramesCount": 10,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": {
+          "9": {
+            "Tasks": {
+              "ProduceTrace": {
+                "$type": "HordeClassLibrary::ProduceTraceTaskParameters",
+                "TraceEffect": "#VisualEffectConfig_Trace_Horse",
+                "TraceSoundsCatalog": "#SoundsCatalog_Steps_Horse_d42aa68a777a",
+                "AllowedTileTypes": [
+                  "Sand"
+                ],
+                "Bias": {
+                  "X": 0,
+                  "Y": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "MaskColors": [{"A": 255, "R": 255, "G": 46, "B": 31}, {"A": 255, "R": 241, "G": 43, "B": 29}, {"A": 255, "R": 227, "G": 40, "B": 27}, {"A": 255, "R": 213, "G": 37, "B": 25}, {"A": 255, "R": 198, "G": 34, "B": 23}, {"A": 255, "R": 184, "G": 31, "B": 21}, {"A": 255, "R": 170, "G": 28, "B": 19}, {"A": 255, "R": 156, "G": 25, "B": 17}, {"A": 255, "R": 142, "G": 21, "B": 14}, {"A": 255, "R": 128, "G": 18, "B": 12}, {"A": 255, "R": 114, "G": 15, "B": 10}, {"A": 255, "R": 99, "G": 12, "B": 8}, {"A": 255, "R": 85, "G": 9, "B": 6}, {"A": 255, "R": 71, "G": 6, "B": 4}, {"A": 255, "R": 57, "G": 3, "B": 2}, {"A": 255, "R": 254, "G": 253, "B": 253}]
+    },
+    {
+      "InfoFormatVersion": "3",
+      "Uid": "ad1403472ab64aa8ab1e347ca1a5e36f",
+      "Description": "horse, state: Stand, dir8: RightUp",
+      "Location": {
+        "X": 682,
+        "Y": 0
+      },
+      "FrameSize": {
+        "Width": 62,
+        "Height": 62
+      },
+      "FramesCount": 1,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": null
+      },
+      "MaskColors": [{"A": 255, "R": 255, "G": 46, "B": 31}, {"A": 255, "R": 241, "G": 43, "B": 29}, {"A": 255, "R": 227, "G": 40, "B": 27}, {"A": 255, "R": 213, "G": 37, "B": 25}, {"A": 255, "R": 198, "G": 34, "B": 23}, {"A": 255, "R": 184, "G": 31, "B": 21}, {"A": 255, "R": 170, "G": 28, "B": 19}, {"A": 255, "R": 156, "G": 25, "B": 17}, {"A": 255, "R": 142, "G": 21, "B": 14}, {"A": 255, "R": 128, "G": 18, "B": 12}, {"A": 255, "R": 114, "G": 15, "B": 10}, {"A": 255, "R": 99, "G": 12, "B": 8}, {"A": 255, "R": 85, "G": 9, "B": 6}, {"A": 255, "R": 71, "G": 6, "B": 4}, {"A": 255, "R": 57, "G": 3, "B": 2}, {"A": 255, "R": 254, "G": 253, "B": 253}]
+    },
+    {
+      "InfoFormatVersion": "3",
+      "Uid": "180464ac69f046cdae7aef8fea99ad96",
+      "Description": "horse, state: Move, dir8: RightUp",
+      "Location": {
+        "X": 744,
+        "Y": 0
+      },
+      "FrameSize": {
+        "Width": 62,
+        "Height": 62
+      },
+      "FramesCount": 10,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": {
+          "9": {
+            "Tasks": {
+              "ProduceTrace": {
+                "$type": "HordeClassLibrary::ProduceTraceTaskParameters",
+                "TraceEffect": "#VisualEffectConfig_Trace_Horse",
+                "TraceSoundsCatalog": "#SoundsCatalog_Steps_Horse_d42aa68a777a",
+                "AllowedTileTypes": [
+                  "Sand"
+                ],
+                "Bias": {
+                  "X": 0,
+                  "Y": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "MaskColors": [{"A": 255, "R": 255, "G": 46, "B": 31}, {"A": 255, "R": 241, "G": 43, "B": 29}, {"A": 255, "R": 227, "G": 40, "B": 27}, {"A": 255, "R": 213, "G": 37, "B": 25}, {"A": 255, "R": 198, "G": 34, "B": 23}, {"A": 255, "R": 184, "G": 31, "B": 21}, {"A": 255, "R": 170, "G": 28, "B": 19}, {"A": 255, "R": 156, "G": 25, "B": 17}, {"A": 255, "R": 142, "G": 21, "B": 14}, {"A": 255, "R": 128, "G": 18, "B": 12}, {"A": 255, "R": 114, "G": 15, "B": 10}, {"A": 255, "R": 99, "G": 12, "B": 8}, {"A": 255, "R": 85, "G": 9, "B": 6}, {"A": 255, "R": 71, "G": 6, "B": 4}, {"A": 255, "R": 57, "G": 3, "B": 2}, {"A": 255, "R": 254, "G": 253, "B": 253}]
+    },
+    {
+      "InfoFormatVersion": "3",
+      "Uid": "6d11ead886a1447f84598d14c730bfd7",
+      "Description": "horse, state: Stand, dir8: Right",
+      "Location": {
+        "X": 1364,
+        "Y": 0
+      },
+      "FrameSize": {
+        "Width": 62,
+        "Height": 62
+      },
+      "FramesCount": 1,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": null
+      },
+      "MaskColors": [{"A": 255, "R": 255, "G": 46, "B": 31}, {"A": 255, "R": 241, "G": 43, "B": 29}, {"A": 255, "R": 227, "G": 40, "B": 27}, {"A": 255, "R": 213, "G": 37, "B": 25}, {"A": 255, "R": 198, "G": 34, "B": 23}, {"A": 255, "R": 184, "G": 31, "B": 21}, {"A": 255, "R": 170, "G": 28, "B": 19}, {"A": 255, "R": 156, "G": 25, "B": 17}, {"A": 255, "R": 142, "G": 21, "B": 14}, {"A": 255, "R": 128, "G": 18, "B": 12}, {"A": 255, "R": 114, "G": 15, "B": 10}, {"A": 255, "R": 99, "G": 12, "B": 8}, {"A": 255, "R": 85, "G": 9, "B": 6}, {"A": 255, "R": 71, "G": 6, "B": 4}, {"A": 255, "R": 57, "G": 3, "B": 2}, {"A": 255, "R": 254, "G": 253, "B": 253}]
+    },
+    {
+      "InfoFormatVersion": "3",
+      "Uid": "6635f42a74b541e4b864334e9d529f13",
+      "Description": "horse, state: Move, dir8: Right",
+      "Location": {
+        "X": 1426,
+        "Y": 0
+      },
+      "FrameSize": {
+        "Width": 62,
+        "Height": 62
+      },
+      "FramesCount": 10,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": {
+          "9": {
+            "Tasks": {
+              "ProduceTrace": {
+                "$type": "HordeClassLibrary::ProduceTraceTaskParameters",
+                "TraceEffect": "#VisualEffectConfig_Trace_Horse",
+                "TraceSoundsCatalog": "#SoundsCatalog_Steps_Horse_d42aa68a777a",
+                "AllowedTileTypes": [
+                  "Sand"
+                ],
+                "Bias": {
+                  "X": 0,
+                  "Y": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "MaskColors": [{"A": 255, "R": 255, "G": 46, "B": 31}, {"A": 255, "R": 241, "G": 43, "B": 29}, {"A": 255, "R": 227, "G": 40, "B": 27}, {"A": 255, "R": 213, "G": 37, "B": 25}, {"A": 255, "R": 198, "G": 34, "B": 23}, {"A": 255, "R": 184, "G": 31, "B": 21}, {"A": 255, "R": 170, "G": 28, "B": 19}, {"A": 255, "R": 156, "G": 25, "B": 17}, {"A": 255, "R": 142, "G": 21, "B": 14}, {"A": 255, "R": 128, "G": 18, "B": 12}, {"A": 255, "R": 114, "G": 15, "B": 10}, {"A": 255, "R": 99, "G": 12, "B": 8}, {"A": 255, "R": 85, "G": 9, "B": 6}, {"A": 255, "R": 71, "G": 6, "B": 4}, {"A": 255, "R": 57, "G": 3, "B": 2}, {"A": 255, "R": 254, "G": 253, "B": 253}]
+    },
+    {
+      "InfoFormatVersion": "3",
+      "Uid": "e0f7df1fc4564e879a7e17479fa567d2",
+      "Description": "horse, state: Stand, dir8: RightDown",
+      "Location": {
+        "X": 2046,
+        "Y": 0
+      },
+      "FrameSize": {
+        "Width": 62,
+        "Height": 62
+      },
+      "FramesCount": 1,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": null
+      },
+      "MaskColors": [{"A": 255, "R": 255, "G": 46, "B": 31}, {"A": 255, "R": 241, "G": 43, "B": 29}, {"A": 255, "R": 227, "G": 40, "B": 27}, {"A": 255, "R": 213, "G": 37, "B": 25}, {"A": 255, "R": 198, "G": 34, "B": 23}, {"A": 255, "R": 184, "G": 31, "B": 21}, {"A": 255, "R": 170, "G": 28, "B": 19}, {"A": 255, "R": 156, "G": 25, "B": 17}, {"A": 255, "R": 142, "G": 21, "B": 14}, {"A": 255, "R": 128, "G": 18, "B": 12}, {"A": 255, "R": 114, "G": 15, "B": 10}, {"A": 255, "R": 99, "G": 12, "B": 8}, {"A": 255, "R": 85, "G": 9, "B": 6}, {"A": 255, "R": 71, "G": 6, "B": 4}, {"A": 255, "R": 57, "G": 3, "B": 2}, {"A": 255, "R": 254, "G": 253, "B": 253}]
+    },
+    {
+      "InfoFormatVersion": "3",
+      "Uid": "89623206177f465cb3f4a70efb0e942e",
+      "Description": "horse, state: Move, dir8: RightDown",
+      "Location": {
+        "X": 2108,
+        "Y": 0
+      },
+      "FrameSize": {
+        "Width": 62,
+        "Height": 62
+      },
+      "FramesCount": 10,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": {
+          "9": {
+            "Tasks": {
+              "ProduceTrace": {
+                "$type": "HordeClassLibrary::ProduceTraceTaskParameters",
+                "TraceEffect": "#VisualEffectConfig_Trace_Horse",
+                "TraceSoundsCatalog": "#SoundsCatalog_Steps_Horse_d42aa68a777a",
+                "AllowedTileTypes": [
+                  "Sand"
+                ],
+                "Bias": {
+                  "X": 0,
+                  "Y": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "MaskColors": [{"A": 255, "R": 255, "G": 46, "B": 31}, {"A": 255, "R": 241, "G": 43, "B": 29}, {"A": 255, "R": 227, "G": 40, "B": 27}, {"A": 255, "R": 213, "G": 37, "B": 25}, {"A": 255, "R": 198, "G": 34, "B": 23}, {"A": 255, "R": 184, "G": 31, "B": 21}, {"A": 255, "R": 170, "G": 28, "B": 19}, {"A": 255, "R": 156, "G": 25, "B": 17}, {"A": 255, "R": 142, "G": 21, "B": 14}, {"A": 255, "R": 128, "G": 18, "B": 12}, {"A": 255, "R": 114, "G": 15, "B": 10}, {"A": 255, "R": 99, "G": 12, "B": 8}, {"A": 255, "R": 85, "G": 9, "B": 6}, {"A": 255, "R": 71, "G": 6, "B": 4}, {"A": 255, "R": 57, "G": 3, "B": 2}, {"A": 255, "R": 254, "G": 253, "B": 253}]
+    },
+    {
+      "InfoFormatVersion": "3",
+      "Uid": "2bfbe19478eb4e75b1fdda147625e229",
+      "Description": "horse, state: Stand, dir8: Down",
+      "Location": {
+        "X": 2728,
+        "Y": 0
+      },
+      "FrameSize": {
+        "Width": 62,
+        "Height": 62
+      },
+      "FramesCount": 1,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": null
+      },
+      "MaskColors": [{"A": 255, "R": 255, "G": 46, "B": 31}, {"A": 255, "R": 241, "G": 43, "B": 29}, {"A": 255, "R": 227, "G": 40, "B": 27}, {"A": 255, "R": 213, "G": 37, "B": 25}, {"A": 255, "R": 198, "G": 34, "B": 23}, {"A": 255, "R": 184, "G": 31, "B": 21}, {"A": 255, "R": 170, "G": 28, "B": 19}, {"A": 255, "R": 156, "G": 25, "B": 17}, {"A": 255, "R": 142, "G": 21, "B": 14}, {"A": 255, "R": 128, "G": 18, "B": 12}, {"A": 255, "R": 114, "G": 15, "B": 10}, {"A": 255, "R": 99, "G": 12, "B": 8}, {"A": 255, "R": 85, "G": 9, "B": 6}, {"A": 255, "R": 71, "G": 6, "B": 4}, {"A": 255, "R": 57, "G": 3, "B": 2}, {"A": 255, "R": 254, "G": 253, "B": 253}]
+    },
+    {
+      "InfoFormatVersion": "3",
+      "Uid": "7a0d698bf16f49af9c26c8bf65661839",
+      "Description": "horse, state: Move, dir8: Down",
+      "Location": {
+        "X": 2790,
+        "Y": 0
+      },
+      "FrameSize": {
+        "Width": 62,
+        "Height": 62
+      },
+      "FramesCount": 10,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": {
+          "9": {
+            "Tasks": {
+              "ProduceTrace": {
+                "$type": "HordeClassLibrary::ProduceTraceTaskParameters",
+                "TraceEffect": "#VisualEffectConfig_Trace_Horse",
+                "TraceSoundsCatalog": "#SoundsCatalog_Steps_Horse_d42aa68a777a",
+                "AllowedTileTypes": [
+                  "Sand"
+                ],
+                "Bias": {
+                  "X": 0,
+                  "Y": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "MaskColors": [{"A": 255, "R": 255, "G": 46, "B": 31}, {"A": 255, "R": 241, "G": 43, "B": 29}, {"A": 255, "R": 227, "G": 40, "B": 27}, {"A": 255, "R": 213, "G": 37, "B": 25}, {"A": 255, "R": 198, "G": 34, "B": 23}, {"A": 255, "R": 184, "G": 31, "B": 21}, {"A": 255, "R": 170, "G": 28, "B": 19}, {"A": 255, "R": 156, "G": 25, "B": 17}, {"A": 255, "R": 142, "G": 21, "B": 14}, {"A": 255, "R": 128, "G": 18, "B": 12}, {"A": 255, "R": 114, "G": 15, "B": 10}, {"A": 255, "R": 99, "G": 12, "B": 8}, {"A": 255, "R": 85, "G": 9, "B": 6}, {"A": 255, "R": 71, "G": 6, "B": 4}, {"A": 255, "R": 57, "G": 3, "B": 2}, {"A": 255, "R": 254, "G": 253, "B": 253}]
+    },
+    {
+      "InfoFormatVersion": "3",
+      "Uid": "fd4cfd8f2fc744f290ac89c32b46c67a",
+      "Description": "horse, state: Stand, dir8: LeftDown",
+      "Location": {
+        "X": 3410,
+        "Y": 0
+      },
+      "FrameSize": {
+        "Width": 62,
+        "Height": 62
+      },
+      "FramesCount": 1,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": null
+      },
+      "MaskColors": [{"A": 255, "R": 255, "G": 46, "B": 31}, {"A": 255, "R": 241, "G": 43, "B": 29}, {"A": 255, "R": 227, "G": 40, "B": 27}, {"A": 255, "R": 213, "G": 37, "B": 25}, {"A": 255, "R": 198, "G": 34, "B": 23}, {"A": 255, "R": 184, "G": 31, "B": 21}, {"A": 255, "R": 170, "G": 28, "B": 19}, {"A": 255, "R": 156, "G": 25, "B": 17}, {"A": 255, "R": 142, "G": 21, "B": 14}, {"A": 255, "R": 128, "G": 18, "B": 12}, {"A": 255, "R": 114, "G": 15, "B": 10}, {"A": 255, "R": 99, "G": 12, "B": 8}, {"A": 255, "R": 85, "G": 9, "B": 6}, {"A": 255, "R": 71, "G": 6, "B": 4}, {"A": 255, "R": 57, "G": 3, "B": 2}, {"A": 255, "R": 254, "G": 253, "B": 253}]
+    },
+    {
+      "InfoFormatVersion": "3",
+      "Uid": "6835c21b57384e0487c9e0a8f4f28641",
+      "Description": "horse, state: Move, dir8: LeftDown",
+      "Location": {
+        "X": 3472,
+        "Y": 0
+      },
+      "FrameSize": {
+        "Width": 62,
+        "Height": 62
+      },
+      "FramesCount": 10,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": {
+          "9": {
+            "Tasks": {
+              "ProduceTrace": {
+                "$type": "HordeClassLibrary::ProduceTraceTaskParameters",
+                "TraceEffect": "#VisualEffectConfig_Trace_Horse",
+                "TraceSoundsCatalog": "#SoundsCatalog_Steps_Horse_d42aa68a777a",
+                "AllowedTileTypes": [
+                  "Sand"
+                ],
+                "Bias": {
+                  "X": 0,
+                  "Y": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "MaskColors": [{"A": 255, "R": 255, "G": 46, "B": 31}, {"A": 255, "R": 241, "G": 43, "B": 29}, {"A": 255, "R": 227, "G": 40, "B": 27}, {"A": 255, "R": 213, "G": 37, "B": 25}, {"A": 255, "R": 198, "G": 34, "B": 23}, {"A": 255, "R": 184, "G": 31, "B": 21}, {"A": 255, "R": 170, "G": 28, "B": 19}, {"A": 255, "R": 156, "G": 25, "B": 17}, {"A": 255, "R": 142, "G": 21, "B": 14}, {"A": 255, "R": 128, "G": 18, "B": 12}, {"A": 255, "R": 114, "G": 15, "B": 10}, {"A": 255, "R": 99, "G": 12, "B": 8}, {"A": 255, "R": 85, "G": 9, "B": 6}, {"A": 255, "R": 71, "G": 6, "B": 4}, {"A": 255, "R": 57, "G": 3, "B": 2}, {"A": 255, "R": 254, "G": 253, "B": 253}]
+    },
+    {
+      "InfoFormatVersion": "3",
+      "Uid": "ffbed766c0cd4c1fa4799cd6e3a78ba9",
+      "Description": "horse, state: Stand, dir8: Left",
+      "Location": {
+        "X": 4092,
+        "Y": 0
+      },
+      "FrameSize": {
+        "Width": 62,
+        "Height": 62
+      },
+      "FramesCount": 1,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": null
+      },
+      "MaskColors": [{"A": 255, "R": 255, "G": 46, "B": 31}, {"A": 255, "R": 241, "G": 43, "B": 29}, {"A": 255, "R": 227, "G": 40, "B": 27}, {"A": 255, "R": 213, "G": 37, "B": 25}, {"A": 255, "R": 198, "G": 34, "B": 23}, {"A": 255, "R": 184, "G": 31, "B": 21}, {"A": 255, "R": 170, "G": 28, "B": 19}, {"A": 255, "R": 156, "G": 25, "B": 17}, {"A": 255, "R": 142, "G": 21, "B": 14}, {"A": 255, "R": 128, "G": 18, "B": 12}, {"A": 255, "R": 114, "G": 15, "B": 10}, {"A": 255, "R": 99, "G": 12, "B": 8}, {"A": 255, "R": 85, "G": 9, "B": 6}, {"A": 255, "R": 71, "G": 6, "B": 4}, {"A": 255, "R": 57, "G": 3, "B": 2}, {"A": 255, "R": 254, "G": 253, "B": 253}]
+    },
+    {
+      "InfoFormatVersion": "3",
+      "Uid": "198fa445384e4d839dbdb531fefb23e1",
+      "Description": "horse, state: Move, dir8: Left",
+      "Location": {
+        "X": 4154,
+        "Y": 0
+      },
+      "FrameSize": {
+        "Width": 62,
+        "Height": 62
+      },
+      "FramesCount": 10,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": {
+          "9": {
+            "Tasks": {
+              "ProduceTrace": {
+                "$type": "HordeClassLibrary::ProduceTraceTaskParameters",
+                "TraceEffect": "#VisualEffectConfig_Trace_Horse",
+                "TraceSoundsCatalog": "#SoundsCatalog_Steps_Horse_d42aa68a777a",
+                "AllowedTileTypes": [
+                  "Sand"
+                ],
+                "Bias": {
+                  "X": 0,
+                  "Y": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "MaskColors": [{"A": 255, "R": 255, "G": 46, "B": 31}, {"A": 255, "R": 241, "G": 43, "B": 29}, {"A": 255, "R": 227, "G": 40, "B": 27}, {"A": 255, "R": 213, "G": 37, "B": 25}, {"A": 255, "R": 198, "G": 34, "B": 23}, {"A": 255, "R": 184, "G": 31, "B": 21}, {"A": 255, "R": 170, "G": 28, "B": 19}, {"A": 255, "R": 156, "G": 25, "B": 17}, {"A": 255, "R": 142, "G": 21, "B": 14}, {"A": 255, "R": 128, "G": 18, "B": 12}, {"A": 255, "R": 114, "G": 15, "B": 10}, {"A": 255, "R": 99, "G": 12, "B": 8}, {"A": 255, "R": 85, "G": 9, "B": 6}, {"A": 255, "R": 71, "G": 6, "B": 4}, {"A": 255, "R": 57, "G": 3, "B": 2}, {"A": 255, "R": 254, "G": 253, "B": 253}]
+    },
+    {
+      "InfoFormatVersion": "3",
+      "Uid": "4310c44c446b446d93311138341e4276",
+      "Description": "horse, state: Stand, dir8: LeftUp",
+      "Location": {
+        "X": 4774,
+        "Y": 0
+      },
+      "FrameSize": {
+        "Width": 62,
+        "Height": 62
+      },
+      "FramesCount": 1,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": null
+      },
+      "MaskColors": [{"A": 255, "R": 255, "G": 46, "B": 31}, {"A": 255, "R": 241, "G": 43, "B": 29}, {"A": 255, "R": 227, "G": 40, "B": 27}, {"A": 255, "R": 213, "G": 37, "B": 25}, {"A": 255, "R": 198, "G": 34, "B": 23}, {"A": 255, "R": 184, "G": 31, "B": 21}, {"A": 255, "R": 170, "G": 28, "B": 19}, {"A": 255, "R": 156, "G": 25, "B": 17}, {"A": 255, "R": 142, "G": 21, "B": 14}, {"A": 255, "R": 128, "G": 18, "B": 12}, {"A": 255, "R": 114, "G": 15, "B": 10}, {"A": 255, "R": 99, "G": 12, "B": 8}, {"A": 255, "R": 85, "G": 9, "B": 6}, {"A": 255, "R": 71, "G": 6, "B": 4}, {"A": 255, "R": 57, "G": 3, "B": 2}, {"A": 255, "R": 254, "G": 253, "B": 253}]
+    },
+    {
+      "InfoFormatVersion": "3",
+      "Uid": "50207a93f96848958cb1b615f1c9e655",
+      "Description": "horse, state: Move, dir8: LeftUp",
+      "Location": {
+        "X": 4836,
+        "Y": 0
+      },
+      "FrameSize": {
+        "Width": 62,
+        "Height": 62
+      },
+      "FramesCount": 10,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": {
+          "9": {
+            "Tasks": {
+              "ProduceTrace": {
+                "$type": "HordeClassLibrary::ProduceTraceTaskParameters",
+                "TraceEffect": "#VisualEffectConfig_Trace_Horse",
+                "TraceSoundsCatalog": "#SoundsCatalog_Steps_Horse_d42aa68a777a",
+                "AllowedTileTypes": [
+                  "Sand"
+                ],
+                "Bias": {
+                  "X": 0,
+                  "Y": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "MaskColors": [{"A": 255, "R": 255, "G": 46, "B": 31}, {"A": 255, "R": 241, "G": 43, "B": 29}, {"A": 255, "R": 227, "G": 40, "B": 27}, {"A": 255, "R": 213, "G": 37, "B": 25}, {"A": 255, "R": 198, "G": 34, "B": 23}, {"A": 255, "R": 184, "G": 31, "B": 21}, {"A": 255, "R": 170, "G": 28, "B": 19}, {"A": 255, "R": 156, "G": 25, "B": 17}, {"A": 255, "R": 142, "G": 21, "B": 14}, {"A": 255, "R": 128, "G": 18, "B": 12}, {"A": 255, "R": 114, "G": 15, "B": 10}, {"A": 255, "R": 99, "G": 12, "B": 8}, {"A": 255, "R": 85, "G": 9, "B": 6}, {"A": 255, "R": 71, "G": 6, "B": 4}, {"A": 255, "R": 57, "G": 3, "B": 2}, {"A": 255, "R": 254, "G": 253, "B": 253}]
+    }
+  ]
+}

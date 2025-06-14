@@ -1,4 +1,4 @@
-import { ACommandArgs, BattleController, DrawLayer, Stride_Color, StringVisualEffect, UnitCommand, UnitCommandConfig } from "library/game-logic/horde-types";
+import { ACommandArgs, BattleController, DrawLayer, Stride_Color, StringVisualEffect, Unit, UnitCommand, UnitCommandConfig } from "library/game-logic/horde-types";
 import { GameField } from "../Core/GameField";
 import { GameSettlement } from "../Core/GameSettlement";
 import { BuildingTemplate } from "../Units/IFactory";
@@ -7,6 +7,7 @@ import { Cell } from "../Core/Cell";
 import { spawnString } from "library/game-logic/decoration-spawn";
 import { IUnitCaster } from "./IUnitCaster";
 import { log } from "library/common/logging";
+import { printObjectItems } from "library/common/introspection";
 
 export enum SpellState {
     READY,
@@ -23,16 +24,18 @@ export class SpellGlobalRef {
 }
 
 export class ISpell {
-    private static _ProcessingPeriod        : number = 25;
-    private static _ProcessingModuleTick    : number = 0;
+    protected static _ProcessingPeriod        : number = 25;
+    protected static _ProcessingModuleTick    : number = 0;
 
     protected static _ButtonUidPrefix               : string = "#BattleRoyale_";
     protected static _ButtonUid                     : string = "Spell_CustomCommand";
-    protected static _ButtonCommandType             : UnitCommand = UnitCommand.HoldPosition;
+    /// \todo вернуть после исправления
+    protected static _ButtonCommandTypeBySlot       : Array<UnitCommand> = [UnitCommand.OneClick_Custom_0, UnitCommand.OneClick_Custom_1, UnitCommand.OneClick_Custom_2, UnitCommand.OneClick_Custom_3];
+    //protected static _ButtonCommandTypeBySlot       : Array<UnitCommand> = [UnitCommand.HoldPosition, UnitCommand.HoldPosition, UnitCommand.HoldPosition, UnitCommand.HoldPosition]
     protected static _ButtonCommandBaseUid          : string = "#UnitCommandConfig_HoldPosition";
     protected static _ButtonAnimationsCatalogUid    : string = "#AnimCatalog_Command_View";
-    protected static _ButtonPosition                : Cell   = new Cell(1, 1);
-    protected static _ButtonHotkey                  : string = "Q";
+    protected static _ButtonPositionBySlot          : Array<Cell> = [new Cell(0, 0), new Cell(0, 1), new Cell(1, 0), new Cell(1, 1)];
+    protected static _ButtonHotkeyBySlot            : Array<string> = ["Q", "W", "E", "R"];
     protected static _EffectStrideColor             : Stride_Color = new Stride_Color(255, 255, 255, 255);
     protected static _EffectHordeColor              : HordeColor = new HordeColor(255, 255, 255, 255);
     protected static _ReloadTime                    : number = 50*60;
@@ -41,8 +44,8 @@ export class ISpell {
     protected static _Name                          : string = "Способность";
     protected static _Description                   : string = "";
 
-    public static GetCommandConfig() : UnitCommandConfig {
-        var customCommandCfgUid = this._ButtonUidPrefix + this._ButtonUid;
+    public static GetCommandConfig(slotNum: number) : UnitCommandConfig {
+        var customCommandCfgUid = this._ButtonUidPrefix + this._ButtonUid + "_" + slotNum;
         var customCommand : UnitCommandConfig;
         if (HordeContentApi.HasUnitCommand(customCommandCfgUid)) {
             customCommand = HordeContentApi.GetUnitCommand(customCommandCfgUid);
@@ -59,10 +62,10 @@ export class ISpell {
             // Настройка
             ScriptUtils.SetValue(customCommand, "Name", this._Name);
             ScriptUtils.SetValue(customCommand, "Tip", this._Description);  // Это будет отображаться при наведении курсора
-            //ScriptUtils.SetValue(customCommand, "UnitCommand", CUSTOM_COMMAND_ID);
-            ScriptUtils.SetValue(customCommand, "Hotkey", this._ButtonHotkey);
+            ScriptUtils.SetValue(customCommand, "UnitCommand", this._ButtonCommandTypeBySlot[slotNum]);
+            ScriptUtils.SetValue(customCommand, "Hotkey", this._ButtonHotkeyBySlot[slotNum]);
             ScriptUtils.SetValue(customCommand, "ShowButton", true);
-            ScriptUtils.SetValue(customCommand, "PreferredPosition", this._ButtonPosition);
+            ScriptUtils.SetValue(customCommand, "PreferredPosition", this._ButtonPositionBySlot[slotNum]);
             ScriptUtils.SetValue(customCommand, "AutomaticMode", null);
             // Установка анимации выполняетс чуть другим способом:
             ScriptUtils.GetValue(customCommand, "AnimationsCatalogRef")
@@ -89,12 +92,22 @@ export class ISpell {
     protected _reloadTick             : number;
     protected _chargesReloadTick      : number;
     private   _processingModuleTick   : number;
+    private   _slotNum                : number;
 
     constructor(caster: IUnitCaster) {
-        this._processingModuleTick = ISpell._ProcessingModuleTick++ % ISpell._ProcessingPeriod;
+        this._processingModuleTick = this.constructor["_ProcessingModuleTick"]++ % this.constructor["_ProcessingPeriod"];
         this._caster               = caster;
         this._state                = SpellState.READY;
         this._charges              = this.constructor["_ChargesCount"];
+
+        // ищем свободный слот
+        var casterSpells = this._caster.Spells();
+        for (this._slotNum = 0; this._slotNum < 4; this._slotNum++) {
+            if (casterSpells.findIndex(spell => spell._slotNum == this._slotNum) == -1) {
+                break;
+            }
+        }
+
         this._caster.hordeUnit.CommandsMind.AddCommand(this.GetUnitCommand(), this.GetCommandConfig());
     }
 
@@ -107,11 +120,11 @@ export class ISpell {
     }
 
     public GetUnitCommand() : UnitCommand {
-        return this.constructor["_ButtonCommandType"];
+        return this.constructor["_ButtonCommandTypeBySlot"][this._slotNum];
     }
 
     public GetCommandConfig() : UnitCommandConfig {
-        return this.constructor["GetCommandConfig"]();
+        return this.constructor["GetCommandConfig"](this._slotNum);
     }
 
     public Activate(activateArgs: ACommandArgs) : boolean {
@@ -134,7 +147,7 @@ export class ISpell {
     }
 
     public OnEveryTick(gameTickNum: number): boolean {
-        if (gameTickNum % ISpell._ProcessingPeriod != this._processingModuleTick) {
+        if (gameTickNum % this.constructor["_ProcessingPeriod"] != this._processingModuleTick) {
             return false;
         }
 

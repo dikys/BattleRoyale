@@ -311,7 +311,7 @@ export class GameField {
             );
 
             broadcastMessage("Область сражения сужается! Следующее сужение через "
-                + (this._geometryShrinkingCircle.animationTotalTime + this._geometryShrinkingCircle.end_tiksToLive) / BattleController.GameTimer.CurrentFpsLimit
+                + Math.round((this._geometryShrinkingCircle.animationTotalTime + this._geometryShrinkingCircle.end_tiksToLive) / BattleController.GameTimer.CurrentFpsLimit)
                 + " сек", createHordeColor(255, 255, 55, 55));
         }
         

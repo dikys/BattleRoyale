@@ -7,12 +7,12 @@ import { mergeFlags } from "library/dotnet/dotnet-utils";
 import { ISpell } from "../Spells/ISpell";
 import { Spell_call_of_nature } from "../Spells/Spell_call_of_nature";
 import { IHero } from "./IHero";
-import { Spell_Teleportation } from "../Spells/Spell_Teleportation";
+import { Spell_invisibility } from "../Spells/Spell_invisibility";
 
 export class Hero_Hunter extends IHero {
     protected static CfgUid      : string = this.CfgPrefix + "Hunter";
     protected static BaseCfgUid  : string = "#UnitConfig_Slavyane_Archer";
-    protected static _Spells : Array<typeof ISpell> = [Spell_call_of_nature, Spell_Teleportation];
+    protected static _Spells : Array<typeof ISpell> = [Spell_call_of_nature, Spell_invisibility];
 
     private _bear : IUnit | null;
     private static _bearRevivePeriod : number = 500;

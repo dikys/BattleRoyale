@@ -8,6 +8,7 @@ import { generateCellInSpiral } from "library/common/position-tools";
 import { Cell } from "../Core/Cell";
 import { Bear } from "../Heroes/Hero_Hunter";
 import { IUnit } from "../Units/IUnit";
+import { spawnDecoration } from "library/game-logic/decoration-spawn";
 
 export class Spell_call_of_nature extends ISpell {
     private static _Radius : number = 20;
@@ -66,7 +67,11 @@ export class Spell_call_of_nature extends ISpell {
         // проверяем, что закончилось
         if (this._activatedTick + Spell_call_of_nature._Duration <= gameTickNum) {
             this._spawnedUnits.forEach(unit => {
-                unit.hordeUnit.BattleMind.InstantDeath(null, UnitHurtType.Mele);
+                unit.hordeUnit.Delete();
+                spawnDecoration(
+                    ActiveScena.GetRealScena(),
+                    HordeContentApi.GetVisualEffectConfig("#VisualEffectConfig_LittleDust"),
+                    Cell.ConvertHordePoint(unit.hordeUnit.Cell).Scale(32).Add(new Cell(16, 16)).ToHordePoint());
             });
             this._spawnedUnits.splice(0);
             return false;

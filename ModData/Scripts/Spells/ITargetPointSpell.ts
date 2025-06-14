@@ -3,9 +3,10 @@ import { Cell } from "../Core/Cell";
 import { ISpell } from "./ISpell";
 
 export class ITargetPointSpell extends ISpell {
-    protected static _ButtonCommandType             : UnitCommand = UnitCommand.Capture;
+    /// \todo вернуть после исправления
+    protected static _ButtonCommandTypeBySlot       : Array<UnitCommand> = [UnitCommand.PointBased_Custom_0, UnitCommand.PointBased_Custom_1, UnitCommand.PointBased_Custom_2, UnitCommand.PointBased_Custom_3];
+    //protected static _ButtonCommandTypeBySlot       : Array<UnitCommand> = [UnitCommand.Capture, UnitCommand.Capture, UnitCommand.Capture, UnitCommand.Capture];
     protected static _ButtonCommandBaseUid          : string = "#UnitCommandConfig_Capture";
-    protected static _ButtonHotkey                  : string = "W";
     protected _targetCell                           : Cell;
 
     public Activate(activateArgs: ACommandArgs) : boolean {

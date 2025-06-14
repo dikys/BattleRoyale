@@ -11,7 +11,7 @@ import { log } from "library/common/logging";
 import { IUnit } from "../Units/IUnit";
 import { mergeFlags } from "library/dotnet/dotnet-utils";
 import { UnitProducerProfessionParams, UnitProfession } from "library/game-logic/unit-professions";
-import { CfgAddUnitProducer } from "../Units/IConfig";
+import { CfgAddUnitProducer, IConfig } from "../Units/IConfig";
 
 export class IDeadUnit extends IUnit {
     public static SoulsCount = 1;
@@ -43,7 +43,8 @@ export class IDeadUnit extends IUnit {
 
 export class DeadArcher extends IDeadUnit {
     protected static CfgUid      : string = this.CfgPrefix + "Dead_Archer";
-    protected static BaseCfgUid  : string = "#UnitConfig_Slavyane_Archer";
+    protected static BaseCfgUid  : string = String("#UnitConfig_Slavyane_Archer").replace("#UnitConfig_Slavyane_", IConfig.CfgPrefix) + "_R" + 0;
+    //protected static BaseCfgUid  : string = "#UnitConfig_Slavyane_Archer";
 
     protected static _InitHordeConfig() {
         super._InitHordeConfig();
@@ -54,7 +55,8 @@ export class DeadArcher extends IDeadUnit {
 
 export class DeadRider extends IDeadUnit {
     protected static CfgUid      : string = this.CfgPrefix + "Dead_Rider";
-    protected static BaseCfgUid  : string = "#UnitConfig_Slavyane_Raider";
+    protected static BaseCfgUid  : string =  String("#UnitConfig_Slavyane_Raider").replace("#UnitConfig_Slavyane_", IConfig.CfgPrefix) + "_R" + 0;
+    //protected static BaseCfgUid  : string =  "#UnitConfig_Slavyane_Raider";
 
     protected static _InitHordeConfig() {
         super._InitHordeConfig();
@@ -65,7 +67,8 @@ export class DeadRider extends IDeadUnit {
 
 export class DeadHeavymen extends IDeadUnit {
     protected static CfgUid      : string = this.CfgPrefix + "Dead_Heavymen";
-    protected static BaseCfgUid  : string = "#UnitConfig_Slavyane_Heavymen";
+    protected static BaseCfgUid  : string = String("#UnitConfig_Slavyane_Heavymen").replace("#UnitConfig_Slavyane_", IConfig.CfgPrefix) + "_R" + 0;
+    //protected static BaseCfgUid  : string = "#UnitConfig_Slavyane_Heavymen";
 
     protected static _InitHordeConfig() {
         super._InitHordeConfig();
@@ -113,6 +116,7 @@ export class Spell_dead_army extends IProduceSpell {
 
         var producerParams = caster.hordeConfig.GetProfessionParams(UnitProducerProfessionParams, UnitProfession.UnitProducer);
         var produceList    = producerParams.CanProduceList;
+        produceList.Clear();
         produceList.Add(DeadArcher.GetHordeConfig());
         produceList.Add(DeadRider.GetHordeConfig());
         produceList.Add(DeadHeavymen.GetHordeConfig());

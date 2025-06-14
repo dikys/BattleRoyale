@@ -30,26 +30,31 @@ export class IUnit extends IConfig {
     /** модуль на который делится игровой тик, если остаток деления равен processingTick, то юнит обрабатывается */
     private processingTickModule: number;
 
+    protected _disallowedCommands : any;
+    private _cfg                : UnitConfig;
+
     constructor(...args: any[]) {
         super(args[0].Cfg);
 
-        this.hordeUnit            = args[0];
-        this._disallowedCommands  = ScriptUtils.GetValue(this.hordeUnit.CommandsMind, "DisallowedCommands");
-        this._cfg                 = this.hordeUnit.Cfg;
-        this.processingTickModule = 50;
-        this.processingTick       = this.hordeUnit.PseudoTickCounter % this.processingTickModule;
+        this._SetHordeUnit(args[0]);
+        this.processingTickModule           = 50;
+        this.processingTick                 = this.hordeUnit.PseudoTickCounter % this.processingTickModule;
     }
 
-    private _disallowedCommands : any;
-    private _cfg                : UnitConfig;
+    private _SetHordeUnit(unit : Unit) {
+        this.hordeUnit                      = unit;
+        this.hordeUnit.ScriptData.IUnit     = this;
+        this._disallowedCommands            = ScriptUtils.GetValue(this.hordeUnit.CommandsMind, "DisallowedCommands");
+        this._cfg                           = this.hordeUnit.Cfg;
+    }
 
     public DisallowCommands() {
-        this._disallowedCommands.Add(UnitCommand.MoveToPoint, 1);
-        this._disallowedCommands.Add(UnitCommand.HoldPosition, 1);
-        this._disallowedCommands.Add(UnitCommand.Attack, 1);
-        this._disallowedCommands.Add(UnitCommand.Capture, 1);
-        this._disallowedCommands.Add(UnitCommand.StepAway, 1);
-        this._disallowedCommands.Add(UnitCommand.Cancel, 1);
+        if (!this._disallowedCommands.ContainsKey(UnitCommand.MoveToPoint))  this._disallowedCommands.Add(UnitCommand.MoveToPoint, 1);
+        if (!this._disallowedCommands.ContainsKey(UnitCommand.HoldPosition)) this._disallowedCommands.Add(UnitCommand.HoldPosition, 1);
+        if (!this._disallowedCommands.ContainsKey(UnitCommand.Attack))       this._disallowedCommands.Add(UnitCommand.Attack, 1);
+        if (!this._disallowedCommands.ContainsKey(UnitCommand.Capture))      this._disallowedCommands.Add(UnitCommand.Capture, 1);
+        if (!this._disallowedCommands.ContainsKey(UnitCommand.StepAway))     this._disallowedCommands.Add(UnitCommand.StepAway, 1);
+        if (!this._disallowedCommands.ContainsKey(UnitCommand.Cancel))       this._disallowedCommands.Add(UnitCommand.Cancel, 1);
     }
     
     public AllowCommands() {
@@ -62,6 +67,16 @@ export class IUnit extends IConfig {
     }
 
     public GivePointCommand(cell: Cell, command: any, orderMode: any) {
+        if (IUnit._ScenaWidth <= 0) {
+            IUnit._ScenaWidth  = ActiveScena.GetRealScena().Size.Width;
+            IUnit._ScenaHeight = ActiveScena.GetRealScena().Size.Height;
+        }
+
+        cell.X = Math.max(0, cell.X);
+        cell.Y = Math.max(0, cell.Y);
+        cell.X = Math.min(IUnit._ScenaWidth, cell.X);
+        cell.Y = Math.min(IUnit._ScenaHeight, cell.Y);
+
         var pointCommandArgs = new PointCommandArgs(createPoint(cell.X, cell.Y), command, orderMode);
         this._cfg.GetOrderDelegate(this.hordeUnit, pointCommandArgs);
     }
@@ -71,10 +86,36 @@ export class IUnit extends IConfig {
     }
 
     public ReplaceHordeUnit(unit: Unit) {
-        this.hordeUnit = unit;
+        this._SetHordeUnit(unit);
+    }
+
+    public DirectionVector() : Cell {
+        switch (this.hordeUnit.Direction) {
+            case UnitDirection.Down:
+                return new Cell(0, 1);
+            case UnitDirection.LeftDown:
+                return new Cell(-0.70710678118654752440084436210485, 0.70710678118654752440084436210485);
+            case UnitDirection.Left:
+                return new Cell(-1, 0);
+            case UnitDirection.LeftUp:
+                return new Cell(-0.70710678118654752440084436210485, -0.70710678118654752440084436210485);
+            case UnitDirection.Up:
+                return new Cell(0, -1);
+            case UnitDirection.RightUp:
+                return new Cell(0.70710678118654752440084436210485, -0.70710678118654752440084436210485);
+            case UnitDirection.Right:
+                return new Cell(1, 0);
+            case UnitDirection.RightDown:
+                return new Cell(0.70710678118654752440084436210485, 0.70710678118654752440084436210485);
+            default:
+                return new Cell(0, 0);
+        }
     }
 
 // static
+
+    protected static _ScenaWidth  : number = -1;
+    protected static _ScenaHeight : number;
 
     public static CreateUnit(settlement: any, cell: Cell, ...args: any[]) : IUnit | null {
         // на ходу генерируем конфиг

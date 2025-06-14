@@ -7,11 +7,12 @@ import { IConfig } from "../Units/IConfig";
 import { BuildingTemplate } from "../Units/IFactory";
 import { IHero } from "./IHero";
 import { Spell_teleportation_mark } from "../Spells/Spell_teleportation_mark";
+import { Spell_PoisonBomb } from "../Spells/Spell_PoisonBomb";
 
 export class Hero_Scorpion extends IHero {
     protected static CfgUid      : string = this.CfgPrefix + "HeroScorpion";
     protected static BaseCfgUid  : string = "#UnitConfig_Nature_ScorpionMed";
-    protected static _Spells : Array<typeof ISpell> = [Spell_golden_barracks_summon, Spell_teleportation_mark];
+    protected static _Spells : Array<typeof ISpell> = [Spell_golden_barracks_summon, Spell_PoisonBomb];
 
     // настройки формации - начальный радиус
     protected static _formationStartRadius : number = 2;
@@ -91,9 +92,6 @@ export class Hero_Scorpion extends IHero {
             var newHero = this._scorpions[0].hordeUnit.Owner.Units.ReplaceUnit(replaceParams);
             this.ReplaceHordeUnit(newHero);
             this._scorpions.splice(0, 1);
-
-            // удаляем из формации выбранного лидера
-            this._formation.RemoveUnits([ this ]);
         }
 
         return true;

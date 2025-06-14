@@ -4,12 +4,12 @@ import { BuildingTemplate } from "../Units/IFactory";
 import { IConfig } from "../Units/IConfig";
 import { createResourcesAmount } from "library/common/primitives";
 import { Spell_dead_army } from "../Spells/Spell_dead_army";
-import { Spell_Teleportation } from "../Spells/Spell_Teleportation";
+import { Spell_fear_attack } from "../Spells/Spell_fear_attack";
 
 export class Hero_Necromancer extends IHero {
     protected static CfgUid      : string = this.CfgPrefix + "Necromancer";
     protected static BaseCfgUid  : string = "#UnitConfig_Mage_Mag_2";
-    protected static _Spells : Array<typeof ISpell> = [Spell_dead_army, Spell_Teleportation];
+    protected static _Spells : Array<typeof ISpell> = [Spell_dead_army, Spell_fear_attack];
 
     constructor(hordeUnit: HordeClassLibrary.World.Objects.Units.Unit) {
         super(hordeUnit);

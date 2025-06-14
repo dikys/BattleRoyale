@@ -1,14 +1,13 @@
 import { ACommandArgs, UnitCommand, UnitConfig } from "library/game-logic/horde-types";
-import { Cell } from "../Core/Cell";
 import { ISpell } from "./ISpell";
-import { printObjectItems } from "library/common/introspection";
 import { CfgAddUnitProducer } from "../Units/IConfig";
 import { IUnitCaster } from "./IUnitCaster";
 
 export class IProduceSpell extends ISpell {
-    protected static _ButtonCommandType             : UnitCommand = UnitCommand.Produce;
+    /// \todo вернуть после исправления
+    //protected static _ButtonCommandTypeBySlot       : Array<UnitCommand> = [UnitCommand.Produce_Custom_0, UnitCommand.Produce_Custom_1, UnitCommand.Produce_Custom_2, UnitCommand.Produce_Custom_3];
+    protected static _ButtonCommandTypeBySlot       : Array<UnitCommand> = [UnitCommand.Produce, UnitCommand.Produce, UnitCommand.Produce, UnitCommand.Produce];
     protected static _ButtonCommandBaseUid          : string = "#UnitCommandConfig_Produce";
-    protected static _ButtonHotkey                  : string = "E";
 
     protected _productCfg : UnitConfig;
 

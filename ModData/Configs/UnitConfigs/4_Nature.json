@@ -1,0 +1,25 @@
+{
+  "FormatVersion": "v0.72dev",
+  "Force": "#Force_Nature",
+  "Items": [
+    {
+      "Archetype": "#UnitConfig_Nature_Horse",
+      "Uid": "#UnitConfig_Nature_Invisibility_Horse",
+      "Description": "Невидимка",
+      "Name": "Невидимка",
+      "MainAnimationsCatalog": "#AnimCatalog_Nature_Invisibility_Horse",
+      "Speeds": {
+        "Grass": 11,
+        "Forest": 6,
+        "Water": 0,
+        "Marsh": 7,
+        "Sand": 8,
+        "Mounts": 0,
+        "Road": 14,
+        "Ice": 11
+      },
+      "Sight": 10,
+      "ForestVision": 5
+    }
+  ]
+}

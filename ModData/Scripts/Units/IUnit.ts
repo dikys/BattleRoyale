@@ -48,6 +48,10 @@ export class IUnit extends IConfig {
         this._cfg                           = this.hordeUnit.Cfg;
     }
 
+    public NeedProcessing(gameTickNum: number) : boolean {
+        return gameTickNum % this.processingTickModule == this.processingTick;
+    }
+
     public DisallowCommands() {
         if (!this._disallowedCommands.ContainsKey(UnitCommand.MoveToPoint))  this._disallowedCommands.Add(UnitCommand.MoveToPoint, 1);
         if (!this._disallowedCommands.ContainsKey(UnitCommand.HoldPosition)) this._disallowedCommands.Add(UnitCommand.HoldPosition, 1);
@@ -82,7 +86,7 @@ export class IUnit extends IConfig {
     }
 
     public OnEveryTick(gameTickNum:number) : boolean {
-        return gameTickNum % this.processingTickModule == this.processingTick;
+        return this.NeedProcessing(gameTickNum);
     }
 
     public ReplaceHordeUnit(unit: Unit) {

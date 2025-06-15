@@ -24,8 +24,8 @@ export class SpellGlobalRef {
 }
 
 export class ISpell {
-    protected static _ProcessingPeriod        : number = 25;
-    protected static _ProcessingModuleTick    : number = 0;
+    protected static _ProcessingModule : number = 25;
+    protected static _ProcessingTack   : number = 0;
 
     protected static _ButtonUidPrefix               : string = "#BattleRoyale_";
     protected static _ButtonUid                     : string = "Spell_CustomCommand";
@@ -91,11 +91,11 @@ export class ISpell {
     protected _activatedEffect        : StringVisualEffect;
     protected _reloadTick             : number;
     protected _chargesReloadTick      : number;
-    private   _processingModuleTick   : number;
+    private   _processingTack         : number;
     private   _slotNum                : number;
 
     constructor(caster: IUnitCaster) {
-        this._processingModuleTick = this.constructor["_ProcessingModuleTick"]++ % this.constructor["_ProcessingPeriod"];
+        this._processingTack = this.constructor["_ProcessingTack"]++ % this.constructor["_ProcessingModule"];
         this._caster               = caster;
         this._state                = SpellState.READY;
         this._charges              = this.constructor["_ChargesCount"];
@@ -147,7 +147,7 @@ export class ISpell {
     }
 
     public OnEveryTick(gameTickNum: number): boolean {
-        if (gameTickNum % this.constructor["_ProcessingPeriod"] != this._processingModuleTick) {
+        if (gameTickNum % this.constructor["_ProcessingModule"] != this._processingTack) {
             return false;
         }
 

@@ -79,6 +79,10 @@ export class IUnitCaster extends IUnit {
             if (this._spells[spellNum].GetUnitCommand() != commandArgs.CommandType) {
                 continue;
             }
+            // способность заблокирована
+            if (this._disallowedCommands.ContainsKey(this._spells[spellNum].GetUnitCommand())){
+                continue;
+            }
 
             this._spells[spellNum].Activate(commandArgs);
             return false;

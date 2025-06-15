@@ -8,7 +8,7 @@ import { generateCellInRect, generateRandomCellInRect } from "library/common/pos
 
 export class Spell_FireArrowsRain extends ITargetPointSpell {
     private static _MaxDistance : number = 10;
-    private static _RainRadius : number = 4;
+    private static _RainRadius : number = 2;
     private static _RainSize : number = 10;
     
     private static _Init : boolean = false;

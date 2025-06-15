@@ -5,7 +5,7 @@ import { iterateOverUnitsInBox } from "library/game-logic/unit-and-map";
 
 export class Spell_healing_aura extends ISpell {
     private static _MaxDistance : number = 7;
-    private static _HealTime    : number = 250;
+    private static _HealTime    : number = 350;
     private static _HealPeriod  : number = 50;
     private static _HealHp      : number = 3;
 

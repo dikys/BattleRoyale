@@ -82,6 +82,8 @@ export class IFactory {
                 Math.round(config.unitConfig.hordeConfig.MaxHealth * Math.pow(rarity_HpCoeff[rarity],
                     2.0 * config.unitConfig.hordeConfig.MainArmament.ShotParams.Damage / config.unitConfig.hordeConfig.MaxHealth)));
             ScriptUtils.SetValue(unitConfig.hordeConfig.MainArmament.ShotParams, "Damage", Math.round(config.unitConfig.hordeConfig.MainArmament.ShotParams.Damage*(1 + 0.15*rarity)));
+            // не больше 2, чтобы скорпы могли бить
+            ScriptUtils.SetValue(unitConfig.hordeConfig, "Shield", Math.min(2, unitConfig.hordeConfig.Shield));
             if (rarity_TintColor[rarity]) ScriptUtils.SetValue(unitConfig.hordeConfig, "TintColor", rarity_TintColor[rarity]);
             ScriptUtils.SetValue(unitConfig.hordeConfig, "Flags", mergeFlags(UnitFlags, unitConfig.hordeConfig.Flags, UnitFlags.NotChoosable));
             // убираем налоги

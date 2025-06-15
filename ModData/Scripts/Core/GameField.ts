@@ -11,7 +11,7 @@ export class GameField {
     constrictionsSpeedCoeff:number;
 
     private _constrictionNextTick:number;
-    private _geometryShrinkingCircle:GeometryShrinkingCircle;
+    private _geometryShrinkingCircle:GeometryShrinkingCircle | null;
 
     /// ячейки игрового поля
     private _bigIslandCells: Array<Cell>;
@@ -25,6 +25,7 @@ export class GameField {
         this.constrictionTimeoutTicks   =   constrictionTimeoutTicks;
         this.constrictionsSpeedCoeff    =   constrictionsSpeedCoeff;
         this._constrictionNextTick      =   -1;
+        this._geometryShrinkingCircle   = null;
 
         this._FindTilesType();
         this._FindSpawnField();

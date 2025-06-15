@@ -23,7 +23,6 @@ export function CreateUnit(config: IConfig, settlement: any, cell: Cell, ...args
 
 export class IUnit extends IConfig {
 // non-static
-
     public hordeUnit: HordeClassLibrary.World.Objects.Units.Unit;
     /** тик на котором нужно обрабатывать юнита */
     private processingTick: number;
@@ -31,7 +30,8 @@ export class IUnit extends IConfig {
     private processingTickModule: number;
 
     protected _disallowedCommands : any;
-    private _cfg                : UnitConfig;
+    private _isDisallowedCommands : boolean;
+    private _cfg                  : UnitConfig;
 
     constructor(...args: any[]) {
         super(args[0].Cfg);
@@ -45,6 +45,7 @@ export class IUnit extends IConfig {
         this.hordeUnit                      = unit;
         this.hordeUnit.ScriptData.IUnit     = this;
         this._disallowedCommands            = ScriptUtils.GetValue(this.hordeUnit.CommandsMind, "DisallowedCommands");
+        this._isDisallowedCommands          = false;
         this._cfg                           = this.hordeUnit.Cfg;
     }
 
@@ -53,21 +54,28 @@ export class IUnit extends IConfig {
     }
 
     public DisallowCommands() {
-        if (!this._disallowedCommands.ContainsKey(UnitCommand.MoveToPoint))  this._disallowedCommands.Add(UnitCommand.MoveToPoint, 1);
-        if (!this._disallowedCommands.ContainsKey(UnitCommand.HoldPosition)) this._disallowedCommands.Add(UnitCommand.HoldPosition, 1);
-        if (!this._disallowedCommands.ContainsKey(UnitCommand.Attack))       this._disallowedCommands.Add(UnitCommand.Attack, 1);
-        if (!this._disallowedCommands.ContainsKey(UnitCommand.Capture))      this._disallowedCommands.Add(UnitCommand.Capture, 1);
-        if (!this._disallowedCommands.ContainsKey(UnitCommand.StepAway))     this._disallowedCommands.Add(UnitCommand.StepAway, 1);
-        if (!this._disallowedCommands.ContainsKey(UnitCommand.Cancel))       this._disallowedCommands.Add(UnitCommand.Cancel, 1);
+        if (!this._isDisallowedCommands) {
+            this._isDisallowedCommands = true;
+            this._disallowedCommands.Add(UnitCommand.MoveToPoint, 1);
+            this._disallowedCommands.Add(UnitCommand.HoldPosition, 1);
+            this._disallowedCommands.Add(UnitCommand.Attack, 1);
+            this._disallowedCommands.Add(UnitCommand.Capture, 1);
+            this._disallowedCommands.Add(UnitCommand.StepAway, 1);
+            this._disallowedCommands.Add(UnitCommand.Cancel, 1);
+        }
     }
     
     public AllowCommands() {
-        if (this._disallowedCommands.ContainsKey(UnitCommand.MoveToPoint))  this._disallowedCommands.Remove(UnitCommand.MoveToPoint);
-        if (this._disallowedCommands.ContainsKey(UnitCommand.HoldPosition)) this._disallowedCommands.Remove(UnitCommand.HoldPosition);
-        if (this._disallowedCommands.ContainsKey(UnitCommand.Attack))       this._disallowedCommands.Remove(UnitCommand.Attack);
-        if (this._disallowedCommands.ContainsKey(UnitCommand.Capture))      this._disallowedCommands.Remove(UnitCommand.Capture);
-        if (this._disallowedCommands.ContainsKey(UnitCommand.StepAway))     this._disallowedCommands.Remove(UnitCommand.StepAway);
-        if (this._disallowedCommands.ContainsKey(UnitCommand.Cancel))       this._disallowedCommands.Remove(UnitCommand.Cancel);
+        if (this._isDisallowedCommands) {
+            this._isDisallowedCommands = false;
+
+            this._disallowedCommands.Remove(UnitCommand.MoveToPoint);
+            this._disallowedCommands.Remove(UnitCommand.HoldPosition);
+            this._disallowedCommands.Remove(UnitCommand.Attack);
+            this._disallowedCommands.Remove(UnitCommand.Capture);
+            this._disallowedCommands.Remove(UnitCommand.StepAway);
+            this._disallowedCommands.Remove(UnitCommand.Cancel);
+        }
     }
 
     public GivePointCommand(cell: Cell, command: any, orderMode: any) {

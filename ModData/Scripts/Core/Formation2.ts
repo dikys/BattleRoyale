@@ -1,11 +1,10 @@
 import { createPoint } from "library/common/primitives";
-import { AOrderBase, DiplomacyStatus, OrderAttackUnit, UnitCommand } from "library/game-logic/horde-types";
+import { DiplomacyStatus, UnitCommand } from "library/game-logic/horde-types";
 import { AssignOrderMode } from "library/mastermind/virtual-input";
 import { IUnit } from "../Units/IUnit";
 import { Cell } from "./Cell";
-import { log } from "library/common/logging";
 import { printObjectItems } from "library/common/introspection";
-import { IHero } from "../Heroes/IHero";
+import { log } from "library/common/logging";
 
 class Agent {
     unit: IUnit;
@@ -14,12 +13,16 @@ class Agent {
     // целевая ячейка для движения
     targetCell: Cell;
     // цель атаки капитана
-    attackTarget: IUnit | null;
+    private _attackTarget: IUnit | null;
+    // флаг, что могу атаковать цель
+    private _canAttackTarget: boolean;
 
     constructor(unit: IUnit, cellNum?: number, targetCell?: Cell) {
-        this.unit       = unit;
-        this.cellNum    = cellNum ?? 0;
-        this.targetCell = targetCell ?? new Cell(0, 0);
+        this.unit             = unit;
+        this.cellNum          = cellNum ?? 0;
+        this.targetCell       = targetCell ?? new Cell(0, 0);
+        this._attackTarget    = null;
+        this._canAttackTarget = false;
     }
 
     /** отдать приказ в точку */
@@ -44,7 +47,21 @@ class Agent {
         this.GivePointCommand(this.targetCell, UnitCommand.MoveToPoint, AssignOrderMode.Replace);
     }
 
+    public SmartAttackTarget(target: IUnit | null) {
+        this._attackTarget = target;
+        if (this._attackTarget == null) {
+            return;
+        }
+
+        this._canAttackTarget = this.unit.hordeUnit.BattleMind.CanAttackTarget(this._attackTarget.hordeUnit);
+        var attackTargetCell = Cell.ConvertHordePoint(this._attackTarget.hordeUnit.Cell);
+        this.GivePointCommand(attackTargetCell, UnitCommand.Attack, AssignOrderMode.Replace);
+    }
+
     public OnEveryTick(gameTickNum: number) {
+        if (!this.unit.NeedProcessing(gameTickNum - 1)) {
+            return;
+        }
         // если агент здание и не достроился, то ничего не делаем
         if (this.unit.hordeUnit.EffectsMind.BuildingInProgress) {
             return;
@@ -55,13 +72,13 @@ class Agent {
 
         // атакуем врага
 
-        if (this.attackTarget) {
+        if (this._attackTarget) {
             // если это союзник, то не бьем
-            if (this.attackTarget.hordeUnit.Owner.Uid == this.unit.hordeUnit.Owner.Uid) {
-                this.attackTarget = null;
+            if (this._attackTarget.hordeUnit.Owner.Uid == this.unit.hordeUnit.Owner.Uid) {
+                this._attackTarget = null;
             } else {
-                if (this.unit.hordeUnit.BattleMind.CanAttackTarget(this.attackTarget.hordeUnit)) {
-                    var attackTargetCell = Cell.ConvertHordePoint(this.attackTarget.hordeUnit.Cell);
+                if (this._canAttackTarget) {
+                    var attackTargetCell = Cell.ConvertHordePoint(this._attackTarget.hordeUnit.Cell);
                     var distanceToAttackTargetCell = agentCell.Minus(attackTargetCell).Length_Chebyshev();
 
                     if (distanceToAttackTargetCell < 2*14 && distanceToTargetCell < 2*12) {
@@ -80,6 +97,7 @@ class Agent {
 
         // если юнит ушел далеко, пытаемся вернуть его назад
         if (distanceToTargetCell > 2*8) {
+            this._attackTarget = null;
             this.GivePointCommand(this.targetCell, UnitCommand.MoveToPoint, AssignOrderMode.Replace);
         }
         // если юнит не на целевой клетке и ничего не делает, то отправляем его в целевую точку
@@ -99,8 +117,8 @@ class Agent {
 };
 
 class Orbit {
-    private static _CreatedOrbitsCount = 0;
-    private static _UpdatePeriodSize = 0;
+    protected static _ProcessingModule : number = 25;
+    protected static _ProcessingTack   : number = 12;
 
     // предыдущее положение центра
     private prevCenterFormation: Cell;
@@ -142,9 +160,7 @@ class Orbit {
             this.cells.push(new Cell(-this.radius, -this.radius + sideLength - i));
         }
 
-        this.updateTact = Math.round(Orbit._CreatedOrbitsCount / 4);
-        Orbit._CreatedOrbitsCount++;
-        Orbit._UpdatePeriodSize = this.updateTact + 1;
+        this.updateTact = Orbit._ProcessingTack++ % Orbit._ProcessingModule;
 
         this.prevCenterFormation = center;
         this.centerFormation     = center;
@@ -155,7 +171,7 @@ class Orbit {
         this.attackTarget = unit;
         // обновляем атакованного юнита
         this.agents.forEach((agent) => {
-            agent.attackTarget = this.attackTarget;
+            agent.SmartAttackTarget(this.attackTarget);
         });
     }
 
@@ -296,11 +312,13 @@ class Orbit {
     }
     
     public OnEveryTick(gameTickNum: number) : boolean {
+        // обновляем агентов каждый такт 
+        this.agents.forEach((agent) => agent.OnEveryTick(gameTickNum));
+
         // проверяем, что на текущем такте нужно обновить орбиту
-        if (gameTickNum % Orbit._UpdatePeriodSize != this.updateTact) {
+        if (gameTickNum % Orbit._ProcessingModule != this.updateTact) {
             return false;
         }
-        
         // обновляем информацию об атакованном юните
         if (this.attackTarget
             && (this.attackTarget.hordeUnit.IsDead
@@ -308,11 +326,9 @@ class Orbit {
                     && this.agents[0].unit.hordeUnit.Owner.Uid == this.attackTarget.hordeUnit.Owner.Uid))) {
             this.attackTarget = null;
             this.agents.forEach((agent) => {
-                agent.attackTarget = null;
+                agent.SmartAttackTarget(null);
             });
         }
-
-        this.agents.forEach((agent) => agent.OnEveryTick(gameTickNum));
 
         return true;
     }

@@ -87,6 +87,8 @@ export class BattleRoyalePlugin extends HordePluginBase {
         }
     }
 
+    _timer : number = 0;
+
     _nextSpawnSpell: number = 0;
     _nextSpawnBuilding: number = 0;
     private _Run(gameTickNum: number) {
@@ -97,8 +99,14 @@ export class BattleRoyalePlugin extends HordePluginBase {
         //         }
         //     }
         // }
+        var time = new Date().getTime();
         this._playerSettlements.forEach((playerSettlement) => playerSettlement.OnEveryTick(gameTickNum));
+        this._timer += new Date().getTime() - time;
+        if (gameTickNum % 1000 == 0) {
+            this.log.info("TIMER = ", this._timer);
+        }
         this._gameField.OnEveryTick(gameTickNum);
+        
 
         for (var unitNum = 0; unitNum < this._units.length; unitNum++) {
             if (this._units[unitNum].OnEveryTick(gameTickNum)) {

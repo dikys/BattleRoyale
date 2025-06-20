@@ -8,7 +8,7 @@ export class IProduceSpell extends ISpell {
     //protected static _ButtonCommandTypeBySlot       : Array<UnitCommand> = [UnitCommand.Produce_Custom_0, UnitCommand.Produce_Custom_1, UnitCommand.Produce_Custom_2, UnitCommand.Produce_Custom_3];
     protected static _ButtonCommandTypeBySlot       : Array<UnitCommand> = [UnitCommand.Produce, UnitCommand.Produce, UnitCommand.Produce, UnitCommand.Produce];
     protected static _ButtonCommandBaseUid          : string = "#UnitCommandConfig_Produce";
-
+    // @ts-expect-error
     protected _productCfg : UnitConfig;
 
     constructor(caster: IUnitCaster) {
@@ -28,6 +28,7 @@ export class IProduceSpell extends ISpell {
 
     public Activate(activateArgs: ACommandArgs) : boolean {
         if (super.Activate(activateArgs)) {
+            // @ts-expect-error
             this._productCfg = activateArgs.ProductCfg;
 
             return true;

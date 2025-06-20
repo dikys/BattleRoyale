@@ -56,12 +56,11 @@ export class IHero extends IUnitCaster {
         this._frame = null;
         
         // создаем класс формации
-        this._formation = new Formation2(
-            Cell.ConvertHordePoint(this.hordeUnit.Cell),
-            this.constructor['_FormationStartRadius'],
-            this.constructor['_FormationDestiny']);
+        // @ts-expect-error
+        this._formation = new Formation2(Cell.ConvertHordePoint(this.hordeUnit.Cell), this.constructor['_FormationStartRadius'], this.constructor['_FormationDestiny']);
 
-        var spells = this.constructor["_Spells"];
+        // @ts-expect-error
+        var spells = this.constructor["_Spells"] as Array<typeof ISpell>;
         spells.forEach(spell => {
             this.AddSpell(spell);
         });
@@ -100,10 +99,12 @@ export class IHero extends IUnitCaster {
         // управление формацией
 
         if (commandArgs.CommandType == UnitCommand.Attack) {
+            // @ts-expect-error
             var targetHordeUnit = ActiveScena.UnitsMap.GetUpperUnit(commandArgs.TargetCell);
             if (targetHordeUnit) {
                 this._formation.SetAttackTarget(new IUnit(targetHordeUnit));
             } else {
+                // @ts-expect-error
                 this._formation.SmartAttackCell(Cell.ConvertHordePoint(commandArgs.TargetCell));
             }
         }

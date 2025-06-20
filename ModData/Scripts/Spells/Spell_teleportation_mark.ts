@@ -15,7 +15,7 @@ export class Spell_teleportation_mark extends ISpell {
     protected static _ChargesCount                  : number = 2;
     protected static _Name                          : string = "Телепортационная метка";
     protected static _Description                   : string = "При первои использовании устанавливает метку. При повторном герой телепортируется в установленную метку.";
-
+    // @ts-expect-error
     private _mark : Cell;
 
     protected _OnEveryTickActivated(gameTickNum: number): boolean {

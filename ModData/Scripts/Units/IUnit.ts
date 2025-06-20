@@ -23,6 +23,7 @@ export function CreateUnit(config: IConfig, settlement: any, cell: Cell, ...args
 
 export class IUnit extends IConfig {
 // non-static
+    // @ts-expect-error
     public hordeUnit: HordeClassLibrary.World.Objects.Units.Unit;
     /** тик на котором нужно обрабатывать юнита */
     private processingTick: number;
@@ -30,7 +31,9 @@ export class IUnit extends IConfig {
     private processingTickModule: number;
 
     protected _disallowedCommands : any;
+    // @ts-expect-error
     private _isDisallowedCommands : boolean;
+    // @ts-expect-error
     private _cfg                  : UnitConfig;
 
     constructor(...args: any[]) {
@@ -38,6 +41,7 @@ export class IUnit extends IConfig {
 
         this._SetHordeUnit(args[0]);
         this.processingTickModule           = 50;
+        // @ts-expect-error
         this.processingTick                 = this.hordeUnit.PseudoTickCounter % this.processingTickModule;
     }
 

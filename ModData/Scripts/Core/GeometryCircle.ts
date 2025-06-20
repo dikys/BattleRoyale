@@ -9,6 +9,7 @@ export class GeometryCircle {
     color: Stride_Color;
     thickness: number;
 
+    // @ts-expect-error
     geometry: GeometryVisualEffect;
 
     constructor(radius: number, center: Cell, color: Stride_Color, thickness: number, ) {

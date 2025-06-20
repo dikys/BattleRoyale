@@ -102,7 +102,9 @@ export class IFactory {
                 ScriptUtils.SetValue(bulletCfg, "CanDamageAllied", false);
 
                 // убираем дружественный огонь у прото снарядов
+                // @ts-expect-error
                 if (bulletCfg.SpecialParams && bulletCfg.SpecialParams.FragmentBulletConfig) {
+                    // @ts-expect-error
                     ScriptUtils.SetValue(bulletCfg.SpecialParams.FragmentBulletConfig, "CanDamageAllied", false);
                 }
             }

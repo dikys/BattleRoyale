@@ -47,6 +47,7 @@ export function CfgAddUnitProducer(Cfg: UnitConfig) {
 
         // очищаем список
         var producerParams = Cfg.GetProfessionParams(UnitProducerProfessionParams, UnitProfession.UnitProducer);
+        // @ts-expect-error
         var produceList    = producerParams.CanProduceList;
         produceList.Clear();
 

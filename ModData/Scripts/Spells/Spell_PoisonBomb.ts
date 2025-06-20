@@ -25,6 +25,7 @@ export class Spell_PoisonBomb extends ITargetPointSpell {
     protected static _Name                          : string = "Ядовитая бомба";
     protected static _Description                   : string = "Запускает ядовитую бомбу в выбранном направлении до "
         + Spell_PoisonBomb._MaxDistance + " клеток, которая распространяет яд вокруг попавшей клетки в течении " + (Spell_PoisonBomb._CloudDuration / 50) + " секунд. "
+        // @ts-expect-error
         + " Яд наносит врагам " + (50 * Spell_PoisonBomb._CloudDamage / Spell_PoisonBomb._ProcessingPeriod) + " урона в секунду.";
 
     private _cloudCells : Array<Cell>;

@@ -83,22 +83,38 @@ export class ISpell {
         return this._Description;
     }
 
+    public static GetUid() : string {
+        return this._ButtonUidPrefix + this._ButtonUid;
+    }
+
+    public level : number;
+
     protected _caster                 : IUnitCaster;
     protected _state                  : SpellState;
+    protected _chargesCount           : number;
     protected _charges                : number;
+    // @ts-expect-error
     protected _activatedTick          : number;
+    // @ts-expect-error
     protected _activatedArgs          : ACommandArgs;
+    // @ts-expect-error
     protected _activatedEffect        : StringVisualEffect;
+    // @ts-expect-error
     protected _reloadTick             : number;
+    // @ts-expect-error
     protected _chargesReloadTick      : number;
     private   _processingTack         : number;
     private   _slotNum                : number;
 
     constructor(caster: IUnitCaster) {
+        // @ts-expect-error
         this._processingTack = this.constructor["_ProcessingTack"]++ % this.constructor["_ProcessingModule"];
         this._caster               = caster;
         this._state                = SpellState.READY;
-        this._charges              = this.constructor["_ChargesCount"];
+        // @ts-expect-error
+        this._chargesCount         = this.constructor["_ChargesCount"];
+        this._charges              = this._chargesCount;
+        this.level                 = 1;
 
         // ищем свободный слот
         var casterSpells = this._caster.Spells();
@@ -120,11 +136,18 @@ export class ISpell {
     }
 
     public GetUnitCommand() : UnitCommand {
+        // @ts-expect-error
         return this.constructor["_ButtonCommandTypeBySlot"][this._slotNum];
     }
 
     public GetCommandConfig() : UnitCommandConfig {
+        // @ts-expect-error
         return this.constructor["GetCommandConfig"](this._slotNum);
+    }
+
+    public GetUid() : string {
+        // @ts-expect-error
+        return this.constructor["GetUid"]();
     }
 
     public Activate(activateArgs: ACommandArgs) : boolean {
@@ -133,10 +156,13 @@ export class ISpell {
             this._activatedTick     = BattleController.GameTimer.GameFramesCounter;
             this._activatedArgs     = activateArgs;
 
+            // @ts-expect-error
             this._activatedEffect   = spawnString(ActiveScena, this.constructor['_Name'],
                 Cell.ConvertHordePoint(this._caster.hordeUnit.Cell)
+                // @ts-expect-error
                 .Scale(32).Add(new Cell(-2.5*this.constructor['_Name'].length, 0)).Round().ToHordePoint(), 150);
             this._activatedEffect.Height    = 18;
+            // @ts-expect-error
             this._activatedEffect.Color     = this.constructor['_EffectHordeColor'];
             this._activatedEffect.DrawLayer = DrawLayer.Birds;
 
@@ -147,6 +173,7 @@ export class ISpell {
     }
 
     public OnEveryTick(gameTickNum: number): boolean {
+        // @ts-expect-error
         if (gameTickNum % this.constructor["_ProcessingModule"] != this._processingTack) {
             return false;
         }
@@ -162,10 +189,12 @@ export class ISpell {
                     this._charges--;
                     if (this._charges == 0) {
                         this._state = SpellState.RELOAD;
+                        // @ts-expect-error
                         this._reloadTick = gameTickNum + this.constructor["_ReloadTime"];
                         this._caster.hordeUnit.CommandsMind.RemoveAddedCommand(this.GetUnitCommand());
                     } else {
                         this._state = SpellState.RELOAD_CHARGE;
+                        // @ts-expect-error
                         this._chargesReloadTick = gameTickNum + this.constructor["_ChargesReloadTime"];
                     }
                 }
@@ -177,14 +206,21 @@ export class ISpell {
                 break;
             case SpellState.RELOAD:
                 if (!this._OnEveryTickReload(gameTickNum)) {
-                    this._state = SpellState.READY;
-                    this._charges = this.constructor["_ChargesCount"];
+                    this._state   = SpellState.READY;
+                    this._charges = this._chargesCount;
                     this._caster.hordeUnit.CommandsMind.AddCommand(this.GetUnitCommand(), this.GetCommandConfig());
                 }
                 break;
         }
 
         return true;
+    }
+
+    public LevelUp() {
+        this.level++;
+
+        this._chargesCount++;
+        this._charges++;
     }
 
     protected _OnEveryTickReady(gameTickNum: number) {

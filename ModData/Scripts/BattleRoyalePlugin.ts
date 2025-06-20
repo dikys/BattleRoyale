@@ -40,13 +40,18 @@ enum GameState {
 // ];
 
 export class BattleRoyalePlugin extends HordePluginBase {
+    // @ts-expect-error
     _playerHordeSettlements: Array<Settlement>;
     _playerSettlements:    Array<PlayerSettlement>;
+    // @ts-expect-error
     _neutralSettlement:    GameSettlement;
+    // @ts-expect-error
     _enemySettlement:      GameSettlement;
+    // @ts-expect-error
     _gameField:            GameField;
     _gameState:            GameState;
     _buildingsTemplate:    Array<BuildingTemplate>;
+    // @ts-expect-error
     _playerTaverns:        Array<Tavern>;
 
     _playerUidToSettlement: Map<number, number>;
@@ -314,7 +319,9 @@ export class BattleRoyalePlugin extends HordePluginBase {
         // спавним юнитов после уничтожения постройки
         this._enemySettlement.hordeSettlement.Units.UnitsListChanged.connect(
             function (sender, args) {
+                // @ts-expect-error
                 if (!args.IsAdded && args.Unit.ScriptData.Building) {
+                    // @ts-expect-error
                     var building : ScriptData_Building = args.Unit.ScriptData.Building;
 
                     var playerSettlement = that._playerSettlements.find((playerSettlement) => playerSettlement.settlementUid == building.lastAttackSettlementUid);
@@ -328,13 +335,13 @@ export class BattleRoyalePlugin extends HordePluginBase {
 
                     var rarityNum = 0;
                     for (;rarityNum < that._buildingsTemplate[building.templateNum].buildings.length; rarityNum++) {
-                        if (that._buildingsTemplate[building.templateNum].buildings[rarityNum].hordeConfig.Uid ==
-                            args.Unit.Cfg.Uid
-                        ) {
+                        // @ts-expect-error
+                        if (that._buildingsTemplate[building.templateNum].buildings[rarityNum].hordeConfig.Uid == args.Unit.Cfg.Uid) {
                             break;
                         }
                     }
 
+                    // @ts-expect-error
                     var generator = generateCellInSpiral(args.Unit.Cell.X, args.Unit.Cell.Y);
                     // вызываем событие у героя, возможно он что-то переделает
                     var spawnInfo = playerSettlement.heroUnit.OnDestroyBuilding(
@@ -374,8 +381,11 @@ export class BattleRoyalePlugin extends HordePluginBase {
             // записываем какое поселение последним атаковало постройку
             this._playerHordeSettlements[playerSettlementNum].Units.UnitCauseDamage.connect(
                 function (sender, args) {
+                    // @ts-expect-error
                     if (args.VictimUnit.ScriptData.Building) {
+                        // @ts-expect-error
                         var building : ScriptData_Building = args.VictimUnit.ScriptData.Building;
+                        // @ts-expect-error
                         building.lastAttackSettlementUid = args.TriggeredUnit.Owner.Uid;
                     }
                 }
@@ -452,6 +462,7 @@ export class BattleRoyalePlugin extends HordePluginBase {
 
             this._playerHordeSettlements[playerNum].Units.UnitSpawned.connect(
                 function (sender, args) {
+                    // @ts-expect-error
                     var unit = new IUnit(args.Unit);
                     var settlementNum = that._playerUidToSettlement.get(Number.parseInt(unit.hordeUnit.Owner.Uid)) as number;
                     that._playerSettlements[settlementNum].heroUnit.AddUnitToFormation(unit);

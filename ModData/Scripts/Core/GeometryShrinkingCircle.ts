@@ -11,7 +11,7 @@ export class GeometryShrinkingCircle {
     animationStartTime: number;
 
     animationIsEnd: boolean;
-
+    // @ts-expect-error
     currentCircle: GeometryCircle;
 
     constructor (startCircle: GeometryCircle, endCircle: GeometryCircle, animationTotalTime: number, everyTick_tiksToLive: number, end_tiskToLive: number) {

@@ -422,6 +422,7 @@ export class AutoFFAPlugin extends HordePluginBase {
             strDecObj.Height    = 20;
             strDecObj.Color     = createHordeColor(255, 255, 255, 255);
             strDecObj.DrawLayer = DrawLayer.Birds;
+            // @ts-expect-error
             strDecObj.Font      = FontUtils.DefaultFont;
         }
 
@@ -454,6 +455,7 @@ export class AutoFFAPlugin extends HordePluginBase {
                 Math.min(255, this._settlements[settlementNum].SettlementColor.B + 128)
             );
             strDecObj.DrawLayer = DrawLayer.Birds;
+            // @ts-expect-error
             strDecObj.Font      = FontUtils.DefaultVectorFont;
 
             this._settlements_powerPointStrDecorators.push(strDecObj);
@@ -476,6 +478,7 @@ export class AutoFFAPlugin extends HordePluginBase {
                 Math.min(255, this._settlements[settlementNum].SettlementColor.B + 128)
             );
             strDecObj.DrawLayer = DrawLayer.Birds;
+            // @ts-expect-error
             strDecObj.Font      = FontUtils.DefaultVectorFont;
 
             this._settlements_statusStrDecorators.push(strDecObj);

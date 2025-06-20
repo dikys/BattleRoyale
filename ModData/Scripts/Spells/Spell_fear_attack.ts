@@ -22,6 +22,7 @@ export class Spell_fear_attack extends ISpell {
         + " клеток в течении " + (Spell_fear_attack._FearTime / 50) + " секунд";
 
     private _fearUnits : Array<IUnit>;
+    // @ts-expect-error
     private _fearCell : Cell;
 
     constructor(caster: IUnitCaster) {

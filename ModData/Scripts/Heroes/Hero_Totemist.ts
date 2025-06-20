@@ -19,7 +19,9 @@ export class Hero_Totemist extends IHero {
     private _formation_changed                  : boolean;
     private _formation_polygon                  : Array<Cell>; 
     private _formation_visualEffect             : GeometryVisualEffect | null;
+    // @ts-expect-error
     private _formation_cells                    : Array<Cell>;
+    // @ts-expect-error
     private _formation_generator                : Generator<Cell>;
 
     private static _peopleIncome_max    : number = 11;
@@ -223,10 +225,13 @@ class Totem_defence extends IUnit {
 
 class IFormationTotem extends IUnit {
     protected static BaseCfgUid  : string = "#UnitConfig_Slavyane_Tower";
+    // @ts-expect-error
     protected _bulletConfig : BulletConfig;
+    // @ts-expect-error
     protected _bulletShotParams : ShotParams;
+    // @ts-expect-error
     protected _bulletCount : number;
-
+    // @ts-expect-error
     protected _bulletPeriod : number;
     protected _bulletNextTick : number;
 

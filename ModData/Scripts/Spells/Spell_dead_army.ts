@@ -108,6 +108,7 @@ export class Spell_dead_army extends IProduceSpell {
         DeadVillur
     ];
 
+    // @ts-expect-error
     private _spawnedUnitTypeNum : number;
     private _spawnedUnits : Array<IDeadUnit>;
 
@@ -115,6 +116,7 @@ export class Spell_dead_army extends IProduceSpell {
         super(caster);
 
         var producerParams = caster.hordeConfig.GetProfessionParams(UnitProducerProfessionParams, UnitProfession.UnitProducer);
+        // @ts-expect-error
         var produceList    = producerParams.CanProduceList;
         produceList.Clear();
         produceList.Add(DeadArcher.GetHordeConfig());

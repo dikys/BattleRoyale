@@ -66,6 +66,7 @@ export class Tavern extends IUnit {
     private static _OnProduced(unit: Unit) {
         var tavern = opUnitIdToTavernObject.get(unit.Id) as Tavern;
         for (var hero of this.Heroes) {
+            // @ts-expect-error
             if (hero.CfgUid == unit.OrdersMind.ActiveOrder.ProductUnitConfig.Uid) {
                 tavern.selectedHero = hero;
                 tavern.hordeUnit.Owner.Messages.AddMessage(createGameMessageWithNoSound("Вы выбрали " + hero.GetHordeConfig().Name, tavern.hordeUnit.Owner.SettlementColor));

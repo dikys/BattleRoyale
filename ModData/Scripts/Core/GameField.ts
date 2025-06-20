@@ -14,11 +14,15 @@ export class GameField {
     private _geometryShrinkingCircle:GeometryShrinkingCircle | null;
 
     /// ячейки игрового поля
+    // @ts-expect-error
     private _bigIslandCells: Array<Cell>;
     /// флаг, что ячейка в игровом поле
+    // @ts-expect-error
     private _cellsFlag: Array<Array<boolean>>;
     /// типы ячеек
+    // @ts-expect-error
     private _cellsTileType: Array<Array<TileType>>;
+    // @ts-expect-error
     private _landscapeMap : HordeClassLibrary.World.ScenaComponents.Scena.ScenaLandscape;
 
     constructor(constrictionTimeoutTicks:number, constrictionsSpeedCoeff:number){

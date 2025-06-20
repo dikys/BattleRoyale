@@ -1,7 +1,6 @@
-import { ACommandArgs, ScriptUnitWorkerGetOrder, Unit, UnitCommand, UnitConfig } from "library/game-logic/horde-types";
+import { ACommandArgs, ScriptUnitWorkerGetOrder, Unit, UnitConfig } from "library/game-logic/horde-types";
 import { IUnit } from "../Units/IUnit";
 import { ISpell } from "./ISpell";
-import { printObjectItems } from "library/common/introspection";
 import { log } from "library/common/logging";
 
 export class IUnitCaster extends IUnit {
@@ -61,7 +60,19 @@ export class IUnitCaster extends IUnit {
     }
 
     public AddSpell(spellType: typeof ISpell) {
-        this._spells.push(new spellType(this));
+        // если добавляется тот же скилл, то прокачиваем скилл
+        var spellNum;
+        for (spellNum = 0; spellNum < this._spells.length; spellNum++) {
+            if (this._spells[spellNum].GetUid() == spellType.GetUid()) {
+                break;
+            }
+        }
+
+        if (spellNum == this._spells.length) {
+            this._spells.push(new spellType(this));
+        } else {
+            this._spells[spellNum].LevelUp();
+        }
     }
 
     public Spells() : Array<ISpell> {

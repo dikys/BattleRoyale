@@ -18,6 +18,7 @@ export class Spell_invisibility extends ISpell {
     protected static _Name                          : string = "Невидимость";
     protected static _Description                   : string = "Становится невидимым в течении " + (this._Duration / 50) + " сек.";
 
+    // @ts-expect-error
     private _casterCfg : UnitConfig;
 
     public Activate(activateArgs: ACommandArgs): boolean {

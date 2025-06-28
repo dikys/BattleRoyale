@@ -93,9 +93,11 @@ export class Spell_fear_attack extends ISpell {
                 unitPoint);
 
             var targetCell = this._fearCell.Add(Cell.ConvertHordePoint(unit.hordeUnit.Cell).Minus(this._fearCell).Scale(10));
-            unit.AllowCommands();
-            unit.GivePointCommand(targetCell, UnitCommand.MoveToPoint, AssignOrderMode.Replace);
-            unit.DisallowCommands();
+            if (isFinite(targetCell.X) && isFinite(targetCell.Y)) {
+                unit.AllowCommands();
+                unit.GivePointCommand(targetCell, UnitCommand.MoveToPoint, AssignOrderMode.Replace);
+                unit.DisallowCommands();
+            }
         }
 
         return true;

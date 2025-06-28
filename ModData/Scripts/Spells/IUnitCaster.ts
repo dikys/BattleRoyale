@@ -1,4 +1,4 @@
-import { ACommandArgs, ScriptUnitWorkerGetOrder, Unit, UnitConfig } from "library/game-logic/horde-types";
+import { ACommandArgs, ScriptUnitWorkerGetOrder, Unit, UnitCommand, UnitConfig } from "library/game-logic/horde-types";
 import { IUnit } from "../Units/IUnit";
 import { ISpell } from "./ISpell";
 import { log } from "library/common/logging";
@@ -53,10 +53,9 @@ export class IUnitCaster extends IUnit {
         this._spells = new Array<ISpell>();
         IUnitCaster._OpUnitIdToUnitCasterObject.set(this.hordeUnit.Id, this);
 
-        // \todo вернуть когда починят горячие клавиши
-        //this.hordeUnit.CommandsMind.HideCommand(UnitCommand.MoveToPoint);
-        //this.hordeUnit.CommandsMind.HideCommand(UnitCommand.Attack);
-        //this.hordeUnit.CommandsMind.HideCommand(UnitCommand.Cancel);
+        this.hordeUnit.CommandsMind.HideCommand(UnitCommand.MoveToPoint);
+        this.hordeUnit.CommandsMind.HideCommand(UnitCommand.Attack);
+        this.hordeUnit.CommandsMind.HideCommand(UnitCommand.Cancel);
     }
 
     public AddSpell(spellType: typeof ISpell) {
@@ -107,6 +106,10 @@ export class IUnitCaster extends IUnit {
 
         IUnitCaster._OpUnitIdToUnitCasterObject.set(this.hordeUnit.Id, this);
         this._spells.forEach(spell => spell.OnReplacedCaster(this));
+
+        this.hordeUnit.CommandsMind.HideCommand(UnitCommand.MoveToPoint);
+        this.hordeUnit.CommandsMind.HideCommand(UnitCommand.Attack);
+        this.hordeUnit.CommandsMind.HideCommand(UnitCommand.Cancel);
     }
 
     public DisallowCommands() {

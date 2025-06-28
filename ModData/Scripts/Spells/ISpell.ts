@@ -1,8 +1,8 @@
-import { ACommandArgs, BattleController, DrawLayer, Stride_Color, StringVisualEffect, Unit, UnitCommand, UnitCommandConfig } from "library/game-logic/horde-types";
+import { ACommandArgs, BattleController, DrawLayer, Stride_Color, StringVisualEffect, Unit, UnitCommand, UnitCommandConfig, UnitConfig } from "library/game-logic/horde-types";
 import { GameField } from "../Core/GameField";
 import { GameSettlement } from "../Core/GameSettlement";
 import { BuildingTemplate } from "../Units/IFactory";
-import { HordeColor } from "library/common/primitives";
+import { HordeColor, ResourcesAmount } from "library/common/primitives";
 import { Cell } from "../Core/Cell";
 import { spawnString } from "library/game-logic/decoration-spawn";
 import { IUnitCaster } from "./IUnitCaster";
@@ -43,6 +43,7 @@ export class ISpell {
     protected static _ChargesCount                  : number = 1;
     protected static _Name                          : string = "Способность";
     protected static _Description                   : string = "";
+    protected static _UnitCost                      : ResourcesAmount = new ResourcesAmount(0, 0, 0, 0);
 
     public static GetCommandConfig(slotNum: number) : UnitCommandConfig {
         var customCommandCfgUid = this._ButtonUidPrefix + this._ButtonUid + "_" + slotNum;
@@ -73,6 +74,25 @@ export class ISpell {
         }
 
         return customCommand;
+    }
+
+    public static GetUnitConfig() {
+        var unitConfigCfgUid = this._ButtonUidPrefix + this._ButtonUid + "_UnitCfg";
+        var unitConfig : UnitConfig;
+        if (HordeContentApi.HasUnitConfig(unitConfigCfgUid)) {
+            unitConfig = HordeContentApi.GetUnitConfig(unitConfigCfgUid);
+        } else {
+            unitConfig = HordeContentApi.CloneConfig(HordeContentApi.GetUnitConfig("#UnitConfig_Barbarian_Swordmen"), unitConfigCfgUid) as UnitConfig;
+            ScriptUtils.SetValue(unitConfig, "Name", this._Name);
+            ScriptUtils.SetValue(unitConfig, "Description", this._Description);
+            ScriptUtils.GetValue(unitConfig, "PortraitCatalogRef").SetConfig(HordeContentApi.GetAnimationCatalog(this._ButtonAnimationsCatalogUid));
+            ScriptUtils.SetValue(unitConfig.CostResources, "Gold",   this._UnitCost.Gold);
+            ScriptUtils.SetValue(unitConfig.CostResources, "Metal",  this._UnitCost.Metal);
+            ScriptUtils.SetValue(unitConfig.CostResources, "Lumber", this._UnitCost.Lumber);
+            ScriptUtils.SetValue(unitConfig.CostResources, "People", this._UnitCost.People);
+        }
+
+        return unitConfig;
     }
 
     public static GetName() : string {
@@ -219,8 +239,10 @@ export class ISpell {
     public LevelUp() {
         this.level++;
 
-        this._chargesCount++;
-        this._charges++;
+        // @ts-expect-error
+        this._chargesCount += this.constructor["_ChargesCount"];;
+        // @ts-expect-error
+        this._charges      += this.constructor["_ChargesCount"];;
     }
 
     protected _OnEveryTickReady(gameTickNum: number) {

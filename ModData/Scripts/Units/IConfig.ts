@@ -207,9 +207,9 @@ export class IConfig {
             this.Cfg.AllowedCommands.Remove(UnitCommand.Capture);
         }
         // убираем команду удержания позиции
-        if (this.Cfg.AllowedCommands.ContainsKey(UnitCommand.HoldPosition)) {
-            this.Cfg.AllowedCommands.Remove(UnitCommand.HoldPosition);
-        }
+        // if (this.Cfg.AllowedCommands.ContainsKey(UnitCommand.HoldPosition)) {
+        //     this.Cfg.AllowedCommands.Remove(UnitCommand.HoldPosition);
+        // }
         // убираем профессию добычу
         if (this.Cfg.ProfessionParams.ContainsKey(UnitProfession.Harvester)) {
             this.Cfg.ProfessionParams.Remove(UnitProfession.Harvester);

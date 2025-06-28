@@ -32,8 +32,6 @@ export class IUnit extends IConfig {
 
     protected _disallowedCommands : any;
     // @ts-expect-error
-    private _isDisallowedCommands : boolean;
-    // @ts-expect-error
     private _cfg                  : UnitConfig;
 
     constructor(...args: any[]) {
@@ -49,7 +47,6 @@ export class IUnit extends IConfig {
         this.hordeUnit                      = unit;
         this.hordeUnit.ScriptData.IUnit     = this;
         this._disallowedCommands            = ScriptUtils.GetValue(this.hordeUnit.CommandsMind, "DisallowedCommands");
-        this._isDisallowedCommands          = false;
         this._cfg                           = this.hordeUnit.Cfg;
     }
 
@@ -58,8 +55,7 @@ export class IUnit extends IConfig {
     }
 
     public DisallowCommands() {
-        if (!this._isDisallowedCommands) {
-            this._isDisallowedCommands = true;
+        if (!this._disallowedCommands.ContainsKey(UnitCommand.MoveToPoint)) {
             this._disallowedCommands.Add(UnitCommand.MoveToPoint, 1);
             this._disallowedCommands.Add(UnitCommand.HoldPosition, 1);
             this._disallowedCommands.Add(UnitCommand.Attack, 1);
@@ -70,9 +66,7 @@ export class IUnit extends IConfig {
     }
     
     public AllowCommands() {
-        if (this._isDisallowedCommands) {
-            this._isDisallowedCommands = false;
-
+        if (this._disallowedCommands.ContainsKey(UnitCommand.MoveToPoint)) {
             this._disallowedCommands.Remove(UnitCommand.MoveToPoint);
             this._disallowedCommands.Remove(UnitCommand.HoldPosition);
             this._disallowedCommands.Remove(UnitCommand.Attack);

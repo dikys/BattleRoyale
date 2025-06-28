@@ -35,7 +35,7 @@ class Agent {
     /** атаковать точку */
     public SmartAttackCommand(cell: Cell) {
         var upperHordeUnit = ActiveScena.UnitsMap.GetUpperUnit(cell.ToHordePoint());
-        if (upperHordeUnit && upperHordeUnit.Owner.Uid != this.unit.hordeUnit.Owner.Uid) {
+        if (upperHordeUnit && upperHordeUnit.Owner.Uid == this.unit.hordeUnit.Owner.Uid) {
             this.GivePointCommand(cell, UnitCommand.MoveToPoint, AssignOrderMode.Replace);
         } else {
             this.GivePointCommand(cell, UnitCommand.Attack, AssignOrderMode.Replace);

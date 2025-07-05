@@ -55,7 +55,18 @@ class Agent {
 
         this._canAttackTarget = this.unit.hordeUnit.BattleMind.CanAttackTarget(this._attackTarget.hordeUnit);
         var attackTargetCell = Cell.ConvertHordePoint(this._attackTarget.hordeUnit.Cell);
-        this.GivePointCommand(attackTargetCell, UnitCommand.Attack, AssignOrderMode.Replace);
+        //this.GivePointCommand(attackTargetCell, UnitCommand.Attack, AssignOrderMode.Replace);
+        
+        var upperHordeUnit = ActiveScena.UnitsMap.GetUpperUnit(createPoint(attackTargetCell.X, attackTargetCell.Y));
+        if (upperHordeUnit) {
+            if (upperHordeUnit.Owner.Diplomacy.GetDiplomacyStatus(this.unit.hordeUnit.Owner) == DiplomacyStatus.War) {
+                this.GivePointCommand(attackTargetCell, UnitCommand.Attack, AssignOrderMode.Replace);
+            } else {
+                this.GivePointCommand(attackTargetCell, UnitCommand.MoveToPoint, AssignOrderMode.Replace);
+            }
+        } else {
+            this.GivePointCommand(attackTargetCell, UnitCommand.Attack, AssignOrderMode.Replace);
+        }
     }
 
     public OnEveryTick(gameTickNum: number) {
@@ -82,7 +93,18 @@ class Agent {
                     var distanceToAttackTargetCell = agentCell.Minus(attackTargetCell).Length_Chebyshev();
 
                     if (distanceToAttackTargetCell < 2*14 && distanceToTargetCell < 2*12) {
-                        this.GivePointCommand(attackTargetCell, UnitCommand.Attack, AssignOrderMode.Replace);
+                        var upperHordeUnit = ActiveScena.UnitsMap.GetUpperUnit(createPoint(attackTargetCell.X, attackTargetCell.Y));
+                        if (upperHordeUnit) {
+                            if (upperHordeUnit.Owner.Diplomacy.GetDiplomacyStatus(this.unit.hordeUnit.Owner) == DiplomacyStatus.War) {
+                                this.GivePointCommand(attackTargetCell, UnitCommand.Attack, AssignOrderMode.Replace);
+                            } else {
+                                this.GivePointCommand(attackTargetCell, UnitCommand.MoveToPoint, AssignOrderMode.Replace);
+                            }
+                        } else {
+                            this.GivePointCommand(attackTargetCell, UnitCommand.Attack, AssignOrderMode.Replace);
+                        }
+
+                        //this.GivePointCommand(attackTargetCell, UnitCommand.Attack, AssignOrderMode.Replace);
                         return;
                     }
                 }

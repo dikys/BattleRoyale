@@ -18,6 +18,7 @@ import { BuildingTemplate, IFactory } from "./Units/IFactory";
 import { Tavern } from "./Units/Tavern";
 import { IHero } from "./Heroes/IHero";
 import { SpellGlobalRef } from "./Spells/ISpell";
+import { Bot } from "./Bots/Bot";
 
 const PeopleIncomeLevel = HordeClassLibrary.World.Settlements.Modules.Misc.PeopleIncomeLevel;
 type PeopleIncomeLevel = HordeClassLibrary.World.Settlements.Modules.Misc.PeopleIncomeLevel;
@@ -453,6 +454,9 @@ export class BattleRoyalePlugin extends HordePluginBase {
             heroesPosition.splice(heroCellNum, 1);
 
             this._playerSettlements.push(new PlayerSettlement(this._playerHordeSettlements[playerNum], hero));
+            if (playerNum % 2 === 1) {
+                this._playerSettlements[playerNum].bot = new Bot(hero, this._gameField, this._playerSettlements[playerNum], this._enemySettlement);
+            }
 
             // печатаем описание на экран
             this._playerHordeSettlements[playerNum].Messages.AddMessage(

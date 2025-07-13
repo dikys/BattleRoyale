@@ -6,7 +6,7 @@ import { BuildingTemplate } from "../Units/IFactory";
 import { Cell } from "../Core/Cell";
 import { IUnitCaster } from "../Spells/IUnitCaster";
 import { IUnit } from "../Units/IUnit";
-import { ISpell } from "../Spells/ISpell";
+import { ISpell, SpellState } from "../Spells/ISpell";
 
 export class IHero extends IUnitCaster {
     // способности
@@ -50,6 +50,10 @@ export class IHero extends IUnitCaster {
     // формация
     protected _formation : Formation2;
 
+    /**
+     * @constructor
+     * @param {Unit} hordeUnit - Юнит из движка, который будет представлять этого героя.
+     */
     constructor(hordeUnit: Unit) {
         super(hordeUnit);
 
@@ -64,20 +68,54 @@ export class IHero extends IUnitCaster {
         spells.forEach(spell => {
             this.AddSpell(spell);
         });
-    }
+    } // </constructor>
 
+    /**
+     * @method IsDead
+     * @description Проверяет, мертв ли герой.
+     * @returns {boolean} - true, если юнит героя мертв.
+     */
     public IsDead() : boolean {
         return this.hordeUnit.IsDead;
-    }
+    } // </IsDead>
 
+    /**
+     * @method OnDestroyBuilding
+     * @description Обработчик события уничтожения здания. Может быть переопределен в дочерних классах.
+     * @param {BuildingTemplate} buildingTemplate - Шаблон разрушенного здания.
+     * @param {number} rarity - Редкость здания.
+     * @param {IConfig} spawnUnitConfig - Конфигурация юнита, который должен был появиться.
+     * @param {number} spawnCount - Количество юнитов, которое должно было появиться.
+     * @returns {[IConfig, number]} - Возвращает исходные параметры спавна.
+     */
     public OnDestroyBuilding(buildingTemplate: BuildingTemplate, rarity: number, spawnUnitConfig: IConfig, spawnCount: number) : [IConfig, number] {
         return [spawnUnitConfig, spawnCount];
-    }
+    } // </OnDestroyBuilding>
 
+    /**
+     * @method AddUnitToFormation
+     * @description Добавляет юнита в формацию героя.
+     * @param {IUnit} unit - Юнит для добавления.
+     */
     public AddUnitToFormation(unit: IUnit) {
         this._formation.AddUnits([ unit ]);
+    } // </AddUnitToFormation>
+
+    /**
+     * @method SmartMoveTo
+     * @description Отдает приказ герою двигаться в указанную точку.
+     * @param {Cell} cell - Целевая клетка.
+     */
+    public SmartMoveTo(cell: Cell) {
+        this.GivePointCommand(cell, UnitCommand.MoveToPoint, 0);
     }
 
+    /**
+     * @method OnEveryTick
+     * @description Вызывается на каждом тике. Обновляет состояние формации, рамки и вызывает базовый обработчик.
+     * @param {number} gameTickNum - Текущий тик игры.
+     * @returns {boolean} - Возвращает false, если базовый метод вернул false, иначе true.
+     */
     public OnEveryTick(gameTickNum: number): boolean {
         this._formation.OnEveryTick(gameTickNum);
         this._UpdateFrame();
@@ -89,8 +127,14 @@ export class IHero extends IUnitCaster {
         this._formation.SetCenter(Cell.ConvertHordePoint(this.hordeUnit.Cell));
 
         return true;
-    }
+    } // </OnEveryTick>
 
+    /**
+     * @method OnOrder
+     * @description Обрабатывает приказы, отданные герою, и транслирует их в команды для формации.
+     * @param {ACommandArgs} commandArgs - Аргументы приказа.
+     * @returns {boolean} - false, если приказ не был обработан базовым классом, иначе true.
+     */
     public OnOrder(commandArgs: ACommandArgs) {
         if (!super.OnOrder(commandArgs)) {
             return false;
@@ -113,8 +157,13 @@ export class IHero extends IUnitCaster {
         }
 
         return true;
-    }
+    } // </OnOrder>
 
+    /**
+     * @method ReplaceHordeUnit
+     * @description Заменяет юнит движка, которым управляет этот класс.
+     * @param {Unit} unit - Новый юнит.
+     */
     public ReplaceHordeUnit(unit: Unit): void {
         super.ReplaceHordeUnit(unit);
 
@@ -130,7 +179,7 @@ export class IHero extends IUnitCaster {
         } else {
             this._frameHideFlag = false;
         }
-    }
+    } // </ReplaceHordeUnit>
 
     private _frameHideFlag : boolean = false;
     private _frame : GeometryVisualEffect | null;
@@ -182,4 +231,15 @@ export class IHero extends IUnitCaster {
         let ticksToLive = GeometryVisualEffect.InfiniteTTL;
         this._frame = spawnGeometry(ActiveScena, geometryCanvas.GetBuffers(), this.hordeUnit.Position, ticksToLive);
     }
+
+    /**
+     * @method GetAvailableSpellCommands
+     * @description Возвращает список доступных для использования команд заклинаний.
+     * @returns {UnitCommand[]} - Массив команд.
+     */
+    public GetAvailableSpellCommands(): UnitCommand[] {
+        return this._spells
+            .filter(spell => spell.GetState() === SpellState.READY)
+            .map(spell => spell.GetUnitCommand());
+    } // </GetAvailableSpellCommands>
 }

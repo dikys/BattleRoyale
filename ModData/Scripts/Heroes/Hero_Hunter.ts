@@ -18,12 +18,16 @@ export class Hero_Hunter extends IHero {
     private static _bearRevivePeriod : number = 500;
     private _bearDeadTick : number;
 
+    /**
+     * @constructor
+     * @param {HordeClassLibrary.World.Objects.Units.Unit} hordeUnit - Юнит из движка, который будет представлять этого героя.
+     */
     constructor(hordeUnit: HordeClassLibrary.World.Objects.Units.Unit) {
         super(hordeUnit);
 
         this._bearDeadTick     = 0;
         this._bear = null;
-    }
+    } // </constructor>
 
     protected static _InitHordeConfig() {
         ScriptUtils.SetValue(this.Cfg, "Name", "Герой {охотник}");
@@ -54,6 +58,12 @@ export class Hero_Hunter extends IHero {
         );
     }
 
+    /**
+     * @method OnEveryTick
+     * @description Вызывается на каждом тике. Управляет логикой возрождения медведя-питомца.
+     * @param {number} gameTickNum - Текущий тик игры.
+     * @returns {boolean} - Возвращает false, если базовый метод вернул false, иначе true.
+     */
     public OnEveryTick(gameTickNum: number): boolean {
         if (!super.OnEveryTick(gameTickNum)) {
             return false;
@@ -75,16 +85,20 @@ export class Hero_Hunter extends IHero {
         }
 
         return true;
-    }
+    } // </OnEveryTick>
 }
 
 export class Bear extends IUnit {
     protected static CfgUid      : string = this.CfgPrefix + "Bear";
     protected static BaseCfgUid  : string = "#UnitConfig_Nature_Bear";
 
+    /**
+     * @constructor
+     * @param {any} hordeUnit - Юнит из движка, который будет представлять медведя.
+     */
     constructor(hordeUnit: any) {
         super(hordeUnit);
-    }
+    } // </constructor>
 
     protected static _InitHordeConfig() {
         super._InitHordeConfig();

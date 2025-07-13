@@ -10,9 +10,13 @@ export class Hero_Rider extends IHero {
     protected static BaseCfgUid  : string = "#UnitConfig_Slavyane_Raider";
     protected static _Spells : Array<typeof ISpell> = [Spell_fiery_trail, Spell_fiery_dash];
 
+    /**
+     * @constructor
+     * @param {HordeClassLibrary.World.Objects.Units.Unit} hordeUnit - Юнит из движка, который будет представлять этого героя.
+     */
     constructor(hordeUnit: HordeClassLibrary.World.Objects.Units.Unit) {
         super(hordeUnit);
-    }
+    } // </constructor>
 
     protected static _InitHordeConfig() {
         ScriptUtils.SetValue(this.Cfg, "Name", "Герой {всадник}");

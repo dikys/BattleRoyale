@@ -45,6 +45,13 @@ export class ISpell {
     protected static _Description                   : string = "";
     protected static _UnitCost                      : ResourcesAmount = new ResourcesAmount(0, 0, 0, 0);
 
+    /**
+     * @method GetCommandConfig
+     * @description Создает или возвращает конфигурацию команды для кнопки заклинания в UI.
+     * @static
+     * @param {number} slotNum - Номер слота для заклинания.
+     * @returns {UnitCommandConfig} - Конфигурация команды.
+     */
     public static GetCommandConfig(slotNum: number) : UnitCommandConfig {
         var customCommandCfgUid = this._ButtonUidPrefix + this._ButtonUid + "_" + slotNum;
         var customCommand : UnitCommandConfig;
@@ -74,8 +81,14 @@ export class ISpell {
         }
 
         return customCommand;
-    }
+    } // </GetCommandConfig>
 
+    /**
+     * @method GetUnitConfig
+     * @description Создает или возвращает конфигурацию "юнита" для представления заклинания (например, в меню производства).
+     * @static
+     * @returns {UnitConfig} - Конфигурация юнита.
+     */
     public static GetUnitConfig() {
         var unitConfigCfgUid = this._ButtonUidPrefix + this._ButtonUid + "_UnitCfg";
         var unitConfig : UnitConfig;
@@ -93,19 +106,37 @@ export class ISpell {
         }
 
         return unitConfig;
-    }
+    } // </GetUnitConfig>
 
+    /**
+     * @method GetName
+     * @description Возвращает имя заклинания.
+     * @static
+     * @returns {string} - Имя заклинания.
+     */
     public static GetName() : string {
         return this._Name;
-    }
+    } // </GetName>
 
+    /**
+     * @method GetDescription
+     * @description Возвращает описание заклинания.
+     * @static
+     * @returns {string} - Описание заклинания.
+     */
     public static GetDescription() : string {
         return this._Description;
-    }
+    } // </GetDescription>
 
+    /**
+     * @method GetUid
+     * @description Возвращает уникальный идентификатор (UID) заклинания.
+     * @static
+     * @returns {string} - UID заклинания.
+     */
     public static GetUid() : string {
         return this._ButtonUidPrefix + this._ButtonUid;
-    }
+    } // </GetUid>
 
     public level : number;
 
@@ -126,6 +157,10 @@ export class ISpell {
     private   _processingTack         : number;
     private   _slotNum                : number;
 
+    /**
+     * @constructor
+     * @param {IUnitCaster} caster - Юнит, который будет использовать это заклинание.
+     */
     constructor(caster: IUnitCaster) {
         // @ts-expect-error
         this._processingTack = this.constructor["_ProcessingTack"]++ % this.constructor["_ProcessingModule"];
@@ -145,31 +180,66 @@ export class ISpell {
         }
 
         this._caster.hordeUnit.CommandsMind.AddCommand(this.GetUnitCommand(), this.GetCommandConfig());
-    }
+    } // </constructor>
 
+    /**
+     * @method OnReplacedCaster
+     * @description Вызывается при замене юнита-кастера (например, при повышении скорпиона до героя).
+     * @param {IUnitCaster} caster - Новый юнит-кастер.
+     */
     public OnReplacedCaster(caster: IUnitCaster) {
         this._caster = caster;
 
         if (this._state != SpellState.RELOAD) {
             this._caster.hordeUnit.CommandsMind.AddCommand(this.GetUnitCommand(), this.GetCommandConfig());
         }
-    }
+    } // </OnReplacedCaster>
 
+    /**
+     * @method GetUnitCommand
+     * @description Возвращает тип команды, связанный с этим заклинанием.
+     * @returns {UnitCommand} - Тип команды.
+     */
     public GetUnitCommand() : UnitCommand {
         // @ts-expect-error
         return this.constructor["_ButtonCommandTypeBySlot"][this._slotNum];
-    }
+    } // </GetUnitCommand>
 
+    /**
+     * @method GetCommandConfig
+     * @description Возвращает конфигурацию команды для этого экземпляра заклинания.
+     * @returns {UnitCommandConfig} - Конфигурация команды.
+     */
     public GetCommandConfig() : UnitCommandConfig {
         // @ts-expect-error
         return this.constructor["GetCommandConfig"](this._slotNum);
-    }
+    } // </GetCommandConfig>
 
+    /**
+     * @method GetUid
+     * @description Возвращает UID этого экземпляра заклинания.
+     * @returns {string} - UID.
+     */
     public GetUid() : string {
         // @ts-expect-error
         return this.constructor["GetUid"]();
-    }
+    } // </GetUid>
 
+    /**
+     * @method GetState
+     * @description Возвращает текущее состояние заклинания.
+     * @returns {SpellState} - Состояние (READY, ACTIVATED, RELOAD, etc.).
+     */
+    public GetState() : SpellState {
+        return this._state;
+    } // </GetState>
+
+    /**
+     * @method Activate
+     * @description Активирует заклинание, если оно готово.
+     * @param {ACommandArgs} activateArgs - Аргументы команды активации.
+     * @returns {boolean} - true, если активация прошла успешно, иначе false.
+     */
     public Activate(activateArgs: ACommandArgs) : boolean {
         if (this._state == SpellState.READY) {
             this._state             = SpellState.ACTIVATED;
@@ -190,8 +260,14 @@ export class ISpell {
         } else {
             return false;
         }
-    }
+    } // </Activate>
 
+    /**
+     * @method OnEveryTick
+     * @description Вызывается на каждом тике, управляет жизненным циклом заклинания (перезарядка, активация).
+     * @param {number} gameTickNum - Текущий тик игры.
+     * @returns {boolean} - true, если заклинание было обработано в этот тик.
+     */
     public OnEveryTick(gameTickNum: number): boolean {
         // @ts-expect-error
         if (gameTickNum % this.constructor["_ProcessingModule"] != this._processingTack) {
@@ -234,8 +310,12 @@ export class ISpell {
         }
 
         return true;
-    }
+    } // </OnEveryTick>
 
+    /**
+     * @method LevelUp
+     * @description Повышает уровень заклинания, увеличивая количество зарядов.
+     */
     public LevelUp() {
         this.level++;
 
@@ -243,7 +323,7 @@ export class ISpell {
         this._chargesCount += this.constructor["_ChargesCount"];;
         // @ts-expect-error
         this._charges      += this.constructor["_ChargesCount"];;
-    }
+    } // </LevelUp>
 
     protected _OnEveryTickReady(gameTickNum: number) {
         return true;

@@ -3,6 +3,13 @@ import { enumerate, eNext } from "library/dotnet/dotnet-utils";
 import { BulletConfig, TileType, UnitCommand, UnitConfig, UnitFlags, UnitSpecification } from "library/game-logic/horde-types";
 import { getUnitProfessionParams, UnitProducerProfessionParams, UnitProfession } from "library/game-logic/unit-professions";
 
+/**
+ * @function CreateHordeUnitConfig
+ * @description Создает или пересоздает конфигурацию юнита на основе базовой.
+ * @param {string} BaseCfgUid - UID базовой конфигурации.
+ * @param {string} newCfgUid - UID для новой конфигурации.
+ * @returns {UnitConfig} - Новая или обновленная конфигурация юнита.
+ */
 export function CreateHordeUnitConfig(BaseCfgUid: string, newCfgUid: string) : UnitConfig {
     var hordeConfig: UnitConfig;
 
@@ -15,17 +22,28 @@ export function CreateHordeUnitConfig(BaseCfgUid: string, newCfgUid: string) : U
     //}
 
     return hordeConfig;
-}
+} // </CreateHordeUnitConfig>
 
+/**
+ * @function CreateHordeBulletConfig
+ * @description Создает или возвращает конфигурацию снаряда на основе базовой.
+ * @param {string} baseConfigUid - UID базовой конфигурации.
+ * @param {string} newConfigUid - UID для новой конфигурации.
+ * @returns {BulletConfig} - Новая или существующая конфигурация снаряда.
+ */
 export function CreateHordeBulletConfig(baseConfigUid: string, newConfigUid: string) : BulletConfig {
     if (HordeContentApi.HasBulletConfig(newConfigUid)) {
         return HordeContentApi.GetBulletConfig(newConfigUid);
     } else {
         return HordeContentApi.CloneConfig(HordeContentApi.GetBulletConfig(baseConfigUid), newConfigUid) as BulletConfig;
     }
-}
+} // </CreateHordeBulletConfig>
 
-/** добавить профессию найма юнитов, если была добавлена, то установит точки выхода и очистит список построек */
+/**
+ * @function CfgAddUnitProducer
+ * @description Добавляет или настраивает профессию "Производитель юнитов" для заданной конфигурации.
+ * @param {UnitConfig} Cfg - Конфигурация юнита, которую нужно модифицировать.
+ */
 export function CfgAddUnitProducer(Cfg: UnitConfig) {
     // даем профессию найм войнов при отсутствии
     if (!getUnitProfessionParams(Cfg, UnitProfession.UnitProducer)) {
@@ -53,17 +71,32 @@ export function CfgAddUnitProducer(Cfg: UnitConfig) {
 
         HordeContentApi.RemoveConfig(donorCfg);
     }
-}
+} // </CfgAddUnitProducer>
 
+/**
+ * @class FactoryConfig
+ * @description Хранит пару конфигураций: юнита и фабрики, которая его производит.
+ */
 export class FactoryConfig {
     public unitConfig: IConfig;
     public factoryConfig: IConfig;
     
+    /**
+     * @constructor
+     * @param {IConfig} unitConfig - Конфигурация производимого юнита.
+     * @param {IConfig} factoryConfig - Конфигурация фабрики.
+     */
     constructor(unitConfig: IConfig, factoryConfig: IConfig) {
         this.unitConfig    = unitConfig;
         this.factoryConfig = factoryConfig;
-    }
+    } // </constructor>
 }
+/**
+ * @function GetConfigsByWorker
+ * @description Рекурсивно обходит дерево производства, начиная с указанного рабочего, и возвращает все пары "юнит-фабрика".
+ * @param {string} workerHordeConfigUid - UID конфигурации рабочего, с которого начинается обход.
+ * @returns {Array<FactoryConfig>} - Массив пар конфигураций.
+ */
 export function GetConfigsByWorker(workerHordeConfigUid: string) : Array<FactoryConfig> {
     var configs = new Array<FactoryConfig>();
 
@@ -99,25 +132,42 @@ export function GetConfigsByWorker(workerHordeConfigUid: string) : Array<Factory
     ApplyChangesRecursively(workerHordeConfigUid, "");
 
     return configs;
-}
+} // </GetConfigsByWorker>
 
+/**
+ * @class IConfig
+ * @description Обертка над стандартной конфигурацией юнита (UnitConfig), предоставляющая дополнительные методы и логику.
+ */
 export class IConfig {
 // non-static
     public hordeConfig : UnitConfig;
 
+    /**
+     * @constructor
+     * @param {UnitConfig} hordeConfig - Конфигурация юнита из движка.
+     */
     constructor (hordeConfig : UnitConfig) {
         this.hordeConfig = hordeConfig;
-    }
+    } // </constructor>
 
+    /**
+     * @method IsCombat
+     * @description Определяет, является ли юнит боевым.
+     * @returns {boolean} - true, если юнит боевой.
+     */
     public IsCombat () {
         let mainArmament = this.hordeConfig.MainArmament;
         return mainArmament != null &&
             this.hordeConfig.GetProfessionParams(UnitProfession.Harvester, true) == null &&
             !this.hordeConfig.Flags.HasFlag(UnitFlags.Building);
-    }
+    } // </IsCombat>
 
     private static _getConfigPower: Map<string, number> = new Map<string, number>();
-    /// для конфига вернет опыт за единицу хп
+    /**
+     * @method CalcPower
+     * @description Рассчитывает "силу" юнита на основе его характеристик.
+     * @returns {number} - Рассчитанное значение силы.
+     */
     public CalcPower(): number {
         var res: number = 0;
         if (IConfig._getConfigPower.has(this.hordeConfig.Uid)) {
@@ -158,7 +208,7 @@ export class IConfig {
             IConfig._getConfigPower.set(this.hordeConfig.Uid, res);
         }
         return res;
-    }
+    } // </CalcPower>
 
 // static
 
@@ -167,6 +217,12 @@ export class IConfig {
     protected static Cfg         : UnitConfig;
     protected static BaseCfgUid  : string = "";
 
+    /**
+     * @method GetHordeConfig
+     * @description Возвращает или создает и инициализирует статическую конфигурацию юнита для этого класса.
+     * @static
+     * @returns {UnitConfig} - Конфигурация юнита.
+     */
     public static GetHordeConfig () : UnitConfig {
         if (this.Cfg) {
             return this.Cfg;
@@ -177,7 +233,7 @@ export class IConfig {
 
             return this.Cfg;
         }
-    }
+    } // </GetHordeConfig>
 
     protected static _InitHordeConfig() {
         // убираем требования

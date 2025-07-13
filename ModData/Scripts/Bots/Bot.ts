@@ -1,123 +1,360 @@
 import { IHero } from "../Heroes/IHero";
 import { GameField } from "../Core/GameField";
-import { Cell } from "../Core/Cell";
-import { UnitCommand, ACommandArgs } from "library/game-logic/horde-types";
-import { ActiveScena } from "library/game-logic/scena";
-import { Unit } from "library/game-logic/horde-types";
 import { PlayerSettlement } from "../Core/PlayerSettlement";
 import { GameSettlement } from "../Core/GameSettlement";
-import { DiplomacyStatus } from "library/game-logic/horde-types";
+import { IHero } from "../Heroes/IHero";
+import { GameField } from "../Core/GameField";
+import { PlayerSettlement } from "../Core/PlayerSettlement";
+import { GameSettlement } from "../Core/GameSettlement";
+import { IUnit } from "../Units/IUnit";
+import { Cell } from "../Core/Cell";
+import { log } from "library/common/logging";
+import { DiplomacyStatus, UnitFlags } from "library/game-logic/horde-types";
+import { Priest } from "../Units/Priest";
 
+/**
+ * @enum BotStrategy
+ * @description Перечисление возможных стратегий поведения бота.
+ */
+enum BotStrategy {
+    ATTACK_BUILDING, // Атака зданий для получения юнитов
+    ATTACK_ENEMY_HERO, // Атака вражеского героя
+    FARM_NEUTRALS, // Фарм нейтральных юнитов
+    RETREAT, // Отступление
+    HEAL, // Поиск лечения
+    EXPLORE // Исследование карты
+}
+
+/**
+ * @class Bot
+ * @description Управляет поведением искусственного интеллекта (бота) в игре.
+ * Отвечает за принятие решений и управление героем и его армией.
+ */
 export class Bot {
-    private hero: IHero;
-    private gameField: GameField;
-    private playerSettlement: PlayerSettlement;
-    private enemySettlement: GameSettlement;
-    private nextActionTick: number = 0;
-    private actionInterval: number = 50; // Every 50 ticks
+    // =================================================================================================================
+    // СВОЙСТВА
+    // =================================================================================================================
 
-    constructor(hero: IHero, gameField: GameField, playerSettlement: PlayerSettlement, enemySettlement: GameSettlement) {
+    /**
+     * @property {IHero} hero - Герой, которым управляет бот.
+     * @private
+     */
+    private hero: IHero;
+
+    /**
+     * @property {GameField} gameField - Игровое поле, на котором происходят действия.
+     * @private
+     */
+    private gameField: GameField;
+
+    /**
+     * @property {PlayerSettlement} playerSettlement - Поселение, принадлежащее боту.
+     * @private
+     */
+    private playerSettlement: PlayerSettlement;
+
+    /**
+     * @property {GameSettlement} enemySettlement - Поселение врага (для спавна нейтральных/вражеских юнитов).
+     * @private
+     */
+    private enemySettlement: GameSettlement;
+
+    /**
+     * @property {GameSettlement} neutralSettlement - Нейтральное поселение.
+     * @private
+     */
+    private neutralSettlement: GameSettlement;
+
+    /**
+     * @property {number} lastTickProcessed - Последний тик, в который производилась обработка логики бота.
+     * @private
+     */
+    private lastTickProcessed: number = 0;
+
+
+    // =================================================================================================================
+    // КОНСТРУКТОР
+    // =================================================================================================================
+
+    /**
+     * @constructor
+     * @param {IHero} hero - Герой, которым будет управлять бот.
+     * @param {GameField} gameField - Игровое поле.
+     * @param {PlayerSettlement} playerSettlement - Поселение бота.
+     * @param {GameSettlement} enemySettlement - Вражеское поселение.
+     * @param {GameSettlement} neutralSettlement - Нейтральное поселение.
+     */
+    constructor(hero: IHero, gameField: GameField, playerSettlement: PlayerSettlement, enemySettlement: GameSettlement, neutralSettlement: GameSettlement) {
         this.hero = hero;
         this.gameField = gameField;
         this.playerSettlement = playerSettlement;
         this.enemySettlement = enemySettlement;
+        this.neutralSettlement = neutralSettlement;
     }
 
+
+    // =================================================================================================================
+    // ОСНОВНОЙ МЕТОД ОБНОВЛЕНИЯ
+    // =================================================================================================================
+
+    /**
+     * @method OnEveryTick
+     * @description Вызывается на каждом тике игрового цикла. Основная точка входа для логики бота.
+     * @param {number} gameTickNum - Текущий номер тика игры.
+     */
     public OnEveryTick(gameTickNum: number): void {
-        if (gameTickNum < this.nextActionTick) return;
-        this.nextActionTick = gameTickNum + this.actionInterval;
+        // Ограничиваем частоту обработки для оптимизации производительности
+        if (gameTickNum - this.lastTickProcessed < 50) { // Например, обрабатываем раз в 50 тиков
+            return;
+        }
+        this.lastTickProcessed = gameTickNum;
 
-        if (this.hero.IsDead()) return;
+        // 1. Сбор информации (анализ обстановки)
+        const threats = this.AnalyzeThreats();
+        const opportunities = this.AnalyzeOpportunities();
 
+        // 2. Принятие решений (выбор стратегии)
+        const currentStrategy = this.ChooseStrategy(threats, opportunities);
+
+        // 3. Выполнение действий
+        this.ExecuteStrategy(currentStrategy);
+    }
+
+
+    // =================================================================================================================
+    // ЭТАП 1: СБОР ИНФОРМАЦИИ
+    // =================================================================================================================
+
+    /**
+     * @method AnalyzeThreats
+     * @description Анализирует окружение на наличие угроз (вражеские юниты, опасные зоны).
+     * @returns {any[]} - Массив обнаруженных угроз.
+     * @private
+     */
+    private AnalyzeThreats(): IUnit[] {
+        const threats: IUnit[] = [];
+        const heroPosition = Cell.ConvertHordePoint(this.hero.hordeUnit.Cell);
+        const visionRadius = this.hero.hordeUnit.Cfg.Sight;
+
+        // 1. Поиск вражеских юнитов
+        const enumerator = ActiveScena.GetRealScena().Units.GetEnumerator();
+        while (enumerator.MoveNext()) {
+            const unit = enumerator.Current;
+            if (!unit || unit.IsDead || unit.Owner.Uid === this.playerSettlement.settlementUid.toString()) {
+                continue;
+            }
+
+            // Проверяем, что это враг
+            const diplomacy = this.playerSettlement.hordeSettlement.Diplomacy.GetDiplomacyStatus(unit.Owner);
+            if (diplomacy === DiplomacyStatus.War) {
+                const unitPosition = Cell.ConvertHordePoint(unit.Cell);
+                if (heroPosition.Minus(unitPosition).Length_L2() <= visionRadius) {
+                    threats.push(new IUnit(unit));
+                }
+            }
+        }
+        enumerator.Dispose();
+
+        // 2. Проверка нахождения в опасной зоне (вне круга)
         const currentCircle = this.gameField.CurrentCircle();
-        if (!currentCircle) return;
-
-        const heroCell = Cell.ConvertHordePoint(this.hero.hordeUnit.Cell);
-
-        // Priority 1: Stay in center of circle
-        if (heroCell.Minus(currentCircle.center).Length_L2() > currentCircle.radius * 0.8) {
-            this.MoveTo(currentCircle.center);
-            return;
+        if (currentCircle && heroPosition.Minus(currentCircle.center).Length_L2() > currentCircle.radius) {
+            // Герой вне круга - это главная угроза. Можно добавить "виртуальную" угрозу.
+            log.info("Bot: Hero is outside the safe circle!");
+        }
+        
+        if (threats.length > 0) {
+            log.info(`Bot: Found ${threats.length} threats.`);
         }
 
-        // Priority 2: Destroy nearby barracks (enemy buildings)
-        const nearestBarrack = this.FindNearestEnemyBuilding();
-        if (nearestBarrack) {
-            this.AttackUnit(nearestBarrack);
-            return;
-        }
-
-        // Priority 3: Use abilities if possible
-        this.UseAbilities();
-
-        // Priority 4: Attack nearby enemies
-        const nearestEnemy = this.FindNearestEnemy();
-        if (nearestEnemy) {
-            this.AttackUnit(nearestEnemy);
-            return;
-        }
-
-        // Default: Move to center
-        this.MoveTo(currentCircle.center);
+        return threats;
     }
 
-    private MoveTo(targetCell: Cell): void {
-        this.hero.hordeUnit.GiveOrder(UnitCommand.SmartMove, targetCell.ToHordePoint());
-    }
+    /**
+     * @method AnalyzeOpportunities
+     * @description Анализирует окружение на наличие возможностей (ресурсы, слабые цели, здания).
+     * @returns {any[]} - Массив обнаруженных возможностей.
+     * @private
+     */
+    private AnalyzeOpportunities(): IUnit[] {
+        const opportunities: IUnit[] = [];
+        const heroPosition = Cell.ConvertHordePoint(this.hero.hordeUnit.Cell);
+        const visionRadius = this.hero.hordeUnit.Cfg.Sight * 1.5; // Ищем возможности в большем радиусе
 
-    private AttackUnit(target: Unit): void {
-        this.hero.hordeUnit.GiveOrder(UnitCommand.Attack, target.Cell);
-    }
-
-    private FindNearestEnemyBuilding(): Unit | null {
-        let nearest: Unit | null = null;
-        let minDist = Infinity;
-        const enumerator = ActiveScena.GetRealScena().UnitsMap.GetEnumerator();
+        const enumerator = ActiveScena.GetRealScena().Units.GetEnumerator();
         while (enumerator.MoveNext()) {
             const unit = enumerator.Current;
-            if (unit && unit.Owner.Uid === this.enemySettlement.hordeSettlement.Uid && unit.Cfg.IsBuilding) {
-                const dist = Cell.ConvertHordePoint(this.hero.hordeUnit.Cell).Minus(Cell.ConvertHordePoint(unit.Cell)).Length_L2();
-                if (dist < minDist) {
-                    minDist = dist;
-                    nearest = unit;
+            if (!unit || unit.IsDead) {
+                continue;
+            }
+
+            // Ищем нейтральные здания (принадлежат вражескому поселению) и знахарей (нейтралы)
+            const isNeutralBuilding = unit.Owner.Uid === this.enemySettlement.hordeSettlement.Uid && unit.Cfg.Flags.HasFlag(UnitFlags.Building);
+            const isPriest = unit.Cfg.Uid === Priest.GetHordeConfig().Uid
+                                && unit.Owner.Uid === this.neutralSettlement.hordeSettlement.Uid;
+
+            if (isNeutralBuilding || isPriest) {
+                 const unitPosition = Cell.ConvertHordePoint(unit.Cell);
+                if (heroPosition.Minus(unitPosition).Length_L2() <= visionRadius) {
+                    opportunities.push(new IUnit(unit));
                 }
             }
         }
         enumerator.Dispose();
-        return nearest;
+        
+        if (opportunities.length > 0) {
+            log.info(`Bot: Found ${opportunities.length} opportunities.`);
+        }
+
+        return opportunities;
     }
 
-    private FindNearestEnemy(): Unit | null {
-        let nearest: Unit | null = null;
-        let minDist = Infinity;
-        const enumerator = ActiveScena.GetRealScena().UnitsMap.GetEnumerator();
-        while (enumerator.MoveNext()) {
-            const unit = enumerator.Current;
-            if (unit && unit.Owner.Uid !== this.playerSettlement.hordeSettlement.Uid && !unit.IsDead && !unit.Cfg.IsBuilding && unit.Owner.Diplomacy.GetStatus(this.playerSettlement.hordeSettlement) === DiplomacyStatus.War) {
-                const dist = Cell.ConvertHordePoint(this.hero.hordeUnit.Cell).Minus(Cell.ConvertHordePoint(unit.Cell)).Length_L2();
-                if (dist < minDist && dist < this.hero.hordeConfig.Sight * 32) {
-                    minDist = dist;
-                    nearest = unit;
-                }
-            }
+
+    // =================================================================================================================
+    // ЭТАП 2: ПРИНЯТИЕ РЕШЕНИЙ
+    // =================================================================================================================
+
+    /**
+     * @method ChooseStrategy
+     * @description Выбирает наилучшую стратегию на основе анализа обстановки.
+     * @param {any[]} threats - Список угроз.
+     * @param {any[]} opportunities - Список возможностей.
+     * @returns {BotStrategy} - Выбранная стратегия.
+     * @private
+     */
+    private ChooseStrategy(threats: IUnit[], opportunities: IUnit[]): BotStrategy {
+        // TODO: Реализовать логику выбора стратегии.
+        // - Если здоровье героя низкое, выбрать RETREAT или HEAL.
+        // - Если рядом сильный враг, выбрать RETREAT.
+        // - Если рядом есть незащищенное здание, выбрать ATTACK_BUILDING.
+        // - Если армия бота сильнее армии врага, выбрать ATTACK_ENEMY_HERO.
+        // - В остальных случаях выбрать EXPLORE.
+        log.info("Bot: Choosing strategy...");
+        if (threats.length > 0) {
+            return BotStrategy.RETREAT;
         }
-        enumerator.Dispose();
-        return nearest;
+        if (opportunities.length > 0) {
+            return BotStrategy.ATTACK_BUILDING;
+        }
+        return BotStrategy.EXPLORE; // По умолчанию - исследование
     }
 
-    private UseAbilities(): void {
-        const nearestEnemy = this.FindNearestEnemy();
-        if (nearestEnemy) {
-            // Simple: Try to use a spell command if allowed
-            // Assuming spells use custom command types, but for example use UnitCommand.CastSpell or similar
-            // Since specific, perhaps hardcode common spell commands
-            const spellCommands = [UnitCommand.CastSpell1, UnitCommand.CastSpell2]; // Placeholder
-            for (const cmd of spellCommands) {
-                if (this.hero.hordeUnit.AllowedCommands.ContainsKey(cmd)) {
-                    this.hero.hordeUnit.GiveOrder(cmd, nearestEnemy.Cell);
-                    break;
-                }
-            }
+
+    // =================================================================================================================
+    // ЭТАП 3: ВЫПОЛНЕНИЕ ДЕЙСТВИЙ
+    // =================================================================================================================
+
+    /**
+     * @method ExecuteStrategy
+     * @description Выполняет действия в соответствии с выбранной стратегией.
+     * @param {BotStrategy} strategy - Стратегия для выполнения.
+     * @private
+     */
+    private ExecuteStrategy(strategy: BotStrategy): void {
+        log.info(`Bot: Executing strategy - ${BotStrategy[strategy]}`);
+        switch (strategy) {
+            case BotStrategy.ATTACK_BUILDING:
+                this.ExecuteAttackBuilding();
+                break;
+            case BotStrategy.ATTACK_ENEMY_HERO:
+                this.ExecuteAttackEnemyHero();
+                break;
+            case BotStrategy.RETREAT:
+                this.ExecuteRetreat();
+                break;
+            case BotStrategy.EXPLORE:
+                this.ExecuteExplore();
+                break;
+            // ... другие стратегии
+        }
+
+        // Также здесь можно управлять использованием способностей героя.
+        this.ManageAbilities();
+    }
+
+    /**
+     * @method ExecuteAttackBuilding
+     * @description Логика атаки на здание.
+     * @private
+     */
+    private ExecuteAttackBuilding(): void {
+        // TODO: Найти ближайшее здание и отдать приказ атаковать.
+        log.info("Bot Action: Attacking building.");
+    }
+
+    /**
+     * @method ExecuteAttackEnemyHero
+     * @description Логика атаки на вражеского героя.
+     * @private
+     */
+    private ExecuteAttackEnemyHero(): void {
+        // TODO: Найти вражеского героя и отдать приказ атаковать.
+        log.info("Bot Action: Attacking enemy hero.");
+    }
+
+    /**
+     * @method ExecuteRetreat
+     * @description Логика отступления.
+     * @private
+     */
+    private ExecuteRetreat(): void {
+        // TODO: Найти безопасную точку и отдать приказ двигаться к ней.
+        log.info("Bot Action: Retreating.");
+    }
+
+    /**
+     * @method ExecuteExplore
+     * @description Логика исследования карты.
+     * @private
+     */
+    private ExecuteExplore(): void {
+        // TODO: Выбрать случайную точку на карте (в пределах безопасной зоны) и двигаться к ней.
+        log.info("Bot Action: Exploring.");
+        const targetCell = this.FindRandomPointToExplore();
+        if (targetCell) {
+            this.hero.SmartMoveTo(targetCell);
         }
     }
-} 
+
+    /**
+     * @method ManageAbilities
+     * @description Управляет использованием способностей героя.
+     * @private
+     */
+    private ManageAbilities(): void {
+        // TODO: Проверить, можно ли использовать способность, и если да, то применить ее.
+        // Например, если рядом много врагов, использовать АОЕ-способность.
+    }
+
+
+    // =================================================================================================================
+    // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
+    // =================================================================================================================
+
+    /**
+     * @method FindRandomPointToExplore
+     * @description Находит случайную, но достижимую точку на карте для исследования.
+     * @returns {Cell | null} - Координаты точки или null, если найти не удалось.
+     * @private
+     */
+    private FindRandomPointToExplore(): Cell | null {
+        const currentCircle = this.gameField.CurrentCircle();
+        if (!currentCircle) {
+            return null; // Некуда исследовать, если круга нет
+        }
+
+        // Генерируем случайную точку внутри текущего круга
+        const angle = Math.random() * 2 * Math.PI;
+        const radius = Math.random() * currentCircle.radius;
+        const point = new Cell(
+            currentCircle.center.X + Math.cos(angle) * radius,
+            currentCircle.center.Y + Math.sin(angle) * radius
+        ).Scale(1/32).Round();
+
+        // Проверяем, достижима ли точка
+        if (this.gameField.IsAchievableCell(point)) {
+            return point;
+        }
+
+        return null; // Не удалось найти точку
+    }
+}

@@ -12,6 +12,13 @@ export class GeometryCircle {
     // @ts-expect-error
     geometry: GeometryVisualEffect;
 
+    /**
+     * @constructor
+     * @param {number} radius - Радиус круга.
+     * @param {Cell} center - Центральная клетка круга.
+     * @param {Stride_Color} color - Цвет круга.
+     * @param {number} thickness - Толщина линии круга.
+     */
     constructor(radius: number, center: Cell, color: Stride_Color, thickness: number, ) {
         this.radius = Math.round(radius);
         this.center = center;
@@ -22,6 +29,11 @@ export class GeometryCircle {
         this.center.Y = Math.round(this.center.Y);
     }
 
+    /**
+     * @method Draw
+     * @description Отрисовывает круг на карте как геометрический визуальный эффект.
+     * @param {number} [tiksToLive] - Время жизни эффекта в тиках. По умолчанию - "бесконечно".
+     */
     public Draw(tiksToLive?: number) {
         let geometryCanvas = new GeometryCanvas();
         geometryCanvas.DrawCircle(

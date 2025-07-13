@@ -9,9 +9,13 @@ export class Hero_FireArcher extends IHero {
     protected static BaseCfgUid  : string = "#UnitConfig_Slavyane_Archer_2";
     protected static _Spells : Array<typeof ISpell> = [Spell_Fireball, Spell_FireArrowsRain];
 
+    /**
+     * @constructor
+     * @param {HordeClassLibrary.World.Objects.Units.Unit} hordeUnit - Юнит из движка, который будет представлять этого героя.
+     */
     constructor(hordeUnit: HordeClassLibrary.World.Objects.Units.Unit) {
         super(hordeUnit);
-    }
+    } // </constructor>
 
     protected static _InitHordeConfig() {
         ScriptUtils.SetValue(this.Cfg, "Name", "Герой {поджигатель}");

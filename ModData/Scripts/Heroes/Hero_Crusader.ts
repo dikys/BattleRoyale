@@ -8,9 +8,13 @@ export class Hero_Crusader extends IHero {
     protected static BaseCfgUid  : string = "#UnitConfig_Slavyane_Spearman";
     protected static _Spells : Array<typeof ISpell> = [Spell_healing_aura, Spell_fortress];
 
+    /**
+     * @constructor
+     * @param {HordeClassLibrary.World.Objects.Units.Unit} hordeUnit - Юнит из движка, который будет представлять этого героя.
+     */
     constructor(hordeUnit: HordeClassLibrary.World.Objects.Units.Unit) {
         super(hordeUnit);
-    }
+    } // </constructor>
 
     protected static _InitHordeConfig() {
         ScriptUtils.SetValue(this.Cfg, "Name", "Герой {рыцарь}");

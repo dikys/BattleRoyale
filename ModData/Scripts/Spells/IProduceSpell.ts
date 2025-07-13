@@ -11,6 +11,10 @@ export class IProduceSpell extends ISpell {
     // @ts-expect-error
     protected _productCfg : UnitConfig;
 
+    /**
+     * @constructor
+     * @param {IUnitCaster} caster - Юнит, который кастует заклинание.
+     */
     constructor(caster: IUnitCaster) {
         var casterCfg = caster.hordeConfig;
         CfgAddUnitProducer(casterCfg);
@@ -24,8 +28,14 @@ export class IProduceSpell extends ISpell {
         caster.hordeUnit.CommandsMind.RemoveAddedCommand(UnitCommand.Produce);
 
         super(caster);
-    }
+    } // </constructor>
 
+    /**
+     * @method Activate
+     * @description Активирует заклинание, сохраняя конфигурацию создаваемого юнита.
+     * @param {ACommandArgs} activateArgs - Аргументы команды активации.
+     * @returns {boolean} - true, если активация прошла успешно, иначе false.
+     */
     public Activate(activateArgs: ACommandArgs) : boolean {
         if (super.Activate(activateArgs)) {
             // @ts-expect-error
@@ -35,5 +45,5 @@ export class IProduceSpell extends ISpell {
         } else {
             return false;
         }
-    }
+    } // </Activate>
 }

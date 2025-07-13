@@ -130,9 +130,11 @@ import { BattleRoyalePlugin } from "./BattleRoyalePlugin";
 // юниты убитого игрока удаляются с карты
 
 /**
- * Вызывается до вызова "onFirstRun()" при первом запуске скрипт-машины, а так же при hot-reload
+ * @function onInitialization
+ * @description Вызывается до вызова "onFirstRun()" при первом запуске скрипт-машины, а так же при hot-reload.
+ * Регистрирует основной плагин игры "BattleRoyalePlugin".
  */
 export function onInitialization() {
     // Инициализация плагинов
     activePlugins.register(new BattleRoyalePlugin());
-}
+} // </onInitialization>

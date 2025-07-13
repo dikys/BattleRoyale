@@ -8,6 +8,12 @@ export class IUnitCaster extends IUnit {
     private static _GetOrderWorkerSet : boolean = false;
     private static _baseGetOrderWorker : HordeClassLibrary.UnitComponents.Workers.Interfaces.Special.AUnitWorkerGetOrder;
 
+    /**
+     * @method GetHordeConfig
+     * @description Получает и настраивает конфигурацию юнита, добавляя кастомный обработчик приказов.
+     * @static
+     * @returns {UnitConfig} - Конфигурация юнита.
+     */
     public static GetHordeConfig () : UnitConfig {
         super.GetHordeConfig();
 
@@ -31,7 +37,7 @@ export class IUnitCaster extends IUnit {
         }
 
         return this.Cfg;
-    }
+    } // </GetHordeConfig>
 
     private static _GetOrderWorker(unit: Unit, commandArgs: ACommandArgs): boolean {
         var heroObj = this._OpUnitIdToUnitCasterObject.get(unit.Id);
@@ -47,6 +53,10 @@ export class IUnitCaster extends IUnit {
 
     protected _spells : Array<ISpell>;
 
+    /**
+     * @constructor
+     * @param {Unit} hordeUnit - Юнит из движка, который будет являться кастером.
+     */
     constructor(hordeUnit: Unit) {
         super(hordeUnit);
 
@@ -56,8 +66,13 @@ export class IUnitCaster extends IUnit {
         this.hordeUnit.CommandsMind.HideCommand(UnitCommand.MoveToPoint);
         this.hordeUnit.CommandsMind.HideCommand(UnitCommand.Attack);
         this.hordeUnit.CommandsMind.HideCommand(UnitCommand.Cancel);
-    }
+    } // </constructor>
 
+    /**
+     * @method AddSpell
+     * @description Добавляет заклинание кастеру. Если заклинание такого типа уже есть, повышает его уровень.
+     * @param {typeof ISpell} spellType - Тип (класс) заклинания для добавления.
+     */
     public AddSpell(spellType: typeof ISpell) {
         // если добавляется тот же скилл, то прокачиваем скилл
         var spellNum;
@@ -72,18 +87,35 @@ export class IUnitCaster extends IUnit {
         } else {
             this._spells[spellNum].LevelUp();
         }
-    }
+    } // </AddSpell>
 
+    /**
+     * @method Spells
+     * @description Возвращает массив всех заклинаний, имеющихся у кастера.
+     * @returns {Array<ISpell>} - Массив заклинаний.
+     */
     public Spells() : Array<ISpell> {
         return this._spells;
-    }
+    } // </Spells>
 
+    /**
+     * @method OnEveryTick
+     * @description Вызывается на каждом тике. Обновляет состояние всех заклинаний.
+     * @param {number} gameTickNum - Текущий тик игры.
+     * @returns {boolean} - Возвращает результат вызова базового метода.
+     */
     public OnEveryTick(gameTickNum: number): boolean {
         this._spells.forEach(spell => spell.OnEveryTick(gameTickNum));
 
         return super.OnEveryTick(gameTickNum);
-    }
+    } // </OnEveryTick>
 
+    /**
+     * @method OnOrder
+     * @description Обрабатывает приказы, отданные кастеру. Активирует соответствующее заклинание.
+     * @param {ACommandArgs} commandArgs - Аргументы приказа.
+     * @returns {boolean} - true, если приказ должен быть обработан дальше; false, если приказ был перехвачен как заклинание.
+     */
     public OnOrder(commandArgs: ACommandArgs) {
         for (var spellNum = 0; spellNum < this._spells.length; spellNum++) {
             if (this._spells[spellNum].GetUnitCommand() != commandArgs.CommandType) {
@@ -99,8 +131,13 @@ export class IUnitCaster extends IUnit {
         }
 
         return true;
-    }
+    } // </OnOrder>
 
+    /**
+     * @method ReplaceHordeUnit
+     * @description Заменяет юнит движка, которым управляет этот класс.
+     * @param {Unit} unit - Новый юнит.
+     */
     public ReplaceHordeUnit(unit: Unit): void {
         super.ReplaceHordeUnit(unit);
 
@@ -110,8 +147,12 @@ export class IUnitCaster extends IUnit {
         this.hordeUnit.CommandsMind.HideCommand(UnitCommand.MoveToPoint);
         this.hordeUnit.CommandsMind.HideCommand(UnitCommand.Attack);
         this.hordeUnit.CommandsMind.HideCommand(UnitCommand.Cancel);
-    }
+    } // </ReplaceHordeUnit>
 
+    /**
+     * @method DisallowCommands
+     * @description Запрещает использование всех заклинаний в дополнение к базовым командам.
+     */
     public DisallowCommands() {
         super.DisallowCommands();
         this._spells.forEach(spell => {
@@ -119,8 +160,12 @@ export class IUnitCaster extends IUnit {
                 this._disallowedCommands.Add(spell.GetUnitCommand(), 1);
             }
         });
-    }
+    } // </DisallowCommands>
     
+    /**
+     * @method AllowCommands
+     * @description Разрешает использование всех заклинаний в дополнение к базовым командам.
+     */
     public AllowCommands() {
         super.AllowCommands();
         this._spells.forEach(spell => {
@@ -128,5 +173,5 @@ export class IUnitCaster extends IUnit {
                 this._disallowedCommands.Remove(spell.GetUnitCommand());
             }
         });
-    }
+    } // </AllowCommands>
 }

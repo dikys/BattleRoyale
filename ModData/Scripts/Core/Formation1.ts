@@ -20,7 +20,13 @@ class Agent {
         this.priority   = Agent._CalcPriority(unit.Cfg);
     }
 
-    /** отдать приказ в точку */
+    /**
+     * @method GivePointCommand
+     * @description Отдает юниту приказ двигаться в указанную точку.
+     * @param {Cell} cell - Целевая клетка.
+     * @param {any} command - Тип команды (например, MoveToPoint, Attack).
+     * @param {any} orderMode - Режим приказа (например, Replace, Enqueue).
+     */
     public GivePointCommand(cell: Cell, command: any, orderMode: any) {
         var pointCommandArgs = new PointCommandArgs(createPoint(cell.X, cell.Y), command, orderMode);
         UnitAllowCommands(this.unit);
@@ -117,6 +123,12 @@ class Orbit {
         this._unitsMap = ActiveScena.GetRealScena().UnitsMap;
     }
 
+    /**
+     * @method AddAgents
+     * @description Добавляет массив агентов на орбиту.
+     * Пересчитывает позиции для всех агентов на орбите.
+     * @param {Array<Agent>} agents - Массив агентов для добавления.
+     */
     AddAgents(agents: Array<Agent>) {
         if (agents.length == 0) {
             return;
@@ -140,6 +152,11 @@ class Orbit {
         }
     }
 
+    /**
+     * @method AddAgent
+     * @description Добавляет одного агента на орбиту, находя для него оптимальное место.
+     * @param {Agent} inAgent - Агент для добавления.
+     */
     AddAgent(inAgent: Agent) {
         var inUnitRelativePos = new Cell(inAgent.unit.Cell.X, inAgent.unit.Cell.Y).Minus(this.unitCenterCell);
 
@@ -211,10 +228,20 @@ class Orbit {
         this.state = SwarmOrbitStage.CHANGED_CENTER;
     }
 
+    /**
+     * @method RemoveAgent
+     * @description Удаляет агента с орбиты по его индексу.
+     * @param {number} agentNum - Индекс агента для удаления.
+     */
     RemoveAgent(agentNum: number) {
         this.RemoveAgents([agentNum]);
     }
 
+    /**
+     * @method RemoveAgents
+     * @description Удаляет массив агентов с орбиты по их индексам.
+     * @param {Array<number>} agentsNum - Массив индексов агентов для удаления.
+     */
     RemoveAgents(agentsNum : Array<number>) {
         // удаляем юнитов
         agentsNum.sort((a, b) => b - a);
@@ -235,6 +262,13 @@ class Orbit {
         this.state = SwarmOrbitStage.CHANGED_CENTER;
     }
     
+    /**
+     * @method OnEveryTick
+     * @description Обрабатывает логику орбиты на каждом тике игры.
+     * Обновляет состояние и позиции агентов.
+     * @param {number} gameTickNum - Текущий тик игры.
+     * @returns {boolean} - Возвращает true, если орбита была обновлена.
+     */
     public OnEveryTick(gameTickNum: number) : boolean {
         // проверяем, что на текущем такте нужно обновить орбиту
         if (gameTickNum % Orbit._UpdatePeriodSize != this.updateTact) {
@@ -323,73 +357,66 @@ export class Formation1 {
     // текущий номер такта
     private _gameTickNum: number;
 
+    /**
+     * @constructor
+     * @param {any} unitCenter - Юнит, являющийся центром формации.
+     * @param {number} startRadius - Начальный радиус для первой орбиты.
+     */
     constructor(unitCenter: any, startRadius: number) {
-        this._unitCenter = unitCenter;
-
-        this._orbits = new Array<Orbit>();
+        this._unitCenter  = unitCenter;
+        this._orbits      = new Array<Orbit>();
         this._orbits.push(new Orbit(this._unitCenter, startRadius));
-
-        this._reformationOrderTact = -1;
-        this._gameTickNum = 0;
+        this._reformationOrderTact = -100;
+        this._gameTickNum          = 0;
     }
 
+    /**
+     * @method AddUnits
+     * @description Добавляет юнитов в формацию, создавая для них агентов.
+     * @param {Array<any>} units - Массив юнитов для добавления.
+     */
     public AddUnits(units: Array<any>) {
-        // заказываем реформацию
-        this._reformationOrderTact = this._gameTickNum;
+        if (units.length == 0) {
+            return;
+        }
 
-        var agents = units.map((unit) => {
-            return new Agent(unit);
-        });
-        agents.sort((a, b) => b.priority - a.priority);
+        var agents = new Array<Agent>();
+        units.forEach(unit => agents.push(new Agent(unit)));
         this._AddAgents(agents);
     }
 
+    /**
+     * @method OnEveryTick
+     * @description Обрабатывает логику формации на каждом тике игры.
+     * Вызывает обновление орбит и при необходимости перестроение.
+     * @param {number} gameTickNum - Текущий тик игры.
+     */
     public OnEveryTick(gameTickNum: number) {
         this._gameTickNum = gameTickNum;
 
-        this._orbits.forEach((orbit) => {
-            if (orbit.OnEveryTick(gameTickNum)) {
-                // удаляем мертвых юнитов
-                var deadAgentsNum = new Array<number>()
-                orbit.agents.forEach((agent, agentNum) => {
-                    if (agent.unit.IsDead) {
-                        deadAgentsNum.push(agentNum);
-                    }
-                });
-                if (deadAgentsNum.length > 0) {
-                    // заказываем реформацию
-                    this._reformationOrderTact = this._gameTickNum;
+        // обновляем положение юнитов на орбитах
+        this._orbits.forEach((orbit) => orbit.OnEveryTick(gameTickNum));
 
-                    orbit.RemoveAgents(deadAgentsNum);
-                }
-            }
-        });
-
-        // реформация
-        if (this._reformationOrderTact >= 0 && this._reformationOrderTact + 250 < gameTickNum) {
-            this._reformationOrderTact = -1;
-
+        // проверяем, что нужно сделать перестроение
+        if (this._reformationOrderTact > 0 && this._reformationOrderTact < gameTickNum) {
+            this._reformationOrderTact = 0;
             this._Reformation();
         }
     }
 
     private _Reformation() {
-        var agents = new Array<Agent>();
-
-        // извлекаем всех агентов с орбит
+        // получаем список всех агентов
+        var allAgents = new Array<Agent>();
         this._orbits.forEach((orbit) => {
-            var agentsNum = new Array<number>();
-            orbit.agents.forEach((agent, agentNum) => {
-                agentsNum.push(agentNum);
-                agents.push(agent);
-            });
-            orbit.RemoveAgents(agentsNum);
+            allAgents = allAgents.concat(orbit.agents);
+            orbit.RemoveAgents(Array.from(Array(orbit.agents.length).keys()));
         });
 
-        // сортируем по приоритету
-        agents.sort((a, b) => b.priority - a.priority);
+        // сортируем агентов по приоритету
+        allAgents.sort((a, b) => b.priority - a.priority);
 
-        this._AddAgents(agents);
+        // добавляем агентов в формацию
+        this._AddAgents(allAgents);
     }
 
     private _AddAgents(agents: Array<Agent>) {

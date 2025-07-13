@@ -25,14 +25,24 @@ class Agent {
         this._canAttackTarget = false;
     }
 
-    /** отдать приказ в точку */
+    /**
+     * @method GivePointCommand
+     * @description Отдает юниту приказ, связанный с точкой на карте (движение, атака).
+     * @param {Cell} cell - Целевая клетка.
+     * @param {any} command - Тип команды.
+     * @param {any} orderMode - Режим приказа.
+     */
     public GivePointCommand(cell: Cell, command: any, orderMode: any) {
         this.unit.AllowCommands();
         this.unit.GivePointCommand(cell, command, orderMode);
         this.unit.DisallowCommands();
-    }
+    } // </GivePointCommand>
 
-    /** атаковать точку */
+    /**
+     * @method SmartAttackCommand
+     * @description Отдает "умный" приказ атаки: если в клетке союзник - двигаться, иначе - атаковать.
+     * @param {Cell} cell - Целевая клетка для атаки.
+     */
     public SmartAttackCommand(cell: Cell) {
         var upperHordeUnit = ActiveScena.UnitsMap.GetUpperUnit(cell.ToHordePoint());
         if (upperHordeUnit && upperHordeUnit.Owner.Uid == this.unit.hordeUnit.Owner.Uid) {
@@ -40,13 +50,21 @@ class Agent {
         } else {
             this.GivePointCommand(cell, UnitCommand.Attack, AssignOrderMode.Replace);
         }
-    }
+    } // </SmartAttackCommand>
 
-    /** вернуться в целевую точку */
+    /**
+     * @method SmartMoveToTargetCommand
+     * @description Отдает приказ двигаться к своей назначенной целевой клетке в формации.
+     */
     public SmartMoveToTargetCommand() {
         this.GivePointCommand(this.targetCell, UnitCommand.MoveToPoint, AssignOrderMode.Replace);
-    }
+    } // </SmartMoveToTargetCommand>
 
+    /**
+     * @method SmartAttackTarget
+     * @description Назначает юниту цель для атаки и отдает приказ.
+     * @param {IUnit | null} target - Целевой юнит или null для отмены.
+     */
     public SmartAttackTarget(target: IUnit | null) {
         this._attackTarget = target;
         if (this._attackTarget == null) {
@@ -67,8 +85,13 @@ class Agent {
         } else {
             this.GivePointCommand(attackTargetCell, UnitCommand.Attack, AssignOrderMode.Replace);
         }
-    }
+    } // </SmartAttackTarget>
 
+    /**
+     * @method OnEveryTick
+     * @description Выполняется каждый тик, управляя поведением агента (движение, атака).
+     * @param {number} gameTickNum - Текущий тик игры.
+     */
     public OnEveryTick(gameTickNum: number) {
         if (!this.unit.NeedProcessing(gameTickNum - 1)) {
             return;
@@ -135,7 +158,7 @@ class Agent {
                 this.GivePointCommand(this.targetCell, UnitCommand.Attack, AssignOrderMode.Replace);
             }
         }
-    }
+    } // </OnEveryTick>
 };
 
 class Orbit {
@@ -189,14 +212,24 @@ class Orbit {
         this.attackTarget        = null;
     }
 
+    /**
+     * @method SetAttackTarget
+     * @description Устанавливает цель атаки для всех агентов на орбите.
+     * @param {IUnit | null} unit - Целевой юнит или null для отмены.
+     */
     public SetAttackTarget(unit: IUnit | null) {
         this.attackTarget = unit;
         // обновляем атакованного юнита
         this.agents.forEach((agent) => {
             agent.SmartAttackTarget(this.attackTarget);
         });
-    }
+    } // </SetAttackTarget>
 
+    /**
+     * @method SetCenter
+     * @description Устанавливает новый центр орбиты и обновляет целевые клетки для агентов.
+     * @param {Cell} center - Новая центральная клетка.
+     */
     public SetCenter(center: Cell) {
         this.centerFormation = center;
         
@@ -207,21 +240,30 @@ class Orbit {
             });
             this.prevCenterFormation = this.centerFormation;
         }
-    }
+    } // </SetCenter>
 
+    /**
+     * @method SmartAttackCommand
+     * @description Отдает всем агентам на орбите "умный" приказ атаки в область вокруг указанной клетки.
+     * @param {Cell} cell - Центральная клетка для атаки.
+     */
     public SmartAttackCommand(cell: Cell) {
         this.SetAttackTarget(null);
         this.agents.forEach(agent => {
             agent.SmartAttackCommand(cell.Add(this.cells[agent.cellNum]));
         });
-    }
+    } // </SmartAttackCommand>
 
+    /**
+     * @method SmartMoveToTargetCommand
+     * @description Приказывает всем агентам вернуться на свои позиции в формации.
+     */
     public SmartMoveToTargetCommand() {
         this.SetAttackTarget(null);
         this.agents.forEach(agent => {
             agent.SmartMoveToTargetCommand();
         });
-    }
+    } // </SmartMoveToTargetCommand>
 
     AddAgents(agents: Array<Agent>) {
         if (agents.length == 0) {
@@ -333,6 +375,12 @@ class Orbit {
         }
     }
     
+    /**
+     * @method OnEveryTick
+     * @description Вызывается каждый тик, обновляет состояние агентов на орбите.
+     * @param {number} gameTickNum - Текущий тик игры.
+     * @returns {boolean} - true, если орбита была обработана в этот тик.
+     */
     public OnEveryTick(gameTickNum: number) : boolean {
         // обновляем агентов каждый такт 
         this.agents.forEach((agent) => agent.OnEveryTick(gameTickNum));
@@ -368,6 +416,12 @@ export class Formation2 {
     // плотность орбит
     private _orbitsDestiny: number;
 
+    /**
+     * @constructor
+     * @param {Cell} center - Начальная центральная точка формации.
+     * @param {number} startRadius - Начальный радиус для первой орбиты.
+     * @param {number} orbitsDestiny - Плотность размещения юнитов на орбитах.
+     */
     constructor(center: Cell, startRadius: number, orbitsDestiny: number) {
         this._center = center;
         this._orbitsDestiny = orbitsDestiny;
@@ -375,48 +429,64 @@ export class Formation2 {
         this._orbits = new Array<Orbit>();
         this._orbits.push(new Orbit(this._center, startRadius, this._orbitsDestiny));
 
-        this._reformationOrderTact = -1;
+        this._reformationOrderTact = -100;
         this._gameTickNum = 0;
     }
 
+    /**
+     * @method AddUnits
+     * @description Добавляет юнитов в формацию.
+     * @param {Array<IUnit>} units - Массив юнитов для добавления.
+     */
     public AddUnits(units: Array<IUnit>) {
+        if (units.length == 0) {
+            return;
+        }
+
         // заказываем реформацию
         this._reformationOrderTact = this._gameTickNum;
 
         var agents = new Array<Agent>();
-        units.forEach((unit) => {
-            agents.push(new Agent(unit));
-        });
+        units.forEach(unit => agents.push(new Agent(unit)));
         this._AddAgents(agents);
     }
 
+    /**
+     * @method RemoveUnits
+     * @description Удаляет юнитов из формации.
+     * @param {Array<IUnit>} units - Массив юнитов для удаления.
+     */
     public RemoveUnits(units: Array<IUnit>) {
-        units.forEach(unit => {
-            var removed = false;
-            this._orbits.forEach(orbit => {
-                if (removed) {
-                    return;
-                }
-
-                var agentNum : number;
-                for (agentNum = 0; agentNum < orbit.agents.length; agentNum++) {
-                    if (orbit.agents[agentNum].unit.hordeUnit.Id == unit.hordeUnit.Id) {
-                        removed = true;
-                        unit.AllowCommands();
-                        orbit.RemoveAgent(agentNum);
-                        break;
-                    }
+        var agentsNumToRemove = new Array<number>();
+        this._orbits.forEach((orbit) => {
+            orbit.agents.forEach((agent, agentNum) => {
+                if (units.find((unit) => unit.hordeUnit.Uid == agent.unit.hordeUnit.Uid)) {
+                    agentsNumToRemove.push(agentNum);
                 }
             });
+            orbit.RemoveAgents(agentsNumToRemove);
+            agentsNumToRemove.length = 0;
         });
     }
-    
+
+    /**
+     * @method UnitsCount
+     * @description Возвращает общее количество юнитов в формации.
+     * @returns {number} - Количество юнитов.
+     */
     public UnitsCount() {
         var count = 0;
-        this._orbits.forEach(orbit => count += orbit.agents.length);
+        this._orbits.forEach((orbit) => {
+            count += orbit.agents.length;
+        });
         return count;
     }
 
+    /**
+     * @method OnEveryTick
+     * @description Вызывается каждый тик, обновляет состояние всех орбит и агентов.
+     * @param {number} gameTickNum - Текущий тик игры.
+     */
     public OnEveryTick(gameTickNum: number) {
         this._gameTickNum = gameTickNum;
 
@@ -446,33 +516,51 @@ export class Formation2 {
         }
     }
 
+    /**
+     * @method SetAttackTarget
+     * @description Устанавливает цель атаки для всей формации.
+     * @param {IUnit | null} unit - Целевой юнит.
+     */
     public SetAttackTarget(unit: IUnit | null) {
         this._orbits.forEach((orbit) => {
             orbit.SetAttackTarget(unit);
         });
     }
 
-    
+    /**
+     * @method SmartAttackCell
+     * @description Отдает "умный" приказ атаки в заданную область.
+     * @param {Cell} cell - Центральная клетка для атаки.
+     */
     public SmartAttackCell(cell: Cell) {
-        this._orbits.forEach(orbit => {
+        this._orbits.forEach((orbit) => {
             orbit.SmartAttackCommand(cell);
         });
     }
 
+    /**
+     * @method SmartMoveToTargetCommand
+     * @description Приказывает всем юнитам в формации вернуться на свои позиции.
+     */
     public SmartMoveToTargetCommand() {
-        this._orbits.forEach(orbit => {
+        this._orbits.forEach((orbit) => {
             orbit.SmartMoveToTargetCommand();
         });
     }
 
+    /**
+     * @method SetCenter
+     * @description Устанавливает новый центр для всей формации.
+     * @param {Cell} center - Новая центральная клетка.
+     */
     public SetCenter(center: Cell) {
-        this._center = center;
         this._orbits.forEach((orbit) => {
             orbit.SetCenter(center);
         });
     }
 
     private _Reformation() {
+        // получаем список всех агентов
         var agents = new Array<Agent>();
 
         // извлекаем всех агентов с орбит

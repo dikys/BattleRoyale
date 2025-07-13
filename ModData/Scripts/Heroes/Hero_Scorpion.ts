@@ -21,11 +21,15 @@ export class Hero_Scorpion extends IHero {
 
     private _scorpions : Array<IUnit>;
 
+    /**
+     * @constructor
+     * @param {HordeClassLibrary.World.Objects.Units.Unit} hordeUnit - Юнит из движка, который будет представлять этого героя.
+     */
     constructor(hordeUnit: HordeClassLibrary.World.Objects.Units.Unit) {
         super(hordeUnit);
 
         this._scorpions = new Array<IUnit>();
-    }
+    } // </constructor>
 
     protected static _InitHordeConfig() {
         ScriptUtils.SetValue(this.Cfg, "Name", "Герой {скорпион}");
@@ -47,22 +51,47 @@ export class Hero_Scorpion extends IHero {
         );
     }
 
+    /**
+     * @method OnDestroyBuilding
+     * @description Вызывается при уничтожении здания. Заменяет спавн юнитов на спавн скорпионов.
+     * @param {BuildingTemplate} buildingTemplate - Шаблон разрушенного здания.
+     * @param {number} rarity - Редкость здания.
+     * @param {IConfig} spawnUnitConfig - Исходная конфигурация юнита для спавна.
+     * @param {number} spawnCount - Исходное количество юнитов для спавна.
+     * @returns {[IConfig, number]} - Возвращает конфигурацию скорпиона и новое количество для спавна.
+     */
     public OnDestroyBuilding(buildingTemplate: BuildingTemplate, rarity: number, spawnUnitConfig: IConfig, spawnCount: number): [IConfig, number] {
         return [new IConfig(Scorpion.GetHordeConfig()), rarity + 1 + 1];    
-    }
+    } // </OnDestroyBuilding>
 
+    /**
+     * @method AddUnitToFormation
+     * @description Добавляет юнита в формацию. Если юнит - скорпион, также добавляет его во внутренний список.
+     * @param {IUnit} unit - Юнит для добавления.
+     */
     public AddUnitToFormation(unit: IUnit): void {
         super.AddUnitToFormation(unit);
 
         if (unit.hordeConfig.Uid == Scorpion.GetHordeConfig().Uid) {
             this._scorpions.push(unit);
         }
-    }
+    } // </AddUnitToFormation>
 
+    /**
+     * @method IsDead
+     * @description Проверяет, мертв ли герой. Герой считается мертвым, если его основной юнит мертв и у него не осталось скорпионов.
+     * @returns {boolean} - true, если герой мертв.
+     */
     public IsDead(): boolean {
         return this.hordeUnit.IsDead && this._scorpions.length == 0;
-    }
+    } // </IsDead>
 
+    /**
+     * @method OnEveryTick
+     * @description Вызывается на каждом тике. Управляет логикой "стаи" скорпионов, включая выбор нового лидера после смерти текущего.
+     * @param {number} gameTickNum - Текущий тик игры.
+     * @returns {boolean} - Возвращает false, если базовый метод вернул false, иначе true.
+     */
     public OnEveryTick(gameTickNum: number): boolean {
         if (!super.OnEveryTick(gameTickNum)) {
             return false;
@@ -95,16 +124,20 @@ export class Hero_Scorpion extends IHero {
         }
 
         return true;
-    }
+    } // </OnEveryTick>
 }
 
 class Scorpion extends IUnit {
     protected static CfgUid      : string = this.CfgPrefix + "Scorpion";
     protected static BaseCfgUid  : string = "#UnitConfig_Nature_ScorpionMed";
 
+    /**
+     * @constructor
+     * @param {any} hordeUnit - Юнит из движка, который будет представлять этого скорпиона.
+     */
     constructor(hordeUnit: any) {
         super(hordeUnit);
-    }
+    } // </constructor>
 
     protected static _InitHordeConfig() {
         super._InitHordeConfig();

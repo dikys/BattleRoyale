@@ -15,11 +15,15 @@ import { Hero_Necromancer } from "../Heroes/Hero_Necromancer";
 
 var opUnitIdToTavernObject : Map<number, Tavern> = new Map<number, Tavern>();
 
+/**
+ * @class Tavern
+ * @description Реализует логику таверны для выбора героя.
+ */
 export class Tavern extends IUnit {
     protected static CfgUid      : string = this.CfgPrefix + "Tavern";
     protected static BaseCfgUid  : string = "#UnitConfig_Slavyane_Barrack";
 
-    private static Heroes : Array<typeof IHero> = [
+    public static Heroes : Array<typeof IHero> = [
         Hero_Crusader,
         Hero_FireArcher,
         Hero_Hunter,
@@ -33,13 +37,23 @@ export class Tavern extends IUnit {
 
     public selectedHero : typeof IHero | null;
 
+    /**
+     * @constructor
+     * @param {Unit} hordeUnit - Юнит из движка, который будет представлять таверну.
+     */
     constructor(hordeUnit: Unit) {
         super(hordeUnit);
 
         opUnitIdToTavernObject.set(hordeUnit.Id, this);
         this.selectedHero = null;
-    }
+    } // </constructor>
 
+    /**
+     * @method GetHordeConfig
+     * @description Получает и настраивает конфигурацию таверны, добавляя кастомный обработчик производства.
+     * @static
+     * @returns {UnitConfig} - Конфигурация юнита таверны.
+     */
     public static GetHordeConfig(): UnitConfig {
         super.GetHordeConfig();
 
@@ -61,7 +75,7 @@ export class Tavern extends IUnit {
         }
 
         return this.Cfg;
-    }
+    } // </GetHordeConfig>
 
     private static _OnProduced(unit: Unit) {
         var tavern = opUnitIdToTavernObject.get(unit.Id) as Tavern;

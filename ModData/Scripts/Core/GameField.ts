@@ -35,6 +35,12 @@ export class GameField {
         this._FindSpawnField();
     }
 
+    /**
+     * @method GetTileType
+     * @description Возвращает тип тайла (земля, вода, лес) для указанной клетки.
+     * @param {Cell} cell - Клетка для проверки.
+     * @returns {TileType} - Тип тайла.
+     */
     public GetTileType(cell: Cell) : TileType {
         // если закэшировали лес, то актуализируем тип тайла
         if (this._cellsTileType[cell.X][cell.Y] == TileType.Forest) {
@@ -43,11 +49,17 @@ export class GameField {
             this._cellsTileType[cell.X][cell.Y] = tileType;
         }
         return this._cellsTileType[cell.X][cell.Y];
-    }
+    } // </GetTileType>
 
+    /**
+     * @method IsAchievableCell
+     * @description Проверяет, является ли клетка достижимой (частью основной игровой зоны).
+     * @param {Cell} cell - Клетка для проверки.
+     * @returns {boolean} - true, если клетка достижима.
+     */
     public IsAchievableCell(cell: Cell) : boolean {
         return this._cellsFlag[cell.X][cell.Y];
-    }
+    } // </IsAchievableCell>
 
     private _FindTilesType() {
         // находим типы тайлов
@@ -142,6 +154,11 @@ export class GameField {
         });
     }
 
+    /**
+     * @method GeneratorRandomCell
+     * @description Создает генератор, возвращающий случайные достижимые клетки из основной игровой зоны.
+     * @returns {Generator<{ X: number, Y: number }>} - Генератор случайных клеток.
+     */
     public *GeneratorRandomCell() : Generator<{ X: number, Y: number }> {
         // Рандомизатор
         let rnd = ActiveScena.GetRealScena().Context.Randomizer;
@@ -161,8 +178,13 @@ export class GameField {
         }
     
         return;
-    }
+    } // </GeneratorRandomCell>
 
+    /**
+     * @method GetStartRectangle
+     * @description Возвращает прямоугольник, описывающий границы начальной игровой зоны.
+     * @returns {{LD: Cell, RU: Cell}} - Объект с левой-нижней (LD) и правой-верхней (RU) точками.
+     */
     public GetStartRectangle() : {LD: Cell, RU: Cell} {
         var LD = this._bigIslandCells[0].Round();
         var RU = this._bigIslandCells[0].Round();
@@ -175,8 +197,13 @@ export class GameField {
         });
 
         return {LD, RU};
-    }
+    } // </GetStartRectangle>
 
+    /**
+     * @method GetCurrentRectangle
+     * @description Возвращает прямоугольник, описывающий границы текущего сужающегося круга.
+     * @returns {{LD: Cell, RU: Cell}} - Объект с левой-нижней (LD) и правой-верхней (RU) точками.
+     */
     public GetCurrentRectangle() : {LD: Cell, RU: Cell} {
         var circle              = this.CurrentCircle() as GeometryCircle;
         var circleCenter        = circle.center;
@@ -187,8 +214,14 @@ export class GameField {
         let scenaHeight         = ActiveScena.GetRealScena().Size.Height;
         return {LD: new Cell(Math.max(LD.X, 0), Math.max(LD.Y, 0)),
             RU: new Cell(Math.min(RU.X, scenaWidth - 1), Math.min(RU.Y, scenaHeight - 1))}
-    }
+    } // </GetCurrentRectangle>
 
+    /**
+     * @method GetEquidistantPositions
+     * @description Рассчитывает равноудаленные позиции для старта игроков внутри начальной игровой зоны.
+     * @param {number} count - Количество позиций.
+     * @returns {Array<Cell>} - Массив стартовых позиций.
+     */
     public GetEquidistantPositions(count: number) : Array<Cell> {
         var res = new Array<Cell>(count);
 
@@ -224,12 +257,22 @@ export class GameField {
         }
 
         return res;
-    }
+    } // </GetEquidistantPositions>
 
+    /**
+     * @method StartArea
+     * @description Возвращает площадь начальной игровой зоны в клетках.
+     * @returns {number} - Площадь.
+     */
     public StartArea() : number {
         return this._bigIslandCells.length;
-    }
+    } // </StartArea>
 
+    /**
+     * @method OnEveryTick
+     * @description Вызывается на каждом тике, управляет логикой сужения игровой зоны.
+     * @param {number} gameTickNum - Текущий тик игры.
+     */
     public OnEveryTick(gameTickNum:number){
         // ловим    начало  анимации
         if  (this._constrictionNextTick < 0)  {
@@ -324,13 +367,18 @@ export class GameField {
         if  (this._geometryShrinkingCircle)  {
             this._geometryShrinkingCircle.OnEveryTick(gameTickNum);
         }
-    }
+    } // </OnEveryTick>
 
+    /**
+     * @method CurrentCircle
+     * @description Возвращает текущий активный круг (сужающийся или статический).
+     * @returns {GeometryCircle | null} - Текущий круг или null.
+     */
     public  CurrentCircle():GeometryCircle | null {
-        if(this._geometryShrinkingCircle    &&  this._geometryShrinkingCircle.currentCircle){
-            return  this._geometryShrinkingCircle.currentCircle;
+        if(this._geometryShrinkingCircle){
+            return this._geometryShrinkingCircle.currentCircle;
         }else{
             return  null;
         }
-    }
+    } // </CurrentCircle>
 };

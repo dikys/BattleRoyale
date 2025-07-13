@@ -6,22 +6,42 @@ import { createHordeColor } from "library/common/primitives";
 import { mergeFlags } from "library/dotnet/dotnet-utils";
 import { log } from "library/common/logging";
 
+/**
+ * @class BuildingTemplate
+ * @description Хранит шаблон для создания зданий, включая конфигурации самих зданий, производимых ими юнитов и количество.
+ */
 export class BuildingTemplate {
     public buildings : Array<IConfig>;
     public units: Array<IConfig>;
     public spawnCount: number;
 
+    /**
+     * @constructor
+     * @param {Array<IConfig>} buildings - Массив конфигураций зданий разной редкости.
+     * @param {Array<IConfig>} units - Массив конфигураций юнитов разной редкости.
+     * @param {number} spawnCount - Количество производимых юнитов.
+     */
     constructor(buildings: Array<IConfig>, units: Array<IConfig>, spawnCount: number) {
         this.buildings  = buildings;
         this.units      = units;
         this.spawnCount = spawnCount;
-    }
+    } // </constructor>
 };
 
+/**
+ * @class IFactory
+ * @description Базовый класс для фабрик, создающих шаблоны зданий на основе дерева производства рабочего.
+ */
 export class IFactory {
     public  static workerHordeConfigUid : string = "";
     private static _buildings : Array<BuildingTemplate>;
 
+    /**
+     * @method GetBuildings
+     * @description Возвращает или создает и кэширует массив шаблонов зданий для данной фабрики.
+     * @static
+     * @returns {Array<BuildingTemplate>} - Массив шаблонов зданий.
+     */
     public static GetBuildings() : Array<BuildingTemplate> {
         if (!this._buildings) {
             this._buildings = new Array<BuildingTemplate>();
@@ -37,7 +57,7 @@ export class IFactory {
         }
 
         return this._buildings;
-    }
+    } // </GetBuildings>
 
     private static _AddBuilding(config: FactoryConfig) {
         var factoriesConfig = new Array<IConfig>();

@@ -28,6 +28,10 @@ export class Hero_Totemist extends IHero {
     private static _peopleIncome_period : number = 250;
     private _peopleIncome_next   : number = 0;
 
+    /**
+     * @constructor
+     * @param {HordeClassLibrary.World.Objects.Units.Unit} hordeUnit - Юнит из движка, который будет представлять этого героя.
+     */
     constructor(hordeUnit: HordeClassLibrary.World.Objects.Units.Unit) {
         super(hordeUnit);
 
@@ -36,7 +40,7 @@ export class Hero_Totemist extends IHero {
         this._formation_changed      = true;
         this._formation_visualEffect = null;
         this._formation_polygon      = new Array<Cell>();
-    }
+    } // </constructor>
 
     protected static _InitHordeConfig() {
         ScriptUtils.SetValue(this.Cfg, "Name", "Герой {тотемщик}");
@@ -68,6 +72,11 @@ export class Hero_Totemist extends IHero {
         );
     }
 
+    /**
+     * @method AddUnitToFormation
+     * @description Добавляет юнита в формацию героя. Специально обрабатывает тотемы формации.
+     * @param {IUnit} unit - Юнит для добавления.
+     */
     public AddUnitToFormation(unit: IUnit): void {
         super.AddUnitToFormation(unit);
 
@@ -81,8 +90,14 @@ export class Hero_Totemist extends IHero {
             this._formation_totems.push(new FormationTotem_ballista(unit.hordeUnit));
             this._formation_totems_buildingProgress.push(unit.hordeUnit.EffectsMind.BuildingInProgress);
         }
-    }
+    } // </AddUnitToFormation>
 
+    /**
+     * @method OnEveryTick
+     * @description Вызывается на каждом тике. Управляет приростом населения, состоянием тотемов и обновлением формации.
+     * @param {gameTickNum} gameTickNum - Текущий тик игры.
+     * @returns {boolean} - Возвращает false, если базовый метод вернул false, иначе true.
+     */
     public OnEveryTick(gameTickNum: number): boolean {
         this._formation_totems.forEach((totem) => totem.OnEveryTick(gameTickNum));
 
@@ -114,7 +129,7 @@ export class Hero_Totemist extends IHero {
         this._FormationUpdate();
 
         return true;
-    }
+    } // </OnEveryTick>
 
     private _FormationUpdate() {
         var readyForationTotems_num = new Array<number>();
@@ -201,9 +216,13 @@ class Totem_defence extends IUnit {
     protected static CfgUid      : string = this.CfgPrefix + "TotemDefence";
     protected static BaseCfgUid  : string = "#UnitConfig_Slavyane_Tower";
 
+    /**
+     * @constructor
+     * @param {any} hordeUnit - Юнит из движка, который будет представлять этот тотем.
+     */
     constructor(hordeUnit: any) {
         super(hordeUnit);
-    }
+    } // </constructor>
 
     protected static _InitHordeConfig() {
         super._InitHordeConfig();
@@ -237,12 +256,16 @@ class IFormationTotem extends IUnit {
 
     public formationGenerator : Generator<Cell> | null;
 
+    /**
+     * @constructor
+     * @param {Unit} hordeUnit - Юнит из движка, который будет представлять этот тотем.
+     */
     constructor(hordeUnit: Unit) {
         super(hordeUnit);
 
         this.formationGenerator = null;
         this._bulletNextTick    = BattleController.GameTimer.GameFramesCounter;
-    }
+    } // </constructor>
 
     protected static _InitHordeConfig() {
         super._InitHordeConfig();
@@ -257,107 +280,112 @@ class IFormationTotem extends IUnit {
         ScriptUtils.SetValue(this.Cfg.CostResources, "People", 1);
     }
 
+    /**
+     * @method OnEveryTick
+     * @description Вызывается на каждом тике. Если тотем является частью активной формации, вызывает метод Fire.
+     * @param {number} gameTickNum - Текущий тик игры.
+     * @returns {boolean} - Всегда возвращает true.
+     */
     public OnEveryTick(gameTickNum: number): boolean {
-        if (!super.OnEveryTick(gameTickNum)) {
-            return false;
+        if (this.formationGenerator) {
+            this.Fire();
         }
+        return true;
+    } // </OnEveryTick>
 
-        if (this._bulletNextTick < gameTickNum) {
-            this._bulletNextTick += this._bulletPeriod;
+    /**
+     * @method Fire
+     * @description Производит выстрел, если прошла перезарядка. Создает снаряды в случайных точках внутри полигона формации.
+     */
+    public Fire() {
+        if (this._bulletNextTick < BattleController.GameTimer.GameFramesCounter) {
+            this._bulletNextTick = BattleController.GameTimer.GameFramesCounter + this._bulletPeriod;
 
-            if (this.formationGenerator) {
-                this.Fire();
+            for (var i = 0; i < this._bulletCount; i++) {
+                var targetCell = this.formationGenerator?.next().value.Scale(32);
+                spawnBullet(
+                    this.hordeUnit,  // Игра будет считать, что именно этот юнит запустил снаряд
+                    null,
+                    null,
+                    this._bulletConfig,
+                    this._bulletShotParams,
+                    this.hordeUnit.Position,
+                    createPoint(targetCell.X, targetCell.Y),
+                    UnitMapLayer.Main
+                );
             }
         }
-
-        return true;
-    }
-
-    public Fire() {
-        for (var i = 0; i < this._bulletCount; i++) {
-            var targetCell = this.formationGenerator?.next().value.Scale(32);
-            spawnBullet(
-                this.hordeUnit,  // Игра будет считать, что именно этот юнит запустил снаряд
-                null,
-                null,
-                this._bulletConfig,
-                this._bulletShotParams,
-                this.hordeUnit.Position,
-                createPoint(targetCell.X, targetCell.Y),
-                UnitMapLayer.Main
-            );
-        }
-    }
+    } // </Fire>
 }
 
 class FormationTotem_fire extends IFormationTotem {
     protected static CfgUid      : string = this.CfgPrefix + "FormationTotemFire";
     
+    /**
+     * @constructor
+     * @param {Unit} hordeUnit - Юнит из движка, который будет представлять этот тотем.
+     */
     constructor(hordeUnit: Unit) {
         super(hordeUnit);
 
-        this._bulletConfig = HordeContentApi.GetBulletConfig("#BulletConfig_FireArrow");
-        this._bulletShotParams = ShotParams.CreateInstance();
-        ScriptUtils.SetValue(this._bulletShotParams, "Damage", 4);
-        ScriptUtils.SetValue(this._bulletShotParams, "AdditiveBulletSpeed", createPF(0, 0));
-        this._bulletCount  = 5;
-        this._bulletPeriod = 250;
-    }
+        this._bulletConfig = HordeContentApi.GetBulletConfig("#BulletConfig_Slavyane_FireTrap");
+        this._bulletShotParams = new ShotParams();
+        this._bulletCount = 3;
+        this._bulletPeriod = 150;
+    } // </constructor>
 
     protected static _InitHordeConfig() {
         super._InitHordeConfig();
 
-        ScriptUtils.SetValue(this.Cfg, "Name", "Тотем формации - огненный лучник");
-        ScriptUtils.SetValue(this.Cfg, "Description", "Добавляет дождь из огненных стрел внутри формации.\nФормация это полигон соединяющий 3 и более тотемов формации.");
-        ScriptUtils.SetValue(this.Cfg, "ProductionTime", 75);
-        ScriptUtils.SetValue(this.Cfg, "TintColor", createHordeColor(255, 255, 20, 20));
+        ScriptUtils.SetValue(this.Cfg, "Name", "Тотем огненной формации");
+        ScriptUtils.SetValue(this.Cfg, "Description", "Активируется, если 3 и более тотемов формации образуют выпуклый многоугольник. Создает огненные ловушки внутри этого многоугольника.");
     }
 }
 
 class FormationTotem_ballista extends IFormationTotem {
     protected static CfgUid      : string = this.CfgPrefix + "FormationTotemBallista";
     
+    /**
+     * @constructor
+     * @param {Unit} hordeUnit - Юнит из движка, который будет представлять этот тотем.
+     */
     constructor(hordeUnit: Unit) {
         super(hordeUnit);
 
-        this._bulletConfig = HordeContentApi.GetBulletConfig("#BulletConfig_BallistaArrow");
-        this._bulletShotParams = ShotParams.CreateInstance();
-        ScriptUtils.SetValue(this._bulletShotParams, "Damage", 10);
-        ScriptUtils.SetValue(this._bulletShotParams, "AdditiveBulletSpeed", createPF(0, 0));
-        this._bulletCount  = 3;
-        this._bulletPeriod = 250;
-    }
+        this._bulletConfig = HordeContentApi.GetBulletConfig("#BulletConfig_Slavyane_Ballista");
+        this._bulletShotParams = new ShotParams();
+        this._bulletCount = 1;
+        this._bulletPeriod = 75;
+    } // </constructor>
 
     protected static _InitHordeConfig() {
         super._InitHordeConfig();
 
-        ScriptUtils.SetValue(this.Cfg, "Name", "Тотем формации - баллиста");
-        ScriptUtils.SetValue(this.Cfg, "Description", "Добавляет дождь из стрел баллисты внутри формации.\nФормация это полигон соединяющий 3 и более тотемов формации.");
-        ScriptUtils.SetValue(this.Cfg, "ProductionTime", 100);
-        ScriptUtils.SetValue(this.Cfg, "TintColor", createHordeColor(255, 255, 20, 255));
+        ScriptUtils.SetValue(this.Cfg, "Name", "Тотем балиста-формации");
+        ScriptUtils.SetValue(this.Cfg, "Description", "Активируется, если 3 и более тотемов формации образуют выпуклый многоугольник. Выпускает стрелы балисты из случайных точек внутри этого многоугольника.");
     }
 }
 
 class FormationTotem_fireball extends IFormationTotem {
     protected static CfgUid      : string = this.CfgPrefix + "FormationTotemFireBall";
     
+    /**
+     * @constructor
+     * @param {Unit} hordeUnit - Юнит из движка, который будет представлять этот тотем.
+     */
     constructor(hordeUnit: Unit) {
         super(hordeUnit);
 
-        this._bulletConfig = HordeContentApi.GetBulletConfig("#BulletConfig_Fireball2");
-        this._bulletShotParams = ShotParams.CreateInstance();
-        ScriptUtils.SetValue(this._bulletShotParams, "Damage", 10);
-        ScriptUtils.SetValue(this._bulletShotParams, "AdditiveBulletSpeed", createPF(0, 0));
-        this._bulletCount  = 2;
-        this._bulletPeriod = 250;
-    }
+        this._bulletConfig = HordeContentApi.GetBulletConfig("#BulletConfig_Mage_Fireball");
+        this._bulletShotParams = new ShotParams();
+        this._bulletCount = 2;
+        this._bulletPeriod = 100;
+    } // </constructor>
 
     protected static _InitHordeConfig() {
         super._InitHordeConfig();
 
-        ScriptUtils.SetValue(this.Cfg, "Name", "Тотем формации - огненный шар");
-        ScriptUtils.SetValue(this.Cfg, "Description", "Добавляет дождь из огненных шаров внутри формации.\nФормация это полигон соединяющий 3 и более тотемов формации.");
-        ScriptUtils.SetValue(this.Cfg, "ProductionTime", 125);
-        ScriptUtils.SetValue(this.Cfg, "TintColor", createHordeColor(255, 20, 20, 255));
+        ScriptUtils.SetValue(this.Cfg, "Name", "Тотем фаербол-формации");
+        ScriptUtils.SetValue(this.Cfg, "Description", "Активируется, если 3 и более тотемов формации образуют выпуклый многоугольник. Выпускает фаерболы из случайных точек внутри этого многоугольника.");
     }
 }

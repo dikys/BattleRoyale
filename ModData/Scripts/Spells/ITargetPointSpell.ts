@@ -10,6 +10,12 @@ export class ITargetPointSpell extends ISpell {
     // @ts-expect-error
     protected _targetCell                           : Cell;
 
+    /**
+     * @method Activate
+     * @description Активирует заклинание, сохраняя целевую точку.
+     * @param {ACommandArgs} activateArgs - Аргументы команды активации, содержащие целевую точку.
+     * @returns {boolean} - true, если активация прошла успешно, иначе false.
+     */
     public Activate(activateArgs: ACommandArgs) : boolean {
         if (super.Activate(activateArgs)) {
             // @ts-expect-error
@@ -19,5 +25,5 @@ export class ITargetPointSpell extends ISpell {
         } else {
             return false;
         }
-    }
+    } // </Activate>
 }

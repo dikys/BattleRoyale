@@ -14,6 +14,14 @@ export class GeometryShrinkingCircle {
     // @ts-expect-error
     currentCircle: GeometryCircle;
 
+    /**
+     * @constructor
+     * @param {GeometryCircle} startCircle - Начальный круг анимации.
+     * @param {GeometryCircle} endCircle - Конечный круг анимации.
+     * @param {number} animationTotalTime - Общее время анимации в тиках.
+     * @param {number} everyTick_tiksToLive - Время жизни промежуточных кругов анимации.
+     * @param {number} end_tiskToLive - Время жизни финального круга после окончания анимации.
+     */
     constructor (startCircle: GeometryCircle, endCircle: GeometryCircle, animationTotalTime: number, everyTick_tiksToLive: number, end_tiskToLive: number) {
         this.startCircle   = startCircle;
         this.endCircle     = endCircle;
@@ -25,6 +33,11 @@ export class GeometryShrinkingCircle {
         this.animationStartTime = -1;
     }
 
+    /**
+     * @method OnEveryTick
+     * @description Вызывается на каждом тике, управляет анимацией сужения круга.
+     * @param {number} gameTickNum - Текущий тик игры.
+     */
     public OnEveryTick(gameTickNum:number) {
         if (this.animationIsEnd) {
             return;

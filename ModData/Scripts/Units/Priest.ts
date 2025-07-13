@@ -23,6 +23,13 @@ export class Priest extends IUnit {
 
     private _healPeriod: number;
 
+    /**
+     * @constructor
+     * @param {Unit} hordeUnit - Юнит из движка, который будет представлять этого жреца.
+     * @param {GameField} gameField - Игровое поле.
+     * @param {GameSettlement} enemySettlement - Поселение врага.
+     * @param {Array<PlayerSettlement>} playerSettlements - Массив поселений игроков.
+     */
     constructor(hordeUnit: Unit, gameField: GameField, enemySettlement: GameSettlement, playerSettlements: Array<PlayerSettlement>) {
         super(hordeUnit);
         this._gameField         = gameField;
@@ -32,7 +39,7 @@ export class Priest extends IUnit {
         this._targetCell      = null;
         this._state           = 0;
         this._healPeriod      = 5;
-    }
+    } // </constructor>
 
     protected static _InitHordeConfig() {
         super._InitHordeConfig();
@@ -40,6 +47,12 @@ export class Priest extends IUnit {
         ScriptUtils.SetValue(this.Cfg, "Name", "Ворожей");
     }
 
+    /**
+     * @method OnEveryTick
+     * @description Вызывается на каждом тике. Управляет поведением жреца: смена стороны, лечение, передвижение.
+     * @param {number} gameTickNum - Текущий тик игры.
+     * @returns {boolean} - true, если юнит был обработан.
+     */
     public OnEveryTick(gameTickNum: number): boolean {
         if (!super.OnEveryTick(gameTickNum)) {
             return false;
@@ -131,5 +144,5 @@ export class Priest extends IUnit {
         }
 
         return true;
-    }
+    } // </OnEveryTick>
 }

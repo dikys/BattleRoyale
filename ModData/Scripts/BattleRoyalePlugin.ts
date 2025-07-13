@@ -43,6 +43,7 @@ enum GameState {
 export class BattleRoyalePlugin extends HordePluginBase {
     // @ts-expect-error
     _playerHordeSettlements: Array<Settlement>;
+    _playerBotFlags:        Array<boolean>;
     _playerSettlements:    Array<PlayerSettlement>;
     // @ts-expect-error
     _neutralSettlement:    GameSettlement;
@@ -59,12 +60,18 @@ export class BattleRoyalePlugin extends HordePluginBase {
 
     _units:                Array<IUnit>;
 
+    /**
+     * @constructor
+     * @description Инициализирует новый экземпляр плагина "Королевская битва".
+     * Устанавливает начальное состояние игры и инициализирует необходимые массивы и карты.
+     */
     public constructor() {
         super("Королевская битва");
 
         this.log.logLevel = LogLevel.Debug;
         this._gameState     = GameState.INIT;
 
+        this._playerBotFlags = new Array<boolean>();
         this._playerSettlements = new Array<PlayerSettlement>();
         this._buildingsTemplate = new Array<BuildingTemplate>();
 
@@ -73,10 +80,21 @@ export class BattleRoyalePlugin extends HordePluginBase {
         //this._spells = new Array<ISpell>();
     }
 
+    /**
+     * @method onFirstRun
+     * @description Вызывается один раз при первом запуске сценария.
+     * В текущей реализации метод пуст.
+     */
     public onFirstRun() {
         
     }
 
+    /**
+     * @method onEveryTick
+     * @description Вызывается на каждом тике игрового цикла.
+     * Управляет основной логикой игры в зависимости от текущего состояния (GameState).
+     * @param {number} gameTickNum - Текущий номер тика игры.
+     */
     public onEveryTick(gameTickNum: number) {
         if (this._gameState == GameState.RUN) {
             this._Run(gameTickNum);
@@ -264,6 +282,8 @@ export class BattleRoyalePlugin extends HordePluginBase {
             // Отключить прирост населения
 
             let censusModel = ScriptUtils.GetValue(settlement.Census, "Model");
+
+            // Отключить прирост населения
             censusModel.PeopleIncomeLevels.Clear();
             censusModel.PeopleIncomeLevels.Add(new PeopleIncomeLevel(0, 0, -1));
             censusModel.LastPeopleIncomeLevel = 0;
@@ -376,6 +396,7 @@ export class BattleRoyalePlugin extends HordePluginBase {
 
         // настраиваем поселения игроков
 
+        this._playerBotFlags = new Array<boolean>(this._playerHordeSettlements.length);
         for (var playerSettlementNum = 0; playerSettlementNum < this._playerHordeSettlements.length; playerSettlementNum++) {
             this._playerUidToSettlement.set(Number.parseInt(this._playerHordeSettlements[playerSettlementNum].Uid), playerSettlementNum);
 
@@ -391,6 +412,13 @@ export class BattleRoyalePlugin extends HordePluginBase {
                     }
                 }
             );
+
+            // проверяем, является ли игрок ботом
+            const player = Players.find(p => p.GetRealSettlement().Uid === this._playerHordeSettlements[playerSettlementNum].Uid);
+            if (player && player.IsBot) {
+                this.log.info("Игрок ", playerNum, " ", player.GetRealSettlement().TownName, " является ботом");
+                this._playerBotFlags[playerSettlementNum] = true;
+            }
         }
 
         // перемещаем экран на таверны игроков
@@ -418,10 +446,16 @@ export class BattleRoyalePlugin extends HordePluginBase {
         // проверяем, что все выбрали своего героя
 
         var allSelected = true;
+        var rnd         = ActiveScena.GetRealScena().Context.Randomizer;
         for (var playerNum = 0; playerNum < this._playerTaverns.length; playerNum++) {
             if (this._playerTaverns[playerNum].selectedHero == null) {
                 allSelected = false;
-                break;
+
+                // если бот, то выбираем героя
+                if (this._playerBotFlags[playerNum]) {
+                    this._playerTaverns[playerNum].selectedHero =
+                    Tavern.Heroes[rnd.RandomNumber(0, Tavern.Heroes.length)];
+                }
             }
         }
         if (!allSelected) {
@@ -454,8 +488,10 @@ export class BattleRoyalePlugin extends HordePluginBase {
             heroesPosition.splice(heroCellNum, 1);
 
             this._playerSettlements.push(new PlayerSettlement(this._playerHordeSettlements[playerNum], hero));
-            if (playerNum % 2 === 1) {
-                this._playerSettlements[playerNum].bot = new Bot(hero, this._gameField, this._playerSettlements[playerNum], this._enemySettlement);
+            
+            // Проверяем, является ли игрок ботом
+            if (this._playerBotFlags[playerNum]) {
+                this._playerSettlements[playerNum].bot = new Bot(hero, this._gameField, this._playerSettlements[playerNum], this._enemySettlement, this._neutralSettlement);
             }
 
             // печатаем описание на экран

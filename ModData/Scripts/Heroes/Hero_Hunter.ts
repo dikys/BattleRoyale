@@ -5,9 +5,9 @@ import { generateCellInSpiral } from "library/common/position-tools";
 import { spawnUnits } from "library/game-logic/unit-spawn";
 import { mergeFlags } from "library/dotnet/dotnet-utils";
 import { ISpell } from "../Spells/ISpell";
-import { Spell_call_of_nature } from "../Spells/Spell_call_of_nature";
 import { IHero } from "./IHero";
-import { Spell_invisibility } from "../Spells/Spell_invisibility";
+import { Spell_call_of_nature } from "../Spells/Utillity/Spell_call_of_nature";
+import { Spell_invisibility } from "../Spells/Utillity/Spell_invisibility";
 
 export class Hero_Hunter extends IHero {
     protected static CfgUid      : string = this.CfgPrefix + "Hunter";

@@ -6,11 +6,11 @@ import { BuildingTemplate } from "../Units/IFactory";
 import { Cell } from "../Core/Cell";
 import { IUnitCaster } from "../Spells/IUnitCaster";
 import { IUnit } from "../Units/IUnit";
-import { ISpell, SpellState } from "../Spells/ISpell";
+import { ISpell } from "../Spells/ISpell";
 
 export class IHero extends IUnitCaster {
     // способности
-    protected static _Spells : Array<typeof ISpell>;
+    protected static _Spells : Array<typeof ISpell> = [];
     // настройки формации - начальный радиус
     protected static _FormationStartRadius : number = 3;
     // настройки формации - плотность орбит
@@ -22,8 +22,8 @@ export class IHero extends IUnitCaster {
         var spellsInfo = "";
         for (var spellNum = 0; spellNum < this._Spells.length; spellNum++) {
             spellsInfo += "Способность " + (spellNum + 1) + ": "
-                + this._Spells[spellNum].GetName() + "\n"
-                + this._Spells[spellNum].GetDescription() + "\n";
+                + this._Spells[spellNum].GetName(0) + "\n"
+                + this._Spells[spellNum].GetDescription(0) + "\n";
         }
 
         // формируем описание характеристик
@@ -195,7 +195,7 @@ export class IHero extends IUnitCaster {
         if (!this._frame) {
             this._MakeFrame();
         } else {
-            this._frame.Position = this.hordeUnit.Position;
+            this._frame.Position = this.hordeUnit.Position.ToPoint2D();
 
             // в лесу рамка должна быть невидимой
             let landscapeMap = ActiveScena.GetRealScena().LandscapeMap;
@@ -229,17 +229,6 @@ export class IHero extends IUnitCaster {
             3.0, false);
 
         let ticksToLive = GeometryVisualEffect.InfiniteTTL;
-        this._frame = spawnGeometry(ActiveScena, geometryCanvas.GetBuffers(), this.hordeUnit.Position, ticksToLive);
+        this._frame = spawnGeometry(ActiveScena, geometryCanvas.GetBuffers(), this.hordeUnit.Position.ToPoint2D(), ticksToLive);
     }
-
-    /**
-     * @method GetAvailableSpellCommands
-     * @description Возвращает список доступных для использования команд заклинаний.
-     * @returns {UnitCommand[]} - Массив команд.
-     */
-    public GetAvailableSpellCommands(): UnitCommand[] {
-        return this._spells
-            .filter(spell => spell.GetState() === SpellState.READY)
-            .map(spell => spell.GetUnitCommand());
-    } // </GetAvailableSpellCommands>
 }

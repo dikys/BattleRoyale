@@ -3,13 +3,14 @@ import { IHero } from "./IHero";
 import { BuildingTemplate } from "../Units/IFactory";
 import { IConfig } from "../Units/IConfig";
 import { createResourcesAmount } from "library/common/primitives";
-import { Spell_dead_army } from "../Spells/Spell_dead_army";
-import { Spell_fear_attack } from "../Spells/Spell_fear_attack";
+import { Spell_fear_attack } from "../Spells/Magic/Spell_fear_attack";
+import { Spell_dead_army } from "../Spells/Utillity/Spell_dead_army";
 
 export class Hero_Necromancer extends IHero {
     protected static CfgUid      : string = this.CfgPrefix + "Necromancer";
     protected static BaseCfgUid  : string = "#UnitConfig_Mage_Mag_2";
-    protected static _Spells : Array<typeof ISpell> = [Spell_dead_army, Spell_fear_attack];
+    //protected static _Spells : Array<typeof ISpell> = [Spell_dead_army, Spell_fear_attack];
+    protected static _Spells : Array<typeof ISpell> = [Spell_fear_attack, Spell_dead_army];
 
     /**
      * @constructor

@@ -1,22 +1,22 @@
-import { ACommandArgs, UnitCommand, UnitConfig } from "library/game-logic/horde-types";
+import { ACommandArgs, Unit, UnitCommand, UnitConfig, UnitState } from "library/game-logic/horde-types";
 import { ISpell } from "./ISpell";
-import { CfgAddUnitProducer } from "../Units/IConfig";
 import { IUnitCaster } from "./IUnitCaster";
+import { setUnitStateWorker } from "library/game-logic/workers";
+import {CfgAddUnitProducer} from "../Units/IConfig";
+
+var pluginWrappedWorker     : any = null;
+var cfgUidWithWrappedWorker : Map<string, boolean> = new Map<string, boolean>();
 
 export class IProduceSpell extends ISpell {
     /// \todo вернуть после исправления
-    //protected static _ButtonCommandTypeBySlot       : Array<UnitCommand> = [UnitCommand.Produce_Custom_0, UnitCommand.Produce_Custom_1, UnitCommand.Produce_Custom_2, UnitCommand.Produce_Custom_3];
+    //protected static _ButtonCommandTypeBySlot       : Array<UnitCommand> = [UnitCommand.Produce_Custom_0, UnitCommand.Produce_Custom_1, UnitCommand.Produce_Custom_2, UnitCommand.Produce_Custom_3, UnitCommand.Produce_Custom_4];
     protected static _ButtonCommandTypeBySlot       : Array<UnitCommand> = [UnitCommand.Produce, UnitCommand.Produce, UnitCommand.Produce, UnitCommand.Produce];
     protected static _ButtonCommandBaseUid          : string = "#UnitCommandConfig_Produce";
-    // @ts-expect-error
+    // @ts-ignore
     protected _productCfg : UnitConfig;
 
-    /**
-     * @constructor
-     * @param {IUnitCaster} caster - Юнит, который кастует заклинание.
-     */
-    constructor(caster: IUnitCaster) {
-        var casterCfg = caster.hordeConfig;
+    constructor(caster: IUnitCaster, ...spellArgs: any[]) {
+        var casterCfg = caster.hordeUnit.Cfg;
         CfgAddUnitProducer(casterCfg);
         if (casterCfg.AllowedCommands.ContainsKey(UnitCommand.Repair)) {
             casterCfg.AllowedCommands.Remove(UnitCommand.Repair);
@@ -27,15 +27,17 @@ export class IProduceSpell extends ISpell {
         caster.hordeUnit.CommandsMind.RemoveAddedCommand(UnitCommand.Repair);
         caster.hordeUnit.CommandsMind.RemoveAddedCommand(UnitCommand.Produce);
 
-        super(caster);
-    } // </constructor>
+        super(caster, spellArgs);
 
-    /**
-     * @method Activate
-     * @description Активирует заклинание, сохраняя конфигурацию создаваемого юнита.
-     * @param {ACommandArgs} activateArgs - Аргументы команды активации.
-     * @returns {boolean} - true, если активация прошла успешно, иначе false.
-     */
+        // костыль
+        if (!pluginWrappedWorker) {
+            pluginWrappedWorker = (u: Unit) => IUnitCaster._StateWorkerCustom(u);
+        }
+        if (!cfgUidWithWrappedWorker.has(caster.hordeUnit.Cfg.Uid)) {
+            setUnitStateWorker("CustomOrder", caster.hordeUnit.Cfg, UnitState.Produce, pluginWrappedWorker);
+        }
+    }
+
     public Activate(activateArgs: ACommandArgs) : boolean {
         if (super.Activate(activateArgs)) {
             // @ts-expect-error
@@ -45,5 +47,15 @@ export class IProduceSpell extends ISpell {
         } else {
             return false;
         }
-    } // </Activate>
+    }
+
+    public OnReplacedCaster(caster: IUnitCaster): void {
+        // костыль
+        if (!pluginWrappedWorker) {
+            pluginWrappedWorker = (u: Unit) => IUnitCaster._StateWorkerCustom(u);
+        }
+        if (!cfgUidWithWrappedWorker.has(caster.hordeUnit.Cfg.Uid)) {
+            setUnitStateWorker("CustomOrder", caster.hordeUnit.Cfg, UnitState.Produce, pluginWrappedWorker);
+        }
+    }
 }

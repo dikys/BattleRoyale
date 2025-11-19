@@ -1,7 +1,6 @@
+import { Spell_FireArrowsRain } from "../Spells/Fire/Spell_FireArrowsRain";
+import { Spell_Fireball } from "../Spells/Fire/Spell_Fireball";
 import { ISpell } from "../Spells/ISpell";
-import { Spell_FireArrowsRain } from "../Spells/Spell_FireArrowsRain";
-import { Spell_Fireball } from "../Spells/Spell_Fireball";
-import { Spell_teleportation_mark } from "../Spells/Spell_teleportation_mark";
 import { IHero } from "./IHero";
 
 export class Hero_FireArcher extends IHero {

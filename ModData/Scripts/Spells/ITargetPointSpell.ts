@@ -1,21 +1,12 @@
 import { ACommandArgs, UnitCommand } from "library/game-logic/horde-types";
-import { Cell } from "../Core/Cell";
 import { ISpell } from "./ISpell";
+import {Cell} from "../Core/Cell";
 
 export class ITargetPointSpell extends ISpell {
-    /// \todo вернуть после исправления
-    protected static _ButtonCommandTypeBySlot       : Array<UnitCommand> = [UnitCommand.PointBased_Custom_0, UnitCommand.PointBased_Custom_1, UnitCommand.PointBased_Custom_2, UnitCommand.PointBased_Custom_3];
-    //protected static _ButtonCommandTypeBySlot       : Array<UnitCommand> = [UnitCommand.Capture, UnitCommand.Capture, UnitCommand.Capture, UnitCommand.Capture];
+    protected static _ButtonCommandTypeBySlot       : Array<UnitCommand> = [UnitCommand.PointBased_Custom_0, UnitCommand.PointBased_Custom_1, UnitCommand.PointBased_Custom_2, UnitCommand.PointBased_Custom_3, UnitCommand.PointBased_Custom_4];
     protected static _ButtonCommandBaseUid          : string = "#UnitCommandConfig_Capture";
-    // @ts-expect-error
+    //@ts-ignore
     protected _targetCell                           : Cell;
-
-    /**
-     * @method Activate
-     * @description Активирует заклинание, сохраняя целевую точку.
-     * @param {ACommandArgs} activateArgs - Аргументы команды активации, содержащие целевую точку.
-     * @returns {boolean} - true, если активация прошла успешно, иначе false.
-     */
     public Activate(activateArgs: ACommandArgs) : boolean {
         if (super.Activate(activateArgs)) {
             // @ts-expect-error
@@ -25,5 +16,5 @@ export class ITargetPointSpell extends ISpell {
         } else {
             return false;
         }
-    } // </Activate>
+    }
 }

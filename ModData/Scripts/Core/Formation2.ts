@@ -3,8 +3,6 @@ import { DiplomacyStatus, UnitCommand } from "library/game-logic/horde-types";
 import { AssignOrderMode } from "library/mastermind/virtual-input";
 import { IUnit } from "../Units/IUnit";
 import { Cell } from "./Cell";
-import { printObjectItems } from "library/common/introspection";
-import { log } from "library/common/logging";
 
 class Agent {
     unit: IUnit;
@@ -77,7 +75,8 @@ class Agent {
         
         var upperHordeUnit = ActiveScena.UnitsMap.GetUpperUnit(createPoint(attackTargetCell.X, attackTargetCell.Y));
         if (upperHordeUnit) {
-            if (upperHordeUnit.Owner.Diplomacy.GetDiplomacyStatus(this.unit.hordeUnit.Owner) == DiplomacyStatus.War) {
+            var diplomacy = upperHordeUnit.Owner.Diplomacy.GetDiplomacyStatus(this.unit.hordeUnit.Owner);
+            if (diplomacy == DiplomacyStatus.War || diplomacy == DiplomacyStatus.Neutral) {
                 this.GivePointCommand(attackTargetCell, UnitCommand.Attack, AssignOrderMode.Replace);
             } else {
                 this.GivePointCommand(attackTargetCell, UnitCommand.MoveToPoint, AssignOrderMode.Replace);
@@ -118,7 +117,8 @@ class Agent {
                     if (distanceToAttackTargetCell < 2*14 && distanceToTargetCell < 2*12) {
                         var upperHordeUnit = ActiveScena.UnitsMap.GetUpperUnit(createPoint(attackTargetCell.X, attackTargetCell.Y));
                         if (upperHordeUnit) {
-                            if (upperHordeUnit.Owner.Diplomacy.GetDiplomacyStatus(this.unit.hordeUnit.Owner) == DiplomacyStatus.War) {
+                            var diplomacy = upperHordeUnit.Owner.Diplomacy.GetDiplomacyStatus(this.unit.hordeUnit.Owner);
+                            if (diplomacy == DiplomacyStatus.War || diplomacy == DiplomacyStatus.Neutral) {
                                 this.GivePointCommand(attackTargetCell, UnitCommand.Attack, AssignOrderMode.Replace);
                             } else {
                                 this.GivePointCommand(attackTargetCell, UnitCommand.MoveToPoint, AssignOrderMode.Replace);
@@ -149,7 +149,8 @@ class Agent {
         else if (this.unit.hordeUnit.OrdersMind.IsIdle()) {
             var upperHordeUnit = ActiveScena.UnitsMap.GetUpperUnit(createPoint(this.targetCell.X, this.targetCell.Y));
             if (upperHordeUnit) {
-                if (upperHordeUnit.Owner.Diplomacy.GetDiplomacyStatus(this.unit.hordeUnit.Owner) == DiplomacyStatus.War) {
+                var diplomacy = upperHordeUnit.Owner.Diplomacy.GetDiplomacyStatus(this.unit.hordeUnit.Owner);
+                if (diplomacy == DiplomacyStatus.War || diplomacy == DiplomacyStatus.Neutral) {
                     this.GivePointCommand(this.targetCell, UnitCommand.Attack, AssignOrderMode.Replace);
                 } else {
                     this.GivePointCommand(this.targetCell, UnitCommand.MoveToPoint, AssignOrderMode.Replace);
@@ -460,7 +461,7 @@ export class Formation2 {
         var agentsNumToRemove = new Array<number>();
         this._orbits.forEach((orbit) => {
             orbit.agents.forEach((agent, agentNum) => {
-                if (units.find((unit) => unit.hordeUnit.Uid == agent.unit.hordeUnit.Uid)) {
+                if (units.find((unit) => unit.hordeUnit.Id == agent.unit.hordeUnit.Id)) {
                     agentsNumToRemove.push(agentNum);
                 }
             });

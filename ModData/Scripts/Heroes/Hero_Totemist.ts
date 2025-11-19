@@ -1,18 +1,18 @@
-import { createResourcesAmount, createPoint, createPF, createHordeColor } from "library/common/primitives";
+import { createResourcesAmount, createPoint } from "library/common/primitives";
 import { spawnBullet } from "library/game-logic/bullet-spawn";
 import { UnitProducerProfessionParams, UnitProfession } from "library/game-logic/unit-professions";
 import { Cell } from "../Core/Cell";
 import { ISpell } from "../Spells/ISpell";
-import { Spell_teleportation_mark } from "../Spells/Spell_teleportation_mark";
 import { IUnit } from "../Units/IUnit";
-import { BattleController, BulletConfig, GeometryCanvas, GeometryVisualEffect, ShotParams, Stride_Color, Stride_Vector2, Unit, UnitMapLayer } from "library/game-logic/horde-types";
+import { BulletConfig, GeometryCanvas, GeometryVisualEffect, ShotParams, Stride_Color, Stride_Vector2, Unit, UnitMapLayer } from "library/game-logic/horde-types";
 import { IHero } from "./IHero";
-import { Spell_Teleportation } from "../Spells/Spell_Teleportation";
+import { Spell_Teleportation } from "../Spells/Magic/Spell_Teleportation";
+import { Spell_Magic_shield } from "../Spells/Utillity/Spell_Magic_shield";
 
 export class Hero_Totemist extends IHero {
     protected static CfgUid      : string = this.CfgPrefix + "HeroTotemist";
     protected static BaseCfgUid  : string = "#UnitConfig_Slavyane_Worker1";
-    protected static _Spells : Array<typeof ISpell> = [Spell_teleportation_mark, Spell_Teleportation];
+    protected static _Spells : Array<typeof ISpell> = [Spell_Teleportation, Spell_Magic_shield];
     
     private _formation_totems                   : Array<IFormationTotem>;
     private _formation_totems_buildingProgress  : Array<boolean>;
@@ -109,7 +109,7 @@ export class Hero_Totemist extends IHero {
         if (this._peopleIncome_next < gameTickNum) {
             this._peopleIncome_next += Hero_Totemist._peopleIncome_period;
 
-            if (this.hordeUnit.Owner.Resources.FreePeople + ScriptUtils.GetValue(this.hordeUnit.Owner.Census, "Model").BusyPeople < Hero_Totemist._peopleIncome_max) {
+            if (this.hordeUnit.Owner.Resources.FreePeople + ScriptUtils.GetValue(this.hordeUnit.Owner.Census, "Data").BusyPeople < Hero_Totemist._peopleIncome_max) {
                 var amount = createResourcesAmount(0, 0, 0, 1);
                 this.hordeUnit.Owner.Resources.AddResources(amount);
             }
@@ -170,7 +170,7 @@ export class Hero_Totemist extends IHero {
                         this.hordeUnit.Owner.SettlementColor.G,
                         this.hordeUnit.Owner.SettlementColor.B),
                     3.0, false);
-                let ticksToLive = GeometryVisualEffect.InfiniteTTL;
+                //let ticksToLive = GeometryVisualEffect.InfiniteTTL;
                 if (this._formation_visualEffect) {
                     this._formation_visualEffect.Free();
                     this._formation_visualEffect = null;
@@ -264,7 +264,7 @@ class IFormationTotem extends IUnit {
         super(hordeUnit);
 
         this.formationGenerator = null;
-        this._bulletNextTick    = BattleController.GameTimer.GameFramesCounter;
+        this._bulletNextTick    = Battle.GameTimer.GameFramesCounter;
     } // </constructor>
 
     protected static _InitHordeConfig() {
@@ -273,6 +273,7 @@ class IFormationTotem extends IUnit {
         ScriptUtils.SetValue(this.Cfg, "MaxHealth", 40);
         ScriptUtils.SetValue(this.Cfg, "MinHealth", 5);
         ScriptUtils.SetValue(this.Cfg, "Shield", 0);
+        ScriptUtils.SetValue(this.Cfg, "ProductionTime", 75);
 
         ScriptUtils.SetValue(this.Cfg.MainArmament, "Range", 0);
         ScriptUtils.SetValue(this.Cfg.MainArmament, "ForestRange", 0);
@@ -298,8 +299,8 @@ class IFormationTotem extends IUnit {
      * @description Производит выстрел, если прошла перезарядка. Создает снаряды в случайных точках внутри полигона формации.
      */
     public Fire() {
-        if (this._bulletNextTick < BattleController.GameTimer.GameFramesCounter) {
-            this._bulletNextTick = BattleController.GameTimer.GameFramesCounter + this._bulletPeriod;
+        if (this._bulletNextTick < Battle.GameTimer.GameFramesCounter) {
+            this._bulletNextTick = Battle.GameTimer.GameFramesCounter + this._bulletPeriod;
 
             for (var i = 0; i < this._bulletCount; i++) {
                 var targetCell = this.formationGenerator?.next().value.Scale(32);
@@ -309,7 +310,7 @@ class IFormationTotem extends IUnit {
                     null,
                     this._bulletConfig,
                     this._bulletShotParams,
-                    this.hordeUnit.Position,
+                    this.hordeUnit.Position.ToPoint2D(),
                     createPoint(targetCell.X, targetCell.Y),
                     UnitMapLayer.Main
                 );
@@ -328,8 +329,8 @@ class FormationTotem_fire extends IFormationTotem {
     constructor(hordeUnit: Unit) {
         super(hordeUnit);
 
-        this._bulletConfig = HordeContentApi.GetBulletConfig("#BulletConfig_Slavyane_FireTrap");
-        this._bulletShotParams = new ShotParams();
+        this._bulletConfig = HordeContentApi.GetBulletConfig("#BulletConfig_FireArrow");
+        this._bulletShotParams = ShotParams.CreateInstance();
         this._bulletCount = 3;
         this._bulletPeriod = 150;
     } // </constructor>
@@ -353,13 +354,15 @@ class FormationTotem_ballista extends IFormationTotem {
         super(hordeUnit);
 
         this._bulletConfig = HordeContentApi.GetBulletConfig("#BulletConfig_Slavyane_Ballista");
-        this._bulletShotParams = new ShotParams();
+        this._bulletShotParams = ShotParams.CreateInstance();
         this._bulletCount = 1;
         this._bulletPeriod = 75;
     } // </constructor>
 
     protected static _InitHordeConfig() {
         super._InitHordeConfig();
+
+        ScriptUtils.SetValue(this.Cfg, "ProductionTime", 100);
 
         ScriptUtils.SetValue(this.Cfg, "Name", "Тотем балиста-формации");
         ScriptUtils.SetValue(this.Cfg, "Description", "Активируется, если 3 и более тотемов формации образуют выпуклый многоугольник. Выпускает стрелы балисты из случайных точек внутри этого многоугольника.");
@@ -377,7 +380,7 @@ class FormationTotem_fireball extends IFormationTotem {
         super(hordeUnit);
 
         this._bulletConfig = HordeContentApi.GetBulletConfig("#BulletConfig_Mage_Fireball");
-        this._bulletShotParams = new ShotParams();
+        this._bulletShotParams = ShotParams.CreateInstance();
         this._bulletCount = 2;
         this._bulletPeriod = 100;
     } // </constructor>
@@ -385,6 +388,7 @@ class FormationTotem_fireball extends IFormationTotem {
     protected static _InitHordeConfig() {
         super._InitHordeConfig();
 
+        ScriptUtils.SetValue(this.Cfg, "ProductionTime", 150);
         ScriptUtils.SetValue(this.Cfg, "Name", "Тотем фаербол-формации");
         ScriptUtils.SetValue(this.Cfg, "Description", "Активируется, если 3 и более тотемов формации образуют выпуклый многоугольник. Выпускает фаерболы из случайных точек внутри этого многоугольника.");
     }

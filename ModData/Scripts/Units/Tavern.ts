@@ -7,10 +7,8 @@ import { Hero_Hunter } from "../Heroes/Hero_Hunter";
 import { Hero_Rider } from "../Heroes/Hero_Rider";
 import { Hero_Scorpion } from "../Heroes/Hero_Scorpion";
 import { Hero_Totemist } from "../Heroes/Hero_Totemist";
-import { log } from "library/common/logging";
 import { IHero } from "../Heroes/IHero";
 import { createGameMessageWithNoSound } from "library/common/messages";
-import { createHordeColor } from "library/common/primitives";
 import { Hero_Necromancer } from "../Heroes/Hero_Necromancer";
 
 var opUnitIdToTavernObject : Map<number, Tavern> = new Map<number, Tavern>();

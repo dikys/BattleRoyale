@@ -4,7 +4,7 @@
   "Items": [
     {
       "InfoFormatVersion": "3",
-      "Uid": "b2673e2dfc404c79b446830c2e2a2879",
+      "Uid": "b2673e2dfc404c79b446830c2e2a2879_inv",
       "Description": "horse, state: Stand, dir8: Up",
       "Location": {
         "X": 0,
@@ -26,7 +26,7 @@
     },
     {
       "InfoFormatVersion": "3",
-      "Uid": "d2bad4aec89e49b798430ddf25d26e29",
+      "Uid": "d2bad4aec89e49b798430ddf25d26e29_inv",
       "Description": "horse, state: Move, dir8: Up",
       "Location": {
         "X": 62,
@@ -65,7 +65,7 @@
     },
     {
       "InfoFormatVersion": "3",
-      "Uid": "ad1403472ab64aa8ab1e347ca1a5e36f",
+      "Uid": "ad1403472ab64aa8ab1e347ca1a5e36f_inv",
       "Description": "horse, state: Stand, dir8: RightUp",
       "Location": {
         "X": 682,
@@ -87,7 +87,7 @@
     },
     {
       "InfoFormatVersion": "3",
-      "Uid": "180464ac69f046cdae7aef8fea99ad96",
+      "Uid": "180464ac69f046cdae7aef8fea99ad96_inv",
       "Description": "horse, state: Move, dir8: RightUp",
       "Location": {
         "X": 744,
@@ -126,7 +126,7 @@
     },
     {
       "InfoFormatVersion": "3",
-      "Uid": "6d11ead886a1447f84598d14c730bfd7",
+      "Uid": "6d11ead886a1447f84598d14c730bfd7_inv",
       "Description": "horse, state: Stand, dir8: Right",
       "Location": {
         "X": 1364,
@@ -148,7 +148,7 @@
     },
     {
       "InfoFormatVersion": "3",
-      "Uid": "6635f42a74b541e4b864334e9d529f13",
+      "Uid": "6635f42a74b541e4b864334e9d529f13_inv",
       "Description": "horse, state: Move, dir8: Right",
       "Location": {
         "X": 1426,
@@ -187,7 +187,7 @@
     },
     {
       "InfoFormatVersion": "3",
-      "Uid": "e0f7df1fc4564e879a7e17479fa567d2",
+      "Uid": "e0f7df1fc4564e879a7e17479fa567d2_inv",
       "Description": "horse, state: Stand, dir8: RightDown",
       "Location": {
         "X": 2046,
@@ -209,7 +209,7 @@
     },
     {
       "InfoFormatVersion": "3",
-      "Uid": "89623206177f465cb3f4a70efb0e942e",
+      "Uid": "89623206177f465cb3f4a70efb0e942e_inv",
       "Description": "horse, state: Move, dir8: RightDown",
       "Location": {
         "X": 2108,
@@ -248,7 +248,7 @@
     },
     {
       "InfoFormatVersion": "3",
-      "Uid": "2bfbe19478eb4e75b1fdda147625e229",
+      "Uid": "2bfbe19478eb4e75b1fdda147625e229_inv",
       "Description": "horse, state: Stand, dir8: Down",
       "Location": {
         "X": 2728,
@@ -270,7 +270,7 @@
     },
     {
       "InfoFormatVersion": "3",
-      "Uid": "7a0d698bf16f49af9c26c8bf65661839",
+      "Uid": "7a0d698bf16f49af9c26c8bf65661839_inv",
       "Description": "horse, state: Move, dir8: Down",
       "Location": {
         "X": 2790,
@@ -309,7 +309,7 @@
     },
     {
       "InfoFormatVersion": "3",
-      "Uid": "fd4cfd8f2fc744f290ac89c32b46c67a",
+      "Uid": "fd4cfd8f2fc744f290ac89c32b46c67a_inv",
       "Description": "horse, state: Stand, dir8: LeftDown",
       "Location": {
         "X": 3410,
@@ -331,7 +331,7 @@
     },
     {
       "InfoFormatVersion": "3",
-      "Uid": "6835c21b57384e0487c9e0a8f4f28641",
+      "Uid": "6835c21b57384e0487c9e0a8f4f28641_inv",
       "Description": "horse, state: Move, dir8: LeftDown",
       "Location": {
         "X": 3472,
@@ -370,7 +370,7 @@
     },
     {
       "InfoFormatVersion": "3",
-      "Uid": "ffbed766c0cd4c1fa4799cd6e3a78ba9",
+      "Uid": "ffbed766c0cd4c1fa4799cd6e3a78ba9_inv",
       "Description": "horse, state: Stand, dir8: Left",
       "Location": {
         "X": 4092,
@@ -392,7 +392,7 @@
     },
     {
       "InfoFormatVersion": "3",
-      "Uid": "198fa445384e4d839dbdb531fefb23e1",
+      "Uid": "198fa445384e4d839dbdb531fefb23e1_inv",
       "Description": "horse, state: Move, dir8: Left",
       "Location": {
         "X": 4154,
@@ -431,7 +431,7 @@
     },
     {
       "InfoFormatVersion": "3",
-      "Uid": "4310c44c446b446d93311138341e4276",
+      "Uid": "4310c44c446b446d93311138341e4276_inv",
       "Description": "horse, state: Stand, dir8: LeftUp",
       "Location": {
         "X": 4774,
@@ -453,7 +453,7 @@
     },
     {
       "InfoFormatVersion": "3",
-      "Uid": "50207a93f96848958cb1b615f1c9e655",
+      "Uid": "50207a93f96848958cb1b615f1c9e655_inv",
       "Description": "horse, state: Move, dir8: LeftUp",
       "Location": {
         "X": 4836,

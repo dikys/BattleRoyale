@@ -4,7 +4,6 @@ import { Hero_Crusader } from "../Heroes/Hero_Crusader";
 import { CreateHordeUnitConfig, FactoryConfig, GetConfigsByWorker, IConfig } from "../Units/IConfig";
 import { createHordeColor } from "library/common/primitives";
 import { mergeFlags } from "library/dotnet/dotnet-utils";
-import { log } from "library/common/logging";
 
 /**
  * @class BuildingTemplate

@@ -1,9 +1,8 @@
 import { createPoint } from "library/common/primitives";
-import { UnitCommand, PointCommandArgs, UnitDirection, UnitConfig, Unit, ACommandArgs, OneClickCommandArgs, ProduceCommandArgs } from "library/game-logic/horde-types";
+import { UnitCommand, PointCommandArgs, UnitDirection, UnitConfig, Unit, OneClickCommandArgs, ProduceCommandArgs } from "library/game-logic/horde-types";
 import { Cell } from "../Core/Cell";
 import { IConfig } from "./IConfig";
 import { unitCanBePlacedByRealMap } from "library/game-logic/unit-and-map";
-import { log } from "library/common/logging";
 
 const SpawnUnitParameters = HordeClassLibrary.World.Objects.Units.SpawnUnitParameters;
 

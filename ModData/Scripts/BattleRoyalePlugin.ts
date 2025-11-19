@@ -1,13 +1,7 @@
-import { LogLevel } from "library/common/logging";
-import { generateCellInSpiral, generateRandomCellInRect } from "library/common/position-tools";
-import { isReplayMode } from "library/game-logic/game-tools";
-import { BattleController, Settlement, UnitDirection, UnitHurtType } from "library/game-logic/horde-types";
 import { spawnUnits } from "library/game-logic/unit-spawn";
 import HordePluginBase from "plugins/base-plugin";
 import { Factory_Slavyane } from "./Units/Factory_Slavyane";
 import { GameField } from "./Core/GameField";
-import { createHordeColor } from "library/common/primitives";
-import { broadcastMessage, createGameMessageWithNoSound } from "library/common/messages";
 import { ScriptData_Building } from "./Core/ScriptData_Building";
 import { PlayerSettlement } from "./Core/PlayerSettlement";
 import { GameSettlement } from "./Core/GameSettlement";
@@ -17,8 +11,15 @@ import { Priest } from "./Units/Priest";
 import { BuildingTemplate, IFactory } from "./Units/IFactory";
 import { Tavern } from "./Units/Tavern";
 import { IHero } from "./Heroes/IHero";
-import { SpellGlobalRef } from "./Spells/ISpell";
-import { Bot } from "./Bots/Bot";
+import {HeroBot} from "./Bots/Bot";
+import {SpellRefData} from "./Spells/ISpell";
+import { LogLevel } from "library/common/logging";
+import { createHordeColor } from "library/common/primitives";
+import { printObjectItems } from "library/common/introspection";
+import { broadcastMessage, createGameMessageWithNoSound } from "library/common/messages";
+import { generateRandomCellInRect, generateCellInSpiral } from "library/common/position-tools";
+import { isReplayMode } from "library/game-logic/game-tools";
+import { UnitDirection, UnitHurtType, Settlement } from "library/game-logic/horde-types";
 
 const PeopleIncomeLevel = HordeClassLibrary.World.Settlements.Modules.Misc.PeopleIncomeLevel;
 type PeopleIncomeLevel = HordeClassLibrary.World.Settlements.Modules.Misc.PeopleIncomeLevel;
@@ -231,7 +232,7 @@ export class BattleRoyalePlugin extends HordePluginBase {
                 var unit = enumerator.Current;
                 if (!unit) continue;
 
-                var unitCell = new Cell(unit.Position.X, unit.Position.Y);
+                var unitCell = Cell.ConvertPreciseFractionVector(unit.Position);
                 if (unitCell.Minus(currentCircle.center).Length_L2() > currentCircle.radius) {
                     unit.BattleMind.TakeDamage(unit.Cfg.Shield + 1, UnitHurtType.Mele);
                 }
@@ -281,7 +282,7 @@ export class BattleRoyalePlugin extends HordePluginBase {
 
             // Отключить прирост населения
 
-            let censusModel = ScriptUtils.GetValue(settlement.Census, "Model");
+            let censusModel = ScriptUtils.GetValue(settlement.Census, "Data");
 
             // Отключить прирост населения
             censusModel.PeopleIncomeLevels.Clear();
@@ -428,16 +429,16 @@ export class BattleRoyalePlugin extends HordePluginBase {
                 var settlementNum = Number.parseInt(player.GetRealSettlement().Uid);
                 if (this._playerUidToSettlement.has(settlementNum)) {
                     var playerSettlementNum = this._playerUidToSettlement.get(settlementNum) as number;
-                    BattleController.Camera.SetCenterToCell(this._playerTaverns[playerSettlementNum].hordeUnit.Cell);
+                    Battle.Camera.SetCenterToCell(this._playerTaverns[playerSettlementNum].hordeUnit.Cell);
                 }
             }
         }
 
         // передаем ссылки в скиллы
-        SpellGlobalRef.BuildingsTemplate = this._buildingsTemplate;
-        SpellGlobalRef.NeutralSettlement = this._neutralSettlement;
-        SpellGlobalRef.EnemySettlement   = this._enemySettlement;
-        SpellGlobalRef.GameField         = this._gameField;
+        SpellRefData.Init(this._buildingsTemplate,
+            this._neutralSettlement,
+            this._enemySettlement,
+            this._gameField);
 
         broadcastMessage("Выбери своего героя", createHordeColor(255, 255, 55, 55));
     }
@@ -491,7 +492,7 @@ export class BattleRoyalePlugin extends HordePluginBase {
             
             // Проверяем, является ли игрок ботом
             if (this._playerBotFlags[playerNum]) {
-                this._playerSettlements[playerNum].bot = new Bot(hero, this._gameField, this._playerSettlements[playerNum], this._enemySettlement, this._neutralSettlement);
+                this._playerSettlements[playerNum].bot = new HeroBot(hero);
             }
 
             // печатаем описание на экран
@@ -558,7 +559,7 @@ export class BattleRoyalePlugin extends HordePluginBase {
                 var settlementNum = Number.parseInt(player.GetRealSettlement().Uid);
                 if (this._playerUidToSettlement.has(settlementNum)) {
                     var playerSettlementNum = this._playerUidToSettlement.get(settlementNum) as number;
-                    BattleController.Camera.SetCenterToCell(this._playerSettlements[playerSettlementNum].heroUnit.hordeUnit.Cell);
+                    Battle.Camera.SetCenterToCell(this._playerSettlements[playerSettlementNum].heroUnit.hordeUnit.Cell);
                 }
             }
         }

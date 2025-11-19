@@ -1,0 +1,26 @@
+{
+  "Description": "magic1",
+  "Items": [
+    {
+      "Uid": "ad059387086f497dba3d5f10225c562f_red",
+      "Description": "magic1",
+      "Location": {
+        "X": 0,
+        "Y": 0
+      },
+      "FrameSize": {
+        "Width": 100,
+        "Height": 100
+      },
+      "FramesCount": 34,
+      "MaskColors": null,
+      "Script": {
+        "DefaultBlock": {
+          "Tasks": null,
+          "BlockTime": 0
+        },
+        "TaskBlocks": null
+      }
+    }
+  ]
+}

@@ -36,6 +36,40 @@
       "InstanceFactory": "SingleAnimEffectFactory"
     },
     {
+      "Uid": "#VisualEffectConfig_MagicCircle_red",
+      "Description": "Пыль разрушения зданий (малый радиус)",
+      "IsExposuresByWind": false,
+      "GravityMode": "None",
+      "SpecialParams": {
+        "$type": "HordeClassLibrary::SingleAnimEffectSpecialParams",
+        "AnimationsCatalog": "d8ca2086c4e5409d9411006751e3f4a0_red"
+      },
+      "InitialZ": 0.0,
+      "InitialZSpeed": 0.0,
+      "InitialDrawLayer": "Smoke",
+      "FramesSwitchDirection": "Forward",
+      "LoopAnimation": false,
+      "StartFrameNumber": null,
+      "InstanceFactory": "SingleAnimEffectFactory"
+    },
+    {
+      "Uid": "#VisualEffectConfig_MagicBabble",
+      "Description": "Пыль разрушения зданий (малый радиус)",
+      "IsExposuresByWind": false,
+      "GravityMode": "None",
+      "SpecialParams": {
+        "$type": "HordeClassLibrary::SingleAnimEffectSpecialParams",
+        "AnimationsCatalog": "d8ca2086c4e5409d9411006751e3f4a0_babble"
+      },
+      "InitialZ": 0.0,
+      "InitialZSpeed": 0.0,
+      "InitialDrawLayer": "Smoke",
+      "FramesSwitchDirection": "Forward",
+      "LoopAnimation": false,
+      "StartFrameNumber": null,
+      "InstanceFactory": "SingleAnimEffectFactory"
+    },
+    {
       "Uid": "#VisualEffectConfig_BloodGreenPool",
       "Description": "Лужа крови после смерти юнита",
       "IsExposuresByWind": false,
@@ -52,5 +86,23 @@
       "StartFrameNumber": null,
       "InstanceFactory": "SingleAnimEffectFactory"
     },
+    {
+      "Archetype": "#VisualEffectConfig_MagicCircle_red",
+      "Uid": "#VisualEffectConfig_MagicFireLittle",
+      "Description": "магический огонь (маленький)",
+      "SpecialParams": {
+        "$type": "HordeClassLibrary::SingleAnimEffectSpecialParams",
+        "AnimationsCatalog": "#AnimCatalog_Effects_MagicFireLittle"
+      }
+    },
+    {
+      "Archetype": "#VisualEffectConfig_MagicCircle_red",
+      "Uid": "#VisualEffectConfig_MagicFireBig",
+      "Description": "магический огонь (большой)",
+      "SpecialParams": {
+        "$type": "HordeClassLibrary::SingleAnimEffectSpecialParams",
+        "AnimationsCatalog": "#AnimCatalog_Effects_MagicFireBig"
+      }
+    }
   ]
 }

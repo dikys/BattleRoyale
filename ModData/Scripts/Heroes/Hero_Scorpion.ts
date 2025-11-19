@@ -2,17 +2,16 @@ import { IUnit } from "../Units/IUnit";
 import { ReplaceUnitParameters, TileType, UnitFlags } from "library/game-logic/horde-types";
 import { mergeFlags } from "library/dotnet/dotnet-utils";
 import { ISpell } from "../Spells/ISpell";
-import { Spell_golden_barracks_summon } from "../Spells/Spell_golden_barracks_summon";
 import { IConfig } from "../Units/IConfig";
 import { BuildingTemplate } from "../Units/IFactory";
 import { IHero } from "./IHero";
-import { Spell_teleportation_mark } from "../Spells/Spell_teleportation_mark";
-import { Spell_PoisonBomb } from "../Spells/Spell_PoisonBomb";
+import { Spell_PoisonBomb } from "../Spells/Magic/Spell_PoisonBomb";
+import { Spell_Summon_Scorpions } from "../Spells/Utillity/Spell_Summon_Scorpions";
 
 export class Hero_Scorpion extends IHero {
     protected static CfgUid      : string = this.CfgPrefix + "HeroScorpion";
     protected static BaseCfgUid  : string = "#UnitConfig_Nature_ScorpionMed";
-    protected static _Spells : Array<typeof ISpell> = [Spell_golden_barracks_summon, Spell_PoisonBomb];
+    protected static _Spells : Array<typeof ISpell> = [Spell_PoisonBomb, Spell_Summon_Scorpions];
 
     // настройки формации - начальный радиус
     protected static _formationStartRadius : number = 2;
@@ -127,7 +126,7 @@ export class Hero_Scorpion extends IHero {
     } // </OnEveryTick>
 }
 
-class Scorpion extends IUnit {
+export class Scorpion extends IUnit {
     protected static CfgUid      : string = this.CfgPrefix + "Scorpion";
     protected static BaseCfgUid  : string = "#UnitConfig_Nature_ScorpionMed";
 

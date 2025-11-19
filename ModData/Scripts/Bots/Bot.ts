@@ -1,7 +1,5 @@
-import { log, LogLevel } from "library/common/logging";
-import { createPoint, Point2D } from "library/common/primitives";
-import { generateCellInSpiral } from "library/common/position-tools";
-import { DiplomacyStatus, Settlement, Unit, UnitCommand } from "library/game-logic/horde-types";
+import { log } from "library/common/logging";
+import { Unit } from "library/game-logic/horde-types";
 import { IHero } from "../Heroes/IHero";
 import { Cell } from "../Core/Cell";
 import { ISpell } from "../Spells/ISpell";
@@ -308,7 +306,7 @@ export class HeroBot {
 
         // Атакующие способности
         if (spellName.includes("fireball") || spellName.includes("magic")) {
-            return this._state === BotState.ATTACKING && this._currentTarget && 
+            return this._state === BotState.ATTACKING && this._currentTarget != null &&
                    this._currentTarget.type === TargetType.ENEMY_UNIT;
         }
 
@@ -322,7 +320,7 @@ export class HeroBot {
         // Телепортация
         if (spellName.includes("teleport")) {
             return this._state === BotState.RETREATING || 
-                   (this._state === BotState.ATTACKING && this._currentTarget && 
+                   (this._state === BotState.ATTACKING && this._currentTarget != null &&
                     heroCell.Minus(Cell.ConvertHordePoint(this._currentTarget.unit!.Cell)).Length_Chebyshev() > 8);
         }
 
@@ -334,7 +332,7 @@ export class HeroBot {
 
         // Призыв
         if (spellName.includes("summon") || spellName.includes("army")) {
-            return this._state === BotState.ATTACKING && this._currentTarget && 
+            return this._state === BotState.ATTACKING && this._currentTarget != null &&
                    this._getArmyStrength() < HeroBot.MIN_ARMY_STRENGTH;
         }
 
@@ -351,7 +349,7 @@ export class HeroBot {
      * Использование способности
      */
     private _useAbility(spell: ISpell, gameTickNum: number): void {
-        const spellName = spell.GetUid();
+        //const spellName = spell.GetUid();
         
         // Определяем цель для способности
         let targetCell: Cell | null = null;
@@ -386,9 +384,9 @@ export class HeroBot {
      * Сканирование области в поисках целей
      */
     private _scanForTargets(gameTickNum: number): void {
-        const heroCell = Cell.ConvertHordePoint(this._hero.hordeUnit.Cell);
-        let bestTarget: TargetInfo | null = null;
-        let bestPriority = -1;
+        //const heroCell = Cell.ConvertHordePoint(this._hero.hordeUnit.Cell);
+        //let bestTarget: TargetInfo | null = null;
+        //let bestPriority = -1;
 
         // Сканируем все юниты в радиусе видимости
         // const allUnits = ActiveScena.GetRealScena().UnitsMap;
@@ -494,7 +492,7 @@ export class HeroBot {
      */
     private _moveToPoint(targetCell: Cell): void {
         // Здесь должна быть реализация отдачи команды движения
-        const targetPoint = targetCell.ToHordePoint();
+        //const targetPoint = targetCell.ToHordePoint();
         // this._hero.hordeUnit.GiveCommand(...);
     }
 
@@ -551,7 +549,7 @@ export class FireMageBot extends HeroBot {
 
         // Маги предпочитают атаковать с дистанции
         if (spellName.includes("fireball")) {
-            return this._state === BotState.ATTACKING && this._currentTarget &&
+            return this._state === BotState.ATTACKING && this._currentTarget != null &&
                    heroCell.Minus(Cell.ConvertHordePoint(this._currentTarget.unit!.Cell)).Length_Chebyshev() >= 5;
         }
 
@@ -622,13 +620,13 @@ export class RogueBot extends HeroBot {
         // Разбойники используют невидимость для подкрадывания
         if (spellName.includes("invisibility")) {
             return this._state === BotState.PATROLLING && this._hasNearbyEnemies() ||
-                   (this._state === BotState.ATTACKING && this._currentTarget &&
+                   (this._state === BotState.ATTACKING && this._currentTarget != null &&
                     heroCell.Minus(Cell.ConvertHordePoint(this._currentTarget.unit!.Cell)).Length_Chebyshev() > 6);
         }
 
         // Частое использование телепортации
         if (spellName.includes("teleport")) {
-            return this._state === BotState.ATTACKING && this._currentTarget &&
+            return this._state === BotState.ATTACKING && this._currentTarget != null &&
                    heroCell.Minus(Cell.ConvertHordePoint(this._currentTarget.unit!.Cell)).Length_Chebyshev() > 4;
         }
 

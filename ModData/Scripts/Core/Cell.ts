@@ -1,4 +1,3 @@
-import { log } from "library/common/logging";
 import { createPoint, Point2D } from "library/common/primitives";
 
 /**
@@ -161,6 +160,10 @@ export class Cell {
      */
     static ConvertHordePoint(cell: HordeResurrection.Basic.Primitives.Geometry.Point2D) {
         return new Cell(cell.X, cell.Y);
+    }
+
+    static ConvertPreciseFractionVector(cell: HordeResurrection.Basic.Primitives.Geometry.PreciseFractionVector) {
+        return this.ConvertHordePoint(cell.ToPoint2D());
     }
 
     /**

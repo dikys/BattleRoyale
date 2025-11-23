@@ -352,6 +352,20 @@
       }
     },
     {
+      "$type": "HordeClassLibrary::ButtonAnimationsCatalog",
+      "Uid": "#AnimCatalog_Command_directed_fortress",
+      "Description": "Command button \"Spell_directed_fortress\"",
+      "InternalEditorPath": "Units\\Commands\\Capture\\Spell_directed_fortress",
+      "RootSection": {
+        "States": {
+          "Focused": "Spell_directed_fortress_focused",
+          "Pressed": "Spell_directed_fortress_pressed",
+          "Regular": "Spell_directed_fortress_regular",
+          "Disabled": "Spell_directed_fortress_disabled"
+        }
+      }
+    },
+    {
       "$type": "HordeClassLibrary::UnitAnimationsCatalog",
       "Uid": "#AnimCatalog_Nature_Invisibility_Horse",
       "Description": "invisibility_horse",

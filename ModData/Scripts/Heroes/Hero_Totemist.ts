@@ -7,12 +7,12 @@ import { IUnit } from "../Units/IUnit";
 import { BulletConfig, GeometryCanvas, GeometryVisualEffect, ShotParams, Stride_Color, Stride_Vector2, Unit, UnitMapLayer } from "library/game-logic/horde-types";
 import { IHero } from "./IHero";
 import { Spell_Teleportation } from "../Spells/Magic/Spell_Teleportation";
-import { Spell_Magic_shield } from "../Spells/Utillity/Spell_Magic_shield";
+import { Spell_directed_fortress } from "../Spells/Utillity/Spell_directed_fortress";
 
 export class Hero_Totemist extends IHero {
     protected static CfgUid      : string = this.CfgPrefix + "HeroTotemist";
     protected static BaseCfgUid  : string = "#UnitConfig_Slavyane_Worker1";
-    protected static _Spells : Array<typeof ISpell> = [Spell_Teleportation, Spell_Magic_shield];
+    protected static _Spells : Array<typeof ISpell> = [Spell_Teleportation, Spell_directed_fortress];
     
     private _formation_totems                   : Array<IFormationTotem>;
     private _formation_totems_buildingProgress  : Array<boolean>;
@@ -353,7 +353,7 @@ class FormationTotem_ballista extends IFormationTotem {
     constructor(hordeUnit: Unit) {
         super(hordeUnit);
 
-        this._bulletConfig = HordeContentApi.GetBulletConfig("#BulletConfig_Slavyane_Ballista");
+        this._bulletConfig = HordeContentApi.GetBulletConfig("#BulletConfig_BallistaArrow");
         this._bulletShotParams = ShotParams.CreateInstance();
         this._bulletCount = 1;
         this._bulletPeriod = 75;
@@ -379,7 +379,7 @@ class FormationTotem_fireball extends IFormationTotem {
     constructor(hordeUnit: Unit) {
         super(hordeUnit);
 
-        this._bulletConfig = HordeContentApi.GetBulletConfig("#BulletConfig_Mage_Fireball");
+        this._bulletConfig = HordeContentApi.GetBulletConfig("#BulletConfig_Fireball");
         this._bulletShotParams = ShotParams.CreateInstance();
         this._bulletCount = 2;
         this._bulletPeriod = 100;

@@ -80,7 +80,7 @@ export class Cell {
      * @method Angle
      * @description Вычисляет угол между текущей точкой и точкой 'a' относительно оси X.
      * @param {Cell} a - Вторая точка.
-     * @returns {number} - Угол в радианах.
+     * @returns {number} - Угол в радианах от 0 до 2*PI
      */
     Angle(a: Cell) : number {
         var angle = Math.atan2(a.Y - this.Y, a.X - this.X);

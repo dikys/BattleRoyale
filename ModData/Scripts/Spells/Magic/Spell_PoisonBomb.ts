@@ -32,7 +32,7 @@ export class Spell_PoisonBomb extends ITargetPointSpell {
     protected static _ChargesCountPerLevel   : Array<number> = [
         1, 2, 3, 4, 5
     ];
-    private static _CloudRadius : number = 4;
+    private static _CloudRadius : number = 2;
     private static _CloudApplyPeriod : number = 1.2*50;
 
     protected static _MaxLevel                      : number = 4;

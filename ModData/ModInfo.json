@@ -6,5 +6,6 @@
   "BuiltIn": false,
   "StandAlone": false,
   "Params": null,
+  "GameVersion": "0.79pre",
   "ModVersion": "0.01"
 }

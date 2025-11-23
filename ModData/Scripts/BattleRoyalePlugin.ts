@@ -140,15 +140,6 @@ export class BattleRoyalePlugin extends HordePluginBase {
                 if (this._playerSettlements[settlementNum].heroUnit.IsDead()){
                     this._playerSettlements[settlementNum].isDefeat = true;
                     this._playerSettlements[settlementNum].hordeSettlement.Existence.ForceTotalDefeat();
-                    this._playerSettlements.forEach((otSettlement, otSettlementNum)=>{
-                        if (otSettlementNum ==  settlementNum   ||
-                            this._playerSettlements[otSettlementNum].isDefeat)  {
-                            return;
-                        }
-
-                        this._playerSettlements[settlementNum].hordeSettlement.Diplomacy.DeclareAlliance(otSettlement.hordeSettlement);
-                        otSettlement.hordeSettlement.Diplomacy.DeclareAlliance(this._playerSettlements[settlementNum].hordeSettlement);
-                    });
                     // удаляем юнитов
                     let enumerator = this._playerSettlements[settlementNum].hordeSettlement.Units.GetEnumerator();
                     while(enumerator.MoveNext()) {
@@ -158,6 +149,16 @@ export class BattleRoyalePlugin extends HordePluginBase {
                         unit.Delete();
                     }
                     enumerator.Dispose();
+                    // объявляем мир
+                    this._playerSettlements.forEach((otSettlement, otSettlementNum)=>{
+                        if (otSettlementNum ==  settlementNum   ||
+                            this._playerSettlements[otSettlementNum].isDefeat)  {
+                            return;
+                        }
+
+                        this._playerSettlements[settlementNum].hordeSettlement.Diplomacy.DeclareAlliance(otSettlement.hordeSettlement);
+                        otSettlement.hordeSettlement.Diplomacy.DeclareAlliance(this._playerSettlements[settlementNum].hordeSettlement);
+                    });
                 }
                 //  присуждаем    победу
                 else{

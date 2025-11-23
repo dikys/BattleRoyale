@@ -15,8 +15,8 @@ export class Spell_invisibility extends ISpell {
     protected static _ChargesCountPerLevel   : Array<number> = [1, 1, 2, 2, 3];
 
     protected static _MaxLevel                      : number = 4;
-    protected static _NamePrefix                    : string = "Невидимость";
-    protected static _DescriptionTemplate           : string = "Становится невидимым в течении {0} секунд. Однако враги могут вас выделить!";
+    protected static _NamePrefix                    : string = "Скрытность";
+    protected static _DescriptionTemplate           : string = "Становится скрытным от игроков в течении {0} секунд.";
     protected static _DescriptionParamsPerLevel     : Array<Array<any>> = 
         [this._DurationPerLevel.map(ticks => ticks / 50)];
 
